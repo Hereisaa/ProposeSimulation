@@ -1,11 +1,11 @@
 function [ cluster, centr ] = usingKmeans( P, k )
-
-%kMeans Clusters data points into k clusters.
-%   Input args: k: number of clusters; 
-%   points: m-by-n matrix of n m-dimensional data points.
-%   Output args: cluster: 1-by-n array with values of 0,...,k-1
-%   representing in which cluster the corresponding point lies in
-%   centr: m-by-k matrix of the m-dimensional centroids of the k clusters
+%Clusters data points into k clusters.
+%   Input args: 
+%            k: number of clusters; 
+%       points: m-by-n matrix of n m-dimensional data points.
+%   Output args: 
+%      cluster: 1-by-n array with values of 0,...,k-1 representing in which cluster the corresponding point lies in
+%        centr: m-by-k matrix of the m-dimensional centroids of the k clusters
 
 numP = size(P,2); % number of points
 dimP = size(P,1); % dimension of points
@@ -77,9 +77,9 @@ end
 
 
 % for reference: print number of iterations
-fprintf('kMeans.m used %d iterations of changing centroids.\n',iterations);
-fprintf('KMEANS: No.point : %d.\n',numP);
-fprintf('KMEANS: cluster metrix size : %d.\n',length(cluster));
+fprintf('Kmeans: used %d iterations of changing centroids(converage).\n',iterations);
+fprintf('Kmeans: Input No.point : %d.\n',numP);
+fprintf('Kmeans: cluster metrix size : %d.\n',length(cluster));
 
 
 end

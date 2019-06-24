@@ -1,10 +1,10 @@
-% PLOT THE LEACH DEPLOYMENT
+% PLOT THE CANOPY CLUSTER
 %%
-figure(3), 
+figure(4), 
 grid on
 
 for i = 1:proposed_nodeArch.numNode
-    
+    nodeArch = proposed_nodeArch;
     switch num2str(proposed_nodeArch.node(i).CID)
         case {'1'}
             plot(nodeArch.nodesLoc(i, 1), nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',12);
@@ -38,15 +38,20 @@ end
 
 %% range (d0)
 theta = 0:pi/30:2*pi; 
-R = 87;
-x = R*cos(theta); 
-y = R*sin(theta); 
-for i = 1:length(centr)
-    plot(centr(1, i), centr(2, i),'k*', 'MarkerSize',8); 
-    plot(x + centr(1, i), y + centr(2, i),'k:');
+T1 = 87;
+T2 = 60;
+xT1 = T1*cos(theta); yT1 = T1*sin(theta);
+xT2 = T2*cos(theta); yT2 = T2*sin(theta);
+for i = 1:length(canopy_centr)
+    plot(canopy_centr(1, i), canopy_centr(2, i),'k*', 'MarkerSize',8); 
+    plot(xT1 + canopy_centr(1, i), yT1 + canopy_centr(2, i),'k:');
+    plot(xT2 + canopy_centr(1, i), yT2 + canopy_centr(2, i),'k:');
 end
 
 %% BS and Layer
+R = 87;
+x = R*cos(theta); 
+y = R*sin(theta);
 plot(netArch.Sink.x, netArch.Sink.y,'o', ...
     'MarkerSize',8, 'MarkerFaceColor', 'g');
 % Layer 1 near BS 

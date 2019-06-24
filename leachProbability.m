@@ -1,4 +1,4 @@
-function P = prob(r, p)
+function P = leachProbability(r, p)
 % Probability function for elect the node as CH
 %   Input:
 %       r     round no
@@ -13,8 +13,8 @@ function P = prob(r, p)
         p = 0.1;
     end
     
-%     P = p / (1-p * mod(r, round(1 / p)));
+    P = p / (1-p * mod(r, round(1 / p)));
     
-    P = p;
+%     P = p;
     
 end
