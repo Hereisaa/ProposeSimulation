@@ -36,16 +36,23 @@ for i = 1:proposed_nodeArch.numNode
     
 end
 
-%% range (d0)
+%% canopies
 theta = 0:pi/30:2*pi; 
-T1 = 87;
-T2 = 60;
 xT1 = T1*cos(theta); yT1 = T1*sin(theta);
 xT2 = T2*cos(theta); yT2 = T2*sin(theta);
-for i = 1:length(canopy_centr)
-    plot(canopy_centr(1, i), canopy_centr(2, i),'k*', 'MarkerSize',8); 
-    plot(xT1 + canopy_centr(1, i), yT1 + canopy_centr(2, i),'k:');
-    plot(xT2 + canopy_centr(1, i), yT2 + canopy_centr(2, i),'k:');
+
+% centoids
+% for i = 1:length(canopy_centr)
+%     plot(canopy_centr(1, i), canopy_centr(2, i),'k*', 'MarkerSize',8); 
+% %     plot(xT1 + canopy_centr(1, i), yT1 + canopy_centr(2, i),'k:');
+%     plot(xT2 + canopy_centr(1, i), yT2 + canopy_centr(2, i),'k:');
+% end
+
+% nearset centroid nodes
+for i = 1:length(canopy_centr_node)
+    plot(canopy_centr_node(1, i), canopy_centr_node(2, i),'r*', 'MarkerSize',8); 
+%     plot(xT1 + canopy_centr_node(1, i), yT1 + canopy_centr_node(2, i),'k:');
+    plot(xT2 + canopy_centr_node(1, i), yT2 + canopy_centr_node(2, i),'r:');
 end
 
 %% BS and Layer

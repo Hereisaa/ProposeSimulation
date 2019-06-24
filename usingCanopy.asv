@@ -18,24 +18,21 @@ function [ k, canopy_centr ] = usingCanopy( S, T1, T2 )
                 Theta(:,count) = S(:,i);
                 count = count + 1;
             end
-            if(calDistance(S(1, i), S(2, i), Tau(1, 1), Tau(2, 1)) <= T2) 
-                
-                stop = false;
-                while(stop ~= true)
-                    endOf
+            if(calDistance(S(1, i), S(2, i), Tau(1, 1), Tau(2, 1)) <= T2)                 
+
                     for j = 1:size(Omega, 2)
+                        j
                         if(Omega(:,j)==S(:,i))
-                           Omega(:,j) = [];
-                           fprintf('[Canopy*] size of Omega = %d.\n',size(Omega, 2));
-                           
+                            Omega(:,j) = [];
+                            fprintf('[Canopy*] size of Omega = %d.\n',size(Omega, 2));
+                            break;
                         end
                     end
-                end
-                
-                
+           
             end
         end
         
+        % means for centroids
         Theta_star = [0;0];
         for i = 1:size(Theta, 2)
            Theta_star(1,1) =  Theta_star(1,1) + Theta(1,i);

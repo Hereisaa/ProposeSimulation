@@ -42,7 +42,7 @@ R = 87;
 x = R*cos(theta); 
 y = R*sin(theta); 
 for i = 1:length(centr)
-    plot(centr(1, i), centr(2, i),'k*', 'MarkerSize',8); 
+    plot(centr(1, i), centr(2, i),'r*', 'MarkerSize',8); 
     plot(x + centr(1, i), y + centr(2, i),'k:');
 end
 

@@ -1,4 +1,4 @@
-function [ k, canopy_centr ] = usingCanopy( S, T1, T2 )
+function [ k, canopy_centr, canopy_centr_node ] = usingCanopy( S, T1, T2 )
 %Canopy algorithm
     Omega = S; % Temp_xy is a 2 by n metrix
     size_S = size(S, 2); 
@@ -11,7 +11,7 @@ function [ k, canopy_centr ] = usingCanopy( S, T1, T2 )
         fprintf('[Canopy] k = %d.\n',k);
         Tau = Omega(:,randi([1 size(Omega, 2)]));
         Theta = [];
-        Theta_star = [];
+        Theta_star = [0;0];
         count = 1;
         for i = 1:size_S
             if(calDistance(S(1, i), S(2, i), Tau(1, 1), Tau(2, 1)) <= T1) 
@@ -20,7 +20,6 @@ function [ k, canopy_centr ] = usingCanopy( S, T1, T2 )
             end
             if(calDistance(S(1, i), S(2, i), Tau(1, 1), Tau(2, 1)) <= T2)                 
 
-            %%%%%%%%%  BUGGGGG
                     for j = 1:size(Omega, 2)
                         j
                         if(Omega(:,j)==S(:,i))
@@ -33,7 +32,7 @@ function [ k, canopy_centr ] = usingCanopy( S, T1, T2 )
             end
         end
         
-        Theta_star = [0;0];
+        % means for centroids
         for i = 1:size(Theta, 2)
            Theta_star(1,1) =  Theta_star(1,1) + Theta(1,i);
            Theta_star(2,1) =  Theta_star(2,1) + Theta(2,i);
@@ -42,9 +41,13 @@ function [ k, canopy_centr ] = usingCanopy( S, T1, T2 )
         Theta_star(2,1) = Theta_star(2,1)/size(Theta, 2);
         
         C(:,k) = Theta_star(:,1);
+        C2(:,k) = Tau(:,1);
         
-        clear Tau Theta Theta_star 
+%         clear Tau Theta Theta_star 
     end
     canopy_centr = C;
+    C
+    canopy_centr_node = C2;
+    C2
     k
 end

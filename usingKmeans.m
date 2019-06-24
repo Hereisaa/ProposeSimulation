@@ -1,11 +1,12 @@
-function [ cluster, centr ] = usingKmeans( P, k )
+function [ cluster, centr ] = usingKmeans( P, k, canopy_centr_node )
 %Clusters data points into k clusters.
 %   Input args: 
-%            k: number of clusters; 
-%       points: m-by-n matrix of n m-dimensional data points.
+%                   k: number of clusters; 
+%              points: m-by-n matrix of n m-dimensional data points.
+%   canopy_centr_node:
 %   Output args: 
-%      cluster: 1-by-n array with values of 0,...,k-1 representing in which cluster the corresponding point lies in
-%        centr: m-by-k matrix of the m-dimensional centroids of the k clusters
+%             cluster: 1-by-n array with values of 0,...,k-1 representing in which cluster the corresponding point lies in
+%               centr: m-by-k matrix of the m-dimensional centroids of the k clusters
 
 numP = size(P,2); % number of points
 dimP = size(P,1); % dimension of points
@@ -13,10 +14,12 @@ dimP = size(P,1); % dimension of points
 %% Choose k data points as initial centroids
 
 % choose k unique random indices between 1 and size(P,2) (number of points)
-randIdx = randperm(numP,k);
+% randIdx = randperm(numP,k);
 % initial centroids
-centr = P(:,randIdx);
+% centr = P(:,randIdx);
 
+% initial centroids from canopy.m
+centr = canopy_centr_node;
 %% paint origin centr
 % figure(1), hold on
 % length(centr(1,:))

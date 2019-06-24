@@ -40,9 +40,6 @@ for i = 1:numNodes
     end
 end
 
-[ k, canopy_centr ] = usingCanopy( Temp_xy, 100, 87 );
-
-size(canopy_centr, 2)
-
+[ k, canopy_centr, canopy_centr_node ] = usingCanopy( Temp_xy, 100, 87 );
 plot_canopy
 
