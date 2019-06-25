@@ -42,11 +42,11 @@ xT1 = T1*cos(theta); yT1 = T1*sin(theta);
 xT2 = T2*cos(theta); yT2 = T2*sin(theta);
 
 % centoids
-% for i = 1:length(canopy_centr)
-%     plot(canopy_centr(1, i), canopy_centr(2, i),'k*', 'MarkerSize',8); 
-% %     plot(xT1 + canopy_centr(1, i), yT1 + canopy_centr(2, i),'k:');
-%     plot(xT2 + canopy_centr(1, i), yT2 + canopy_centr(2, i),'k:');
-% end
+for i = 1:length(canopy_centr)
+    plot(canopy_centr(1, i), canopy_centr(2, i),'b*', 'MarkerSize',8); 
+%     plot(xT1 + canopy_centr(1, i), yT1 + canopy_centr(2, i),'k:');
+    plot(xT2 + canopy_centr(1, i), yT2 + canopy_centr(2, i),'b:');
+end
 
 % nearset centroid nodes
 for i = 1:length(canopy_centr_node)
@@ -56,9 +56,9 @@ for i = 1:length(canopy_centr_node)
 end
 
 %% BS and Layer
-R = 87;
-x = R*cos(theta); 
-y = R*sin(theta);
+d = d0;
+x = d*cos(theta); 
+y = d*sin(theta);
 plot(netArch.Sink.x, netArch.Sink.y,'o', ...
     'MarkerSize',8, 'MarkerFaceColor', 'g');
 % Layer 1 near BS 

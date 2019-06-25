@@ -59,5 +59,6 @@ function [nodeArch, clusterNode] = leach(clusterModel, clusterFunParam)
         end % if
     end % for
     clusterNode.countCHs = countCHs;
-    countCHs
+%     countCHs
+    fprintf('[LEACH] countCHs = %d',countCHs);
 end

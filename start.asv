@@ -75,7 +75,7 @@ for i = 1:notLayerZero-1
     proposed_nodeArch.node(Temp_index(1,i)).CID = cluster(i); % CID = which cluster belongs to
 end
 
-% **FOR TEST** assign to it's parent
+% [*for tset] assign to it's parent
 for i = 1:proposed_nodeArch.numNode
     if(proposed_nodeArch.node(i).CID == -1)
         proposed_nodeArch.node(i).parent = netArch.Sink;
@@ -89,8 +89,6 @@ plot_kmeans
 
 
 %%%%%%% CH & RN Selection Phase %%%%%%%
-MaxSCH = 0;
-MaxXRN = 0;
 
 
 

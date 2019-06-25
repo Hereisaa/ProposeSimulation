@@ -6,9 +6,9 @@ function [ k, canopy_centr, canopy_centr_node ] = usingCanopy( S, T1, T2 )
     k = 0; % size of C
     
     while size(Omega, 2)~=0
-        fprintf('[Canopy] size of Omega = %d.\n',size(Omega, 2));
+%         fprintf('[Canopy] size of Omega = %d.\n',size(Omega, 2));
         k = k + 1;
-        fprintf('[Canopy] k = %d.\n',k);
+%         fprintf('[Canopy] k = %d.\n',k);
         Tau = Omega(:,randi([1 size(Omega, 2)]));
         Theta = [];
         Theta_star = [0;0];
@@ -21,10 +21,10 @@ function [ k, canopy_centr, canopy_centr_node ] = usingCanopy( S, T1, T2 )
             if(calDistance(S(1, i), S(2, i), Tau(1, 1), Tau(2, 1)) <= T2)                 
 
                     for j = 1:size(Omega, 2)
-                        j
+%                         j
                         if(Omega(:,j)==S(:,i))
                             Omega(:,j) = [];
-                            fprintf('[Canopy*] size of Omega = %d.\n',size(Omega, 2));
+%                             fprintf('[Canopy*] size of Omega = %d.\n',size(Omega, 2));
                             break;
                         end
                     end
@@ -46,8 +46,8 @@ function [ k, canopy_centr, canopy_centr_node ] = usingCanopy( S, T1, T2 )
 %         clear Tau Theta Theta_star 
     end
     canopy_centr = C;
-    C
+%     C
     canopy_centr_node = C2;
-    C2
-    k
+%     C2
+    fprintf('[Canopy] number of canopies = %d.\n',k);
 end

@@ -80,9 +80,9 @@ end
 
 
 % for reference: print number of iterations
-fprintf('Kmeans: used %d iterations of changing centroids(converage).\n',iterations);
-fprintf('Kmeans: Input No.point : %d.\n',numP);
-fprintf('Kmeans: cluster metrix size : %d.\n',length(cluster));
+fprintf('[Kmeans] used %d iterations of changing centroids(converage).\n',iterations);
+fprintf('[Kmeans] input no.point : %d.\n',numP);
+% fprintf('[Kmeans] cluster metrix size : %d.\n',length(cluster));
 
 
 end

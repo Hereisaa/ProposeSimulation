@@ -3,6 +3,7 @@ clc, clear all, close all
 numNodes = 300; % number of nodes
 p = 0.05; % ratio of number of CH (default)
 d0 = 87; % distance threshold
+T1 = 100; T2 = 87; % canopy threshold
 netArch  = newNetwork(500, 500, 250, 250); % (Network Length, Network  Width, BS_x, BS_y)
 init_nodeArch = newNodes(netArch, numNodes);
 proposed_nodeArch = init_nodeArch; % node's arch for proposed
@@ -40,6 +41,7 @@ for i = 1:numNodes
     end
 end
 
-[ k, canopy_centr, canopy_centr_node ] = usingCanopy( Temp_xy, 100, 87 );
+
+[ k, canopy_centr, canopy_centr_node ] = usingCanopy( Temp_xy, T1, T2 );
 plot_canopy
 

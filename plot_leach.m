@@ -12,7 +12,7 @@ color1 = '#00FFFF'; color1 = sscanf(color1(2:end),'%2x%2x%2x',[1 3])/255;
 t = 0:pi/30:2*pi; 
 % radius
 R = sqrt(netArch.Yard.Width * netArch.Yard.Length / clusterModel.numCluster);
-R
+% R
 x = R*cos(t); 
 y = R*sin(t); 
 

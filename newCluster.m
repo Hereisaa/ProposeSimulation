@@ -41,14 +41,14 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
                           (netArch.Sink.y - nodeArch.nodesLoc(i, 2)) ^ 2);
         end
         dBS = dBS / nodeArch.numNode;
-        display(dBS);
+%         display(dBS);
         numCluster = clusterOptimum(netArch, nodeArch, dBS); 
         p = numCluster / nodeArch.numNode;
-        fprintf('LEACH : p = %d',p);
+%         fprintf('[newCluster.m] p = %d',p);
     else
         numCluster = nodeArch.numNode * p_numCluster;
         p = numCluster / nodeArch.numNode;
-        fprintf('LEACH : p = %d',p);
+%         fprintf('[newCluster.m] p = %d',p);
     end
     
     % p = Optimal Election Probability of a node to become cluster head

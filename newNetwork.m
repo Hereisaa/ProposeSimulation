@@ -22,12 +22,12 @@ function NetArch = newNetwork(Length, Width, sinkX, sinkY, initEnergy...
     %%%% Create the yard
     Yard.Type = 'Rect'; % Rectangular
     if ~exist('Length','var')
-        Yard.Length = 100; % default of the yard is 100 in x coordination
+        Yard.Length = 500; % default of the yard is 100 in x coordination
     else
         Yard.Length = Length;
     end
     if ~exist('Width','var')
-        Yard.Width = 100; % default of the yard is 100 in y coordination
+        Yard.Width = 500; % default of the yard is 100 in y coordination
     else
         Yard.Width = Width;
     end
