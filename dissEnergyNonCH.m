@@ -30,8 +30,7 @@ function clusterModel = dissEnergyNonCH(clusterModel, roundArch)
     locAlive = find(~nodeArch.dead); % find the nodes that are alive
     for i = locAlive % search in alive nodes
         %find Associated CH for each normal node
-        if strcmp(nodeArch.node(i).type, 'N') &&  ...
-            nodeArch.node(i).energy > 0
+        if (strcmp(nodeArch.node(i).type, 'N') &&  nodeArch.node(i).energy > 0)
             
             locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
             countCH = length(clusterModel.clusterNode.no); % Number of CHs
@@ -39,21 +38,21 @@ function clusterModel = dissEnergyNonCH(clusterModel, roundArch)
             [minDis, loc] = min(sqrt(sum((repmat(locNode, countCH, 1) - cluster.loc)' .^ 2)));
             minDisCH =  cluster.no(loc);
             
-            % 選最近的 CH 加入
+            % assign to nearest CH
             nodeArch.node(i).parent = cluster.no(loc);
             
             if (minDis > d0)
                 nodeArch.node(i).energy = nodeArch.node(i).energy - ...
-                    ctrPacketLength * ETX + Emp * packetLength * (minDis ^ 4);
+                    (packetLength * ETX + Emp * packetLength * (minDis ^ 4));
             else
                 nodeArch.node(i).energy = nodeArch.node(i).energy - ...
-                    ctrPacketLength * ETX + Efs * packetLength * (minDis ^ 2);
+                    (packetLength * ETX + Efs * packetLength * (minDis ^ 2));
             end
             %Energy dissipated
-            if(minDis > 0)
-                nodeArch.node(minDisCH).energy = nodeArch.node(minDisCH).energy - ...
-                    ((ERX + EDA) * packetLength );
-            end
+%             if (minDis > 0)
+%                 nodeArch.node(minDisCH).energy = nodeArch.node(minDisCH).energy - ...
+%                     ((ERX + EDA) * packetLength );
+%             end
         end % if
     end % for
     clusterModel.nodeArch = nodeArch;

@@ -67,19 +67,19 @@ function NetArch = newNetwork(Length, Width, sinkX, sinkY, initEnergy...
     end
     
     % Transmit Amplifier types
-    if ~exist('recEnergy','var')
+    if ~exist('fsEnergy','var')
         Energy.freeSpace = 10*0.000000000001;
     else
         Energy.freeSpace = fsEnergy; 
     end
-    if ~exist('recEnergy','var')
+    if ~exist('mpEnergy','var')
         Energy.multiPath = 0.0013*0.000000000001;
     else
         Energy.multiPath = mpEnergy; 
     end
     
     %Data Aggregation Energy
-    if ~exist('recEnergy','var')
+    if ~exist('aggrEnergy','var')
         Energy.aggr = 5*0.000000001;
     else
         Energy.aggr = aggrEnergy; 

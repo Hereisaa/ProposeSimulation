@@ -33,22 +33,37 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
     end
     clusterModel.nodeArch = nodeArch;
     
+%     if ~exist('p_numCluster','var')
+%         % Optimal calculation of p
+%         dBS = 0;
+%         for i = 1:nodeArch.numNode
+%            dBS = dBS + sqrt((netArch.Sink.x - nodeArch.nodesLoc(i, 1)) ^ 2 + ...
+%                           (netArch.Sink.y - nodeArch.nodesLoc(i, 2)) ^ 2);
+%         end
+%         dBS = dBS / nodeArch.numNode;
+% 
+%         numCluster = clusterOptimum(netArch, nodeArch, dBS); 
+%         p = numCluster / nodeArch.numNode;
+% 
+%     else
+%         numCluster = nodeArch.numNode * p_numCluster;
+%         p = numCluster / nodeArch.numNode;
+% 
+%     end
+    
     if ~exist('p_numCluster','var')
-        % Optimal calculation of p
-        dBS = 0;
-        for i = 1:nodeArch.numNode
-           dBS = dBS + sqrt((netArch.Sink.x - nodeArch.nodesLoc(i, 1)) ^ 2 + ...
-                          (netArch.Sink.y - nodeArch.nodesLoc(i, 2)) ^ 2);
-        end
-        dBS = dBS / nodeArch.numNode;
-%         display(dBS);
+        dBS        = sqrt((netArch.Sink.x - netArch.Yard.Length) ^ 2 + ...
+                          (netArch.Sink.y - netArch.Yard.Width) ^ 2);
         numCluster = clusterOptimum(netArch, nodeArch, dBS); 
-        p = numCluster / nodeArch.numNode;
-%         fprintf('[newCluster.m] p = %d',p);
+        p = 1 / numCluster;
     else
-        numCluster = nodeArch.numNode * p_numCluster;
-        p = numCluster / nodeArch.numNode;
-%         fprintf('[newCluster.m] p = %d',p);
+        if p_numCluster < 1
+            p = p_numCluster;
+            numCluster = 1 / p;
+        else
+            numCluster = p_numCluster;
+            p = 1 / numCluster;
+        end
     end
     
     % p = Optimal Election Probability of a node to become cluster head

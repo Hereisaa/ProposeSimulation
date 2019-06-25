@@ -41,7 +41,7 @@ function clusterModel = dissEnergyCH(clusterModel, roundArch)
                  ((ETX+EDA) * packetLength + Efs * packetLength * (distance ^ 2));
         end
         nodeArch.node(chNo).energy = nodeArch.node(chNo).energy - ...
-            ctrPacketLength * ERX * round(nodeArch.numNode / clusterModel.numCluster);
+            packetLength * ERX * round(nodeArch.numNode / clusterModel.numCluster);
     end
     
     clusterModel.nodeArch = nodeArch;

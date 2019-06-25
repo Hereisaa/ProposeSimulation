@@ -47,7 +47,8 @@ function [nodeArch, clusterNode] = leach(clusterModel, clusterFunParam)
             countCHs = countCHs+1;
 
             nodeArch.node(i).type          = 'C';
-            nodeArch.node(1,1).G           = round(1/p)-1;
+%             nodeArch.node(1,1).G           = round(1/p)-1;
+            nodeArch.node(i).G           = 1;
             clusterNode.no(countCHs)       = i; % the no of node
             xLoc = nodeArch.node(i).x; % x location of CH
             yLoc = nodeArch.node(i).y; % y location of CH
@@ -60,5 +61,5 @@ function [nodeArch, clusterNode] = leach(clusterModel, clusterFunParam)
     end % for
     clusterNode.countCHs = countCHs;
 %     countCHs
-    fprintf('[LEACH] countCHs = %d',countCHs);
+    fprintf('[LEACH] countCHs = %d\n',countCHs);
 end
