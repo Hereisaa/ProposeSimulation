@@ -20,7 +20,8 @@ function clusterModel = dissEnergyCH(clusterModel, roundArch)
     if cluster.countCHs == 0
         return
     end
-    n = length(cluster.no); % Number of CHs
+%     n = length(cluster.no); % Number of CHs
+    n = clusterModel.clusterNode.countCHs; % Number of CHs
     ETX = netArch.Energy.transfer;
     ERX = netArch.Energy.receive;
     EDA = netArch.Energy.aggr;
@@ -30,18 +31,20 @@ function clusterModel = dissEnergyCH(clusterModel, roundArch)
     ctrPacketLength = roundArch.ctrPacketLength;
     for i = 1:n
         chNo = cluster.no(i);
-        distance = cluster.distance(i);
+        distance = cluster.distance(i); % to BS
         energy = nodeArch.node(chNo).energy;
-        % energy for aggregation the data + energy for transferring to BS
+        % energy for transferring to BS
         if(distance >= d0)
              nodeArch.node(chNo).energy = energy - ...
-                 ((ETX+EDA) * packetLength + Emp * packetLength * (distance ^ 4));
+                 (ETX * packetLength + Emp * packetLength * (distance ^ 4));
         else
              nodeArch.node(chNo).energy = energy - ...
-                 ((ETX+EDA) * packetLength + Efs * packetLength * (distance ^ 2));
+                 (ETX * packetLength + Efs * packetLength * (distance ^ 2));
         end
-        nodeArch.node(chNo).energy = nodeArch.node(chNo).energy - ...
-            packetLength * ERX * round(nodeArch.numNode / clusterModel.numCluster);
+        % energy for aggregation the data & Rx data
+        nodeArch.node(chNo).energy = energy - ...
+                 (packetLength * ERX * nodeArch.node(chNo).child + ...
+                 packetLength * EDA * nodeArch.node(chNo).child);
     end
     
     clusterModel.nodeArch = nodeArch;

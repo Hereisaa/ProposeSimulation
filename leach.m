@@ -14,11 +14,15 @@ function [nodeArch, clusterNode] = leach(clusterModel, clusterFunParam)
     N = nodeArch.numNode; % number of nodes
     
     %%%%%%%% reset the CH after numCluster round
-    if (mod(r, clusterModel.numCluster) == 0)
+    if (mod(r, round(1/p)) == 0)
         for i = 1:N
             nodeArch.node(i).G = 0; % not selected for CH
         end
     end
+    for i = 1:nodeArch.numNode
+        nodeArch.node(i).child = 0;
+    end
+    
     
     %%%%%%%% Checking if there is a dead node
     locAlive = find(~nodeArch.dead); % find the nodes that are alive
@@ -38,6 +42,7 @@ function [nodeArch, clusterNode] = leach(clusterModel, clusterFunParam)
     %
     locAlive = find(~nodeArch.dead); % find the nodes that are alive
     countCHs = 0;
+    
     for i = locAlive % search in alive nodes
         temp_rand = rand;
         if (nodeArch.node(i).G <= 0) && ...
@@ -46,20 +51,22 @@ function [nodeArch, clusterNode] = leach(clusterModel, clusterFunParam)
 
             countCHs = countCHs+1;
 
-            nodeArch.node(i).type          = 'C';
-%             nodeArch.node(1,1).G           = round(1/p)-1;
+            nodeArch.node(i).type        = 'C';
+            nodeArch.node(i).parent      = netArch.Sink;
+%             nodeArch.node(1,1).G       = round(1/p)-1;
             nodeArch.node(i).G           = 1;
-            clusterNode.no(countCHs)       = i; % the no of node
+            clusterNode.no(countCHs)     = i; % the no of node
             xLoc = nodeArch.node(i).x; % x location of CH
             yLoc = nodeArch.node(i).y; % y location of CH
-            clusterNode.loc(countCHs, 1)   = xLoc;
-            clusterNode.loc(countCHs, 2)   = yLoc;
+            clusterNode.loc(countCHs, 1) = xLoc;
+            clusterNode.loc(countCHs, 2) = yLoc;
             % Calculate distance of CH from BS
             clusterNode.distance(countCHs) = sqrt((xLoc - netArch.Sink.x)^2 + ...
                                                   (yLoc - netArch.Sink.y)^2);            
         end % if
     end % for
     clusterNode.countCHs = countCHs;
-%     countCHs
-    fprintf('[LEACH] countCHs = %d\n',countCHs);
+    clusterModel.numCluster = clusterModel.numCluster + countCHs;
+    fprintf('[LEACH] number of CH (countCHs) = %d\n',countCHs);
+    fprintf('[LEACH] number of total CH (numCluster) = %d\n',clusterModel.numCluster);
 end

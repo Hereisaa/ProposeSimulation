@@ -33,44 +33,26 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
     end
     clusterModel.nodeArch = nodeArch;
     
-%     if ~exist('p_numCluster','var')
-%         % Optimal calculation of p
-%         dBS = 0;
-%         for i = 1:nodeArch.numNode
-%            dBS = dBS + sqrt((netArch.Sink.x - nodeArch.nodesLoc(i, 1)) ^ 2 + ...
-%                           (netArch.Sink.y - nodeArch.nodesLoc(i, 2)) ^ 2);
-%         end
-%         dBS = dBS / nodeArch.numNode;
-% 
-%         numCluster = clusterOptimum(netArch, nodeArch, dBS); 
-%         p = numCluster / nodeArch.numNode;
-% 
-%     else
-%         numCluster = nodeArch.numNode * p_numCluster;
-%         p = numCluster / nodeArch.numNode;
-% 
+%     if ~exist('numCluster','var')
+%         numCluster = 0;
 %     end
+    clusterModel.numCluster = 0;
+    
     
     if ~exist('p_numCluster','var')
         dBS        = sqrt((netArch.Sink.x - netArch.Yard.Length) ^ 2 + ...
                           (netArch.Sink.y - netArch.Yard.Width) ^ 2);
-        numCluster = clusterOptimum(netArch, nodeArch, dBS); 
-        p = 1 / numCluster;
+        kOpt = clusterOptimum(netArch, nodeArch, dBS); 
+        p = kOpt / nodeArch.numNode;
     else
-        if p_numCluster < 1
-            p = p_numCluster;
-            numCluster = 1 / p;
-        else
-            numCluster = p_numCluster;
-            p = 1 / numCluster;
-        end
+        p = p_numCluster;
     end
-    
+
     % p = Optimal Election Probability of a node to become cluster head
-    clusterModel.numCluster = numCluster;
     clusterModel.p          = p;
+    fprintf('[LEACH] p = %d\n',p);
     
-    % run leach
+    % run leach.m
     [nodeArch, clusterNode] = feval(clusterFun, clusterModel, clusterFunParam); % execute the cluster function
     
     clusterModel.nodeArch = nodeArch;       % new architecture of nodes

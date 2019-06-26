@@ -14,9 +14,9 @@ function clusterModel = dissEnergyNonCH(clusterModel, roundArch)
     nodeArch = clusterModel.nodeArch;
     netArch  = clusterModel.netArch;
     cluster  = clusterModel.clusterNode;
-    if cluster.countCHs == 0
-        return
-    end
+%     if cluster.countCHs == 0
+%         return
+%     end
     d0 = sqrt(netArch.Energy.freeSpace / ...
               netArch.Energy.multiPath);
     ETX = netArch.Energy.transfer;
@@ -33,20 +33,37 @@ function clusterModel = dissEnergyNonCH(clusterModel, roundArch)
         if (strcmp(nodeArch.node(i).type, 'N') &&  nodeArch.node(i).energy > 0)
             
             locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
-            countCH = length(clusterModel.clusterNode.no); % Number of CHs
+            countCHs = clusterModel.clusterNode.countCHs; % Number of CHs
             % calculate distance to each CH and find smallest distance
-            [minDis, loc] = min(sqrt(sum((repmat(locNode, countCH, 1) - cluster.loc)' .^ 2)));
-            minDisCH =  cluster.no(loc);
-            
-            % assign to nearest CH
-            nodeArch.node(i).parent = cluster.no(loc);
-            
-            if (minDis > d0)
-                nodeArch.node(i).energy = nodeArch.node(i).energy - ...
-                    (packetLength * ETX + Emp * packetLength * (minDis ^ 4));
+            if countCHs == 0
+                
+                nodeArch.node(i).parent = netArch.Sink;
+                minDis = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
+                
+                if (minDis >= d0)
+                    nodeArch.node(i).energy = nodeArch.node(i).energy - ...
+                        (packetLength * ETX + Emp * packetLength * (minDis ^ 4));
+                else
+                    nodeArch.node(i).energy = nodeArch.node(i).energy - ...
+                        (packetLength * ETX + Efs * packetLength * (minDis ^ 2));
+                end
             else
-                nodeArch.node(i).energy = nodeArch.node(i).energy - ...
-                    (packetLength * ETX + Efs * packetLength * (minDis ^ 2));
+                
+                % [min , index]
+                [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHs, 1) - cluster.loc)' .^ 2)));
+                minDisCH =  cluster.no(loc);
+                
+                % assign to nearest CH
+                nodeArch.node(i).parent = nodeArch.node(minDisCH);
+                nodeArch.node(minDisCH).child = nodeArch.node(minDisCH).child + 1;
+                
+                if (minDis >= d0)
+                    nodeArch.node(i).energy = nodeArch.node(i).energy - ...
+                        (packetLength * ETX + Emp * packetLength * (minDis ^ 4));
+                else
+                    nodeArch.node(i).energy = nodeArch.node(i).energy - ...
+                        (packetLength * ETX + Efs * packetLength * (minDis ^ 2));
+                end
             end
             %Energy dissipated
 %             if (minDis > 0)

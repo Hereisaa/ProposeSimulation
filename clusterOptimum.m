@@ -19,5 +19,5 @@ function kOpt = clusterOptimum(netArch, nodeArch, dBS)
            sqrt(netArch.Energy.freeSpace / netArch.Energy.multiPath) * ...
            M / dBS ^ 2;
     kOpt = round(kOpt);
-    kOpt
+    fprintf('[LEACH] kOpt = %d\n',kOpt);
 end

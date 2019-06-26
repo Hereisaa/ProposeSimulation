@@ -28,6 +28,7 @@ function par = plotResults(clusterModel, r, par)
             par.energy(r) = par.energy(r) + node.node(i).energy;
         end
     end
+    par.energy(r) = par.energy(r) / nodeArch.numNode;
 %     fig(par.energy, r, 3, 'sum of energy', 'Sum of energy of nodes vs. round'); 
     
     createfigure(1:r, par.energy, par.packetToBS, par.numDead);

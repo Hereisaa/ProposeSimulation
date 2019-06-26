@@ -17,12 +17,13 @@ x = R*cos(t);
 y = R*sin(t); 
 
 %% Line
-for i = 1:nodeArch.numNode
-    if(nodeArch.node(i).parent)
+locAlive = find(~nodeArch.dead);
+for i = locAlive
+%     if(nodeArch.node(i).parent)
        j = nodeArch.node(i).parent;
-       plot([nodeArch.node(i).x nodeArch.node(j).x],[nodeArch.node(i).y nodeArch.node(j).y],...
-           	'Color', color1);
-    end
+       plot([nodeArch.node(i).x j.x],[nodeArch.node(i).y j.y],...
+           	'k');
+%     end
 end
 
 %% Sensors
