@@ -17,24 +17,24 @@ x = R*cos(t);
 y = R*sin(t); 
 
 %% Line
-locAlive = find(~nodeArch.dead);
+locAlive = find(~clusterModel.nodeArch.dead);
 for i = locAlive
 %     if(nodeArch.node(i).parent)
        j = clusterModel.nodeArch.node(i).parent;
-       plot([nodeArch.node(i).x j.x],[nodeArch.node(i).y j.y],...
+       plot([clusterModel.nodeArch.node(i).x j.x],[clusterModel.nodeArch.node(i).y j.y],...
            	'k');
 %     end
 end
 
 %% Sensors
-for i = 1:nodeArch.numNode
-    if(strcmp(nodeArch.node(i).type, 'C'))
+for i = 1:init_nodeArch.numNode
+    if(strcmp(clusterModel.nodeArch.node(i).type, 'C'))
        % circle
        % plot(x+nodeArch.nodesLoc(i, 1),y+nodeArch.nodesLoc(i, 2),'k:') 
-       plot(nodeArch.nodesLoc(i, 1), nodeArch.nodesLoc(i, 2),...
+       plot(clusterModel.nodeArch.nodesLoc(i, 1), clusterModel.nodeArch.nodesLoc(i, 2),...
            'r.', 'MarkerSize',15);
     else
-       plot(nodeArch.nodesLoc(i, 1), nodeArch.nodesLoc(i, 2),...
+       plot(clusterModel.nodeArch.nodesLoc(i, 1), clusterModel.nodeArch.nodesLoc(i, 2),...
            'b.', 'MarkerSize',15);
     end
 end

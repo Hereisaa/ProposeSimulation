@@ -1,13 +1,11 @@
-% Main
-%% Parameter
+%% Main
 clc, clear all, close all
+%% Parameter
 numNodes   = 300;  % number of nodes
 Length     = 300;  % network length
-Width      = 300;  %    "    width
-% sinkX    = Length / 2;
-% sinkY    = Width / 2;
-sinkX      = 150;
-sinkY      = 150;
+Width      = 300;  % network width
+sinkX    = Length / 2;
+sinkY    = Width / 2;
 initEnergy  = 0.5;
 transEnergy = 50*0.000000001;
 recEnergy   = 50*0.000000001;
@@ -18,16 +16,17 @@ round       = 99999;
 packetLength    = 6400;
 ctrPacketLength = 200;
 p        = 0.1; % ratio of number of CH (default)
-d0       = 87;   % distance threshold
-T1       = 100;  % canopy.m threshold
-T2       = 87;   %     "        "
+d0       = 87;  % tx distance threshold
+T1       = 100; % canopy threshold
+T2       = 87;  % canopy threshold
 
-% (Length, Width, sinkX, sinkY, initEnergy, transEnergy, recEnergy, fsEnergy, mpEnergy, aggrEnergy)
+
 netArch       = newNetwork(Length, Width, sinkX, sinkY...
                            , initEnergy, transEnergy, recEnergy, fsEnergy, mpEnergy, aggrEnergy);
+                % (Length, Width, sinkX, sinkY, initEnergy, transEnergy, recEnergy, fsEnergy, mpEnergy, aggrEnergy)
 roundArch     = newRound(round, packetLength, ctrPacketLength);
 init_nodeArch = newNodes(netArch, numNodes);
-nodeArch      = init_nodeArch;     % node's arch for LEACH
+nodeArch      = init_nodeArch; % node's arch for LEACH
 p_nodeArch = init_nodeArch; % node's arch for Proposed
 
 
@@ -138,9 +137,8 @@ p_clusterModel.nodeArch = p_nodeArch;
 p_clusterModel.numCluster = noOfk;
 p_clusterModel.clusterNode = p_clusterNode;
 
-
-
 plot_kmeans
+
 par = struct;
 for round = 1:roundArch.numRound
 % for round = 1:500
@@ -150,6 +148,7 @@ for round = 1:roundArch.numRound
         if p_clusterModel.nodeArch.node(i).energy <= 0
             p_clusterModel.nodeArch.node(i).type = 'D';
             p_clusterModel.nodeArch.dead(i) = 1;
+            p_clusterModel.nodeArch.parent = [];
         else
 %             p_clusterModel.nodeArch.node(i).type = 'N';
 %             p_clusterModel.nodeArch.node(i).parent = [];
@@ -183,7 +182,7 @@ MaxSRN = 0;
 
 %% LEACH
 % par = struct;
-
+FND = 1; HND = 1; AND = 1;
 for r = 1:roundArch.numRound
 %     fprintf('[LEACH] round = %d.\n',round);
 
@@ -205,9 +204,26 @@ for r = 1:roundArch.numRound
     nodeArch = clusterModel.nodeArch;
 %     par = plotResults(clusterModel, round, par, netArch);
     
-    if clusterModel.nodeArch.numDead > 0 % nodeArch.numNode
+    
+    if (clusterModel.nodeArch.numDead >= 1) & FND % FND
         fprintf('[LEACH] FND round = %d.\n', r);
-        break;
+        locAlive = find(~clusterModel.nodeArch.dead);
+        for i = 1:init_nodeArch.numNode
+            if ( clusterModel.nodeArch.node(i).type == 'D' )  
+                fprintf('[LEACH] FND node = %f,%f. id =%d\n', clusterModel.nodeArch.node(i).x, clusterModel.nodeArch.node(i).y, i);
+            end
+        end        
+        FND = 0;
+        break
+    end
+    if (clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) & HND % HND
+        fprintf('[LEACH] HND round = %d.\n', r);
+        HND = 0;
+    end
+    if (clusterModel.nodeArch.numDead == init_nodeArch.numNode) & AND % AND
+        fprintf('[LEACH] AND round = %d.\n', r);
+        AND = 0;
+        break
     end
 end
 

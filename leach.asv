@@ -73,7 +73,7 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
 
     clusterNode.countCHs = countCHs;
     
-    % CM select parent
+    
     for i = locAlive
         if ( nodeArch.node(i).type ~= 'C' )
             if ( countCHs ~= 0 )
