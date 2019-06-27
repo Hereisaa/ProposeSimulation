@@ -20,7 +20,7 @@ y = R*sin(t);
 locAlive = find(~nodeArch.dead);
 for i = locAlive
 %     if(nodeArch.node(i).parent)
-       j = nodeArch.node(i).parent;
+       j = clusterModel.nodeArch.node(i).parent;
        plot([nodeArch.node(i).x j.x],[nodeArch.node(i).y j.y],...
            	'k');
 %     end

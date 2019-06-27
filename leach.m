@@ -1,4 +1,4 @@
-function [nodeArch, clusterNode] = leach(clusterModel, clusterFunParam)
+function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunParam)
 % Create the new node architecture using leach algorithm in beginning of each round. 
 % This function is called by newCluster.m
 %   Input:
@@ -9,6 +9,8 @@ function [nodeArch, clusterNode] = leach(clusterModel, clusterFunParam)
     
     nodeArch = clusterModel.nodeArch;
     netArch  = clusterModel.netArch;
+    numCluster = clusterModel.numCluster;
+
     r = clusterFunParam(1); % round no
     p = clusterModel.p;
     N = nodeArch.numNode; % number of nodes
@@ -19,6 +21,7 @@ function [nodeArch, clusterNode] = leach(clusterModel, clusterFunParam)
             nodeArch.node(i).G = 0; % not selected for CH
         end
     end
+
     for i = 1:nodeArch.numNode
         nodeArch.node(i).child = 0;
     end
@@ -32,6 +35,7 @@ function [nodeArch, clusterNode] = leach(clusterModel, clusterFunParam)
             nodeArch.dead(i) = 1;
         else
             nodeArch.node(i).type = 'N';
+            nodeArch.node(i).parent = [];
         end
     end
     nodeArch.numDead = sum(nodeArch.dead);
@@ -63,10 +67,22 @@ function [nodeArch, clusterNode] = leach(clusterModel, clusterFunParam)
             % Calculate distance of CH from BS
             clusterNode.distance(countCHs) = sqrt((xLoc - netArch.Sink.x)^2 + ...
                                                   (yLoc - netArch.Sink.y)^2);            
-        end % if
-    end % for
+        end 
+    end 
+
     clusterNode.countCHs = countCHs;
-    clusterModel.numCluster = clusterModel.numCluster + countCHs;
-    fprintf('[LEACH] number of CH (countCHs) = %d\n',countCHs);
-    fprintf('[LEACH] number of total CH (numCluster) = %d\n',clusterModel.numCluster);
+
+    for i = locAlive
+        if(nodeArch.node(i).type ~= 'C')
+            locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
+            [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHs, 1) - clusterNode.loc)' .^ 2)));
+            minDisCH =  clusterNode.no(loc);
+            nodeArch.node(i).parent = nodeArch.node(minDisCH);
+            nodeArch.node(minDisCH).child = nodeArch.node(minDisCH).child + 1;
+        end
+    end
+
+    numCluster = numCluster + countCHs;
+%     fprintf('[LEACH] number of CH (countCHs) = %d\n',countCHs);
+%     fprintf('[LEACH] number of total CH (numCluster) = %d\n',numCluster);
 end

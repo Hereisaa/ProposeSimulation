@@ -1,4 +1,4 @@
-function clusterModel = dissEnergyCH(clusterModel, roundArch)
+function Model = dissEnergyCH(Model, roundArch, netArch)
 % Calculation of Energy dissipated for CHs
 %   Input:
 %       clusterModel     architecture of nodes, network
@@ -11,17 +11,17 @@ function clusterModel = dissEnergyCH(clusterModel, roundArch)
 % Mohammad Hossein Homaei, Homaei@wsnlab.org & Homaei@wsnlab.ir
 % Ver 1. 10/2014
 
-    nodeArch = clusterModel.nodeArch;
-    netArch  = clusterModel.netArch;
-    cluster  = clusterModel.clusterNode;
+    nodeArch = Model.nodeArch;
+    cluster  = Model.clusterNode;
     
     d0 = sqrt(netArch.Energy.freeSpace / ...
               netArch.Energy.multiPath);
-    if cluster.countCHs == 0
+
+    if Model.clusterNode.countCHs == 0
         return
     end
-%     n = length(cluster.no); % Number of CHs
-    n = clusterModel.clusterNode.countCHs; % Number of CHs
+
+    n = Model.clusterNode.countCHs; % Number of CHs
     ETX = netArch.Energy.transfer;
     ERX = netArch.Energy.receive;
     EDA = netArch.Energy.aggr;
@@ -29,23 +29,24 @@ function clusterModel = dissEnergyCH(clusterModel, roundArch)
     Efs = netArch.Energy.freeSpace;
     packetLength = roundArch.packetLength;
     ctrPacketLength = roundArch.ctrPacketLength;
+
     for i = 1:n
-        chNo = cluster.no(i);
-        distance = cluster.distance(i); % to BS
-        energy = nodeArch.node(chNo).energy;
+        chNo = Model.clusterNode.no(i);
+        distance = Model.clusterNode.distance(i); % to BS
+        energy = Model.nodeArch.node(chNo).energy;
         % energy for transferring to BS
         if(distance >= d0)
-             nodeArch.node(chNo).energy = energy - ...
+             Model.nodeArch.node(chNo).energy = energy - ...
                  (ETX * packetLength + Emp * packetLength * (distance ^ 4));
         else
-             nodeArch.node(chNo).energy = energy - ...
+             Model.nodeArch.node(chNo).energy = energy - ...
                  (ETX * packetLength + Efs * packetLength * (distance ^ 2));
         end
         % energy for aggregation the data & Rx data
-        nodeArch.node(chNo).energy = energy - ...
-                 (packetLength * ERX * nodeArch.node(chNo).child + ...
-                 packetLength * EDA * nodeArch.node(chNo).child);
+        Model.nodeArch.node(chNo).energy = energy - ...
+                 (packetLength * ERX * Model.nodeArch.node(chNo).child + ...
+                 packetLength * EDA * Model.nodeArch.node(chNo).child);
     end
     
-    clusterModel.nodeArch = nodeArch;
+    Model.nodeArch = Model.nodeArch;
 end

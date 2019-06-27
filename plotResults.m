@@ -1,13 +1,14 @@
 % Mohammad Hossein Homaei, Homaei@wsnlab.org & Homaei@wsnlab.ir
 % Ver 1. 10/2014
-function par = plotResults(clusterModel, r, par)
+function par = plotResults(clusterModel, r, par, netArch)
     nodeArch = clusterModel.nodeArch;
-    netArch = clusterModel.netArch;
+    netArch = netArch;
     
     
     %%%%% number of packets sent from CHs to BS
     if r == 1
-        par.packetToBS(r) = clusterModel.numCluster;
+%         par.packetToBS(r) = clusterModel.numCluster;
+        par.packetToBS(r) = clusterModel.clusterNode.countCHs;
     else
         par.packetToBS(r) = par.packetToBS(r-1) + clusterModel.clusterNode.countCHs;
     end

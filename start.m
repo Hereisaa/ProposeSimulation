@@ -100,6 +100,14 @@ for i = 1:noOfk
     
     % becomes CH
     p_nodeArch.node(locAlive(index)).type = 'C';
+
+    p_clusterNode.no(i) = locAlive(index);
+    p_clusterNode.CID = p_nodeArch.node(locAlive(index)).CID;
+    p_clusterNode.loc(i, 1) = p_nodeArch.node(locAlive(index)).x;
+    p_clusterNode.loc(i, 2) = p_nodeArch.node(locAlive(index)).y;
+    p_clusterNode.distance(i) = sqrt((p_clusterNode.loc(i, 1) - netArch.Sink.x)^2 + (p_clusterNode.loc(i, 2) - netArch.Sink.y)^2);   
+    p_clusterNode.countCHs = noOfk;
+
     % temp
     centr_node(i) = p_nodeArch.node(locAlive(index));
     centr_node_index(i) = locAlive(index);
@@ -125,9 +133,42 @@ for i = 1:p_nodeArch.numNode
     end
 end
 
+p_clusterModel.clusterFun = 'proposed';
+p_clusterModel.nodeArch = p_nodeArch;
+p_clusterModel.numCluster = noOfk;
+p_clusterModel.clusterNode = p_clusterNode;
+
+
+
 plot_kmeans
+par = struct;
+for round = 1:roundArch.numRound
+% for round = 1:500
+%     fprintf('[Proposed] round = %d.\n',round);
+    locAlive = find(~p_clusterModel.nodeArch.dead);
+    for i = locAlive
+        if p_clusterModel.nodeArch.node(i).energy <= 0
+            p_clusterModel.nodeArch.node(i).type = 'D';
+            p_clusterModel.nodeArch.dead(i) = 1;
+        else
+%             p_clusterModel.nodeArch.node(i).type = 'N';
+%             p_clusterModel.nodeArch.node(i).parent = [];
+        end
+    end
+    p_clusterModel.nodeArch.numDead = sum(p_clusterModel.nodeArch.dead);
 
-
+    p_clusterModel = dissEnergyNonCH(p_clusterModel, roundArch, netArch);
+    p_clusterModel = dissEnergyCH(p_clusterModel, roundArch, netArch);
+    
+%     par = plotResults(p_clusterModel, round, par);
+    
+%     fprintf('[Proposed] number of DEAD node = %d.\n',p_clusterModel.nodeArch.numDead);
+    
+    if p_clusterModel.nodeArch.numDead > 0 % nodeArch.numNode
+        fprintf('[Proposed without rotation] FND round = %d.\n', round);
+        break;
+    end
+end
 
 MaxSCH = 0;
 MaxSRN = 0;
@@ -138,27 +179,38 @@ MaxSRN = 0;
 
 
 
-% 
-% 
-% %% LEACH
+
+
+%% LEACH
 % par = struct;
-% for round = 1:999999%roundArch.numRound
-% % for round = 1:500
+
+for r = 1:roundArch.numRound
 %     fprintf('[LEACH] round = %d.\n',round);
-%     clusterModel = newCluster(netArch, nodeArch, 'leach', round, p);
-%     clusterModel = dissEnergyNonCH(clusterModel, roundArch);
-%     clusterModel = dissEnergyCH(clusterModel, roundArch);
-%     nodeArch     = clusterModel.nodeArch; % new node architecture after select CHs
-%     
-%     par = plotResults(clusterModel, round, par);
-%     
-%     fprintf('[LEACH] number of DEAD node = %d.\n',nodeArch.numDead);
-%     
-%     if nodeArch.numDead == nodeArch.numNode
-%         break
+
+%     locAlive = find(~clusterModel.nodeArch.dead); % find the nodes that are alive
+%     for i = locAlive
+%         if clusterModel.nodeArch.node(i).energy <= 0
+%             clusterModel.nodeArch.node(i).type = 'D';
+%             clusterModel.nodeArch.dead(i) = 1;
+%         else
+% %             nodeArch.node(i).type = 'N';
+% %             nodeArch.node(i).parent = [];
+%         end
 %     end
-% end
-% 
-% plot_leach
+%     clusterModel.nodeArch.numDead = sum(clusterModel.nodeArch.dead);
+
+    clusterModel = newCluster(netArch, nodeArch, 'leach', r, p);
+    clusterModel = dissEnergyNonCH(clusterModel, roundArch, netArch);
+    clusterModel = dissEnergyCH(clusterModel, roundArch, netArch);
+    nodeArch = clusterModel.nodeArch;
+%     par = plotResults(clusterModel, round, par, netArch);
+    
+    if clusterModel.nodeArch.numDead > 0 % nodeArch.numNode
+        fprintf('[LEACH] FND round = %d.\n', r);
+        break;
+    end
+end
+
+plot_leach
 
 
