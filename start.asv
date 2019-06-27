@@ -1,7 +1,7 @@
 %% Main
 clc, clear all, close all
 %% Parameter
-numNodes   = 300;  % number of nodes
+numNodes   = 100;  % number of nodes
 Length     = 300;  % network length
 Width      = 300;  % network width
 sinkX    = Length / 2;
@@ -34,7 +34,7 @@ p_nodeArch = init_nodeArch; % node's arch for Proposed
 %% Proposed method
 
 %%%%%%% Layer Phase %%%%%%%
-notLayerZero = 1; % no of nodes that are not in Layer 0.
+notLayerZero = 0; % no of nodes that are not in Layer 0.
 d_th = d0;
 % Temp : all nodes \ {nodes in Layer 0}
 % Layer marking using threshold d_th for each layer
@@ -46,9 +46,9 @@ for i = 1:p_nodeArch.numNode
         else
             p_nodeArch.node(i).Layer = 1;
         end
-        Temp_xy(1, notLayerZero) = p_nodeArch.node(i).x;
-        Temp_xy(2, notLayerZero) = p_nodeArch.node(i).y;
-        Temp_index(1, notLayerZero) = i;
+        Temp_xy(1, notLayerZero + 1) = p_nodeArch.node(i).x;
+        Temp_xy(2, notLayerZero + 1) = p_nodeArch.node(i).y;
+        Temp_index(1, notLayerZero + 1) = i;
 %         Temp(inLayer0).x = proposed_nodeArch.node(i).x;
 %         Temp(inLayer0).y = proposed_nodeArch.node(i).y;
 %         Temp_index(1, inLayer0) = i;
@@ -57,9 +57,10 @@ for i = 1:p_nodeArch.numNode
         p_nodeArch.node(i).Layer = 0;
     end
 end
+% Temp_xy    : metrix 2xN [loc.x; loc.y] notLayerZero nodes
+% Temp_index : metrix 1XN [node id]
 
-
-%%%%%%% Reset (each round)%%%%%%%
+%%%%%%% Reset (each round) %%%%%%%
 for i= 1:p_nodeArch.numNode
     p_nodeArch.node(i).CID = -1;
     p_nodeArch.node(i).child = 0;
@@ -75,12 +76,14 @@ end
 % % fprintf('Proposed : number of k = %d.\n',noOfk);
 
 % Clustering using [K-means algo].   
-noOfk = length(canopy_centr_node);
+noOfk = k;
 [cluster, centr] = usingKmeans(Temp_xy, noOfk, canopy_centr_node);
 
 % mark cluster id
-for i = 1:notLayerZero-1
+for i = 1:notLayerZero
     locNode = [p_nodeArch.node(i).x, p_nodeArch.node(i).y];
+    % find minmum dis node to centr
+    % [dist, id]
     [minToCentr, index] = min(sqrt(sum((repmat(locNode, noOfk, 1) - (centr'))' .^ 2)));
     
     p_nodeArch.node(Temp_index(1,i)).CID = cluster(i); % CID = which cluster belongs to
@@ -89,13 +92,18 @@ end
 
 %%%%%%% CH & RN Selection Phase %%%%%%%
 locAlive = find(~p_nodeArch.dead);
+locAlive_loc = zeros(length(locAlive), 2);
 for i = 1:length(locAlive)
-    locNode_alive(i,1) = p_nodeArch.node(locAlive(i)).x;
-    locNode_alive(i,2) = p_nodeArch.node(locAlive(i)).y;
+    locAlive_loc(i,1) = p_nodeArch.node(locAlive(i)).x;
+    locAlive_loc(i,2) = p_nodeArch.node(locAlive(i)).y;
 end
+
+% assign who
+centr_node = zeros(1,noOfk);
+centr_node_index = zeros(1,noOfk);
 for i = 1:noOfk
-    locNode_centr = [centr(1,i), centr(2,i)];
-    [minToCentr, index] = min(sqrt(sum((repmat(locNode_centr, length(locAlive), 1) - locNode_alive)' .^ 2)));
+    centr_loc = [centr(1,i), centr(2,i)];
+    [minToCentr, index] = min(sqrt(sum((repmat(centr_loc, length(locAlive), 1) - locAlive_loc)' .^ 2)));
     
     % becomes CH
     p_nodeArch.node(locAlive(index)).type = 'C';
@@ -137,9 +145,10 @@ p_clusterModel.nodeArch = p_nodeArch;
 p_clusterModel.numCluster = noOfk;
 p_clusterModel.clusterNode = p_clusterNode;
 
-
-
 plot_kmeans
+
+
+%%%%%%% Transmission Phase %%%%%%%
 par = struct;
 for round = 1:roundArch.numRound
 % for round = 1:500
@@ -149,7 +158,7 @@ for round = 1:roundArch.numRound
         if p_clusterModel.nodeArch.node(i).energy <= 0
             p_clusterModel.nodeArch.node(i).type = 'D';
             p_clusterModel.nodeArch.dead(i) = 1;
-            p_clusterModel.nodeArch.parent = [];
+            p_clusterModel.nodeArch.node(i).parent = [];
         else
 %             p_clusterModel.nodeArch.node(i).type = 'N';
 %             p_clusterModel.nodeArch.node(i).parent = [];
@@ -166,6 +175,11 @@ for round = 1:roundArch.numRound
     
     if p_clusterModel.nodeArch.numDead > 0 % nodeArch.numNode
         fprintf('[Proposed without rotation] FND round = %d.\n', round);
+        for i = 1:init_nodeArch.numNode
+            if ( p_clusterModel.nodeArch.node(i).type == 'D' )  
+                fprintf('[Proposed] FND node = %f,%f. id =%d\n', p_clusterModel.nodeArch.node(i).x, p_clusterModel.nodeArch.node(i).y, i);
+            end
+        end
         break;
     end
 end
@@ -206,7 +220,7 @@ for r = 1:roundArch.numRound
 %     par = plotResults(clusterModel, round, par, netArch);
     
     
-    if (clusterModel.nodeArch.numDead >= 1) & FND % FND
+    if (clusterModel.nodeArch.numDead >= 1) && FND % FND
         fprintf('[LEACH] FND round = %d.\n', r);
         locAlive = find(~clusterModel.nodeArch.dead);
         for i = 1:init_nodeArch.numNode
@@ -217,11 +231,11 @@ for r = 1:roundArch.numRound
         FND = 0;
         break
     end
-    if (clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) & HND % HND
+    if (clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND % HND
         fprintf('[LEACH] HND round = %d.\n', r);
         HND = 0;
     end
-    if (clusterModel.nodeArch.numDead == init_nodeArch.numNode) & AND % AND
+    if (clusterModel.nodeArch.numDead == init_nodeArch.numNode) && AND % AND
         fprintf('[LEACH] AND round = %d.\n', r);
         AND = 0;
         break

@@ -9,7 +9,7 @@ color1 = '#00FFFF'; color1 = sscanf(color1(2:end),'%2x%2x%2x',[1 3])/255; %light
 color2 = '#6E6E6E'; color2 = sscanf(color2(2:end),'%2x%2x%2x',[1 3])/255; %light gray 
 color3 = '#BABABA'; color3 = sscanf(color3(2:end),'%2x%2x%2x',[1 3])/255; %light gray 
 
-%%
+%% Nodes
 for i = 1:p_nodeArch.numNode
     
     switch num2str(p_nodeArch.node(i).CID)
@@ -40,12 +40,15 @@ for i = 1:p_nodeArch.numNode
     end
     
     % Line
+    if(~isempty(p_nodeArch.node(i).parent))
+        j = p_nodeArch.node(i).parent;
+        plot([p_nodeArch.node(i).x j.x],[p_nodeArch.node(i).y j.y],...
+                'Color', color1);
+%       plot([proposed_nodeArch.node(i).x proposed_nodeArch.node(j).x],[proposed_nodeArch.node(i).y proposed_nodeArch.node(j).y],...
+%               'Color', color1);
+
+    end
     
-    j = p_nodeArch.node(i).parent;
-    plot([p_nodeArch.node(i).x j.x],[p_nodeArch.node(i).y j.y],...
-          'Color', color1);
-%     plot([proposed_nodeArch.node(i).x proposed_nodeArch.node(j).x],[proposed_nodeArch.node(i).y proposed_nodeArch.node(j).y],...
-%           'Color', color1);
     
     hold on
     
@@ -57,8 +60,8 @@ R = 87;
 x = R*cos(theta); 
 y = R*sin(theta); 
 for i = 1:length(centr)
-    plot(centr(1, i), centr(2, i),'k*', 'MarkerSize',8); 
-    plot(x + centr(1, i), y + centr(2, i),'Color', color2,'LineStyle',':');
+%     plot(centr(1, i), centr(2, i),'k*', 'MarkerSize',8); % centr loc
+    plot(x + centr_node(i).x, y + centr_node(i).y,'Color', color2,'LineStyle',':'); % nearest centr node range
 end
 
 %% BS and Layer

@@ -34,7 +34,7 @@ function Model = dissEnergyCH(Model, roundArch, netArch)
         chNo = Model.clusterNode.no(i);
         distance = Model.clusterNode.distance(i); % to BS
         energy = Model.nodeArch.node(chNo).energy;
-        % energy for transferring to BS
+        % energy for transferring
         if(distance >= d0)
              Model.nodeArch.node(chNo).energy = energy - ...
                  (ETX * packetLength + Emp * packetLength * (distance ^ 4));
@@ -42,10 +42,10 @@ function Model = dissEnergyCH(Model, roundArch, netArch)
              Model.nodeArch.node(chNo).energy = energy - ...
                  (ETX * packetLength + Efs * packetLength * (distance ^ 2));
         end
-        % energy for aggregation the data & Rx data
+        % energy for aggregation & Rx 
         Model.nodeArch.node(chNo).energy = energy - ...
                  (packetLength * ERX * Model.nodeArch.node(chNo).child + ...
-                 packetLength * EDA * Model.nodeArch.node(chNo).child);
+                 packetLength * EDA * (Model.nodeArch.node(chNo).child + 1));
     end
     
     Model.nodeArch = Model.nodeArch;
