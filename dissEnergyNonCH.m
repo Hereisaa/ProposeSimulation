@@ -36,7 +36,8 @@ function Model = dissEnergyNonCH(Model, roundArch, netArch)
             % calculate distance to each CH and find smallest distance
             if countCHs == 0
                 Model.nodeArch.node(i).parent = netArch.Sink;
-                Dist = calDistance(Model.nodeArch.node(i).x, Model.nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
+                Dist = calDistance(Model.nodeArch.node(i).x, Model.nodeArch.node(i).y,...
+                        netArch.Sink.x, netArch.Sink.y);
                 
                 if (Dist >= d0)
                     Model.nodeArch.node(i).energy = Model.nodeArch.node(i).energy - ...
@@ -46,7 +47,8 @@ function Model = dissEnergyNonCH(Model, roundArch, netArch)
                         (packetLength * ETX + Efs * packetLength * (Dist ^ 2));
                 end
             else
-                Dist = calDistance(Model.nodeArch.node(i).x, Model.nodeArch.node(i).y, Model.nodeArch.node(i).parent.x, Model.nodeArch.node(i).parent.y);
+                Dist = calDistance(Model.nodeArch.node(i).x, Model.nodeArch.node(i).y,...
+                        Model.nodeArch.node(i).parent.x, Model.nodeArch.node(i).parent.y);
                 
                 if (Dist >= d0)
                     Model.nodeArch.node(i).energy = Model.nodeArch.node(i).energy - ...

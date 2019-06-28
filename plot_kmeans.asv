@@ -12,6 +12,12 @@ color3 = '#BABABA'; color3 = sscanf(color3(2:end),'%2x%2x%2x',[1 3])/255; %light
 %% Nodes
 p_nodeArch = p_clusterModel.nodeArch;
 for i = 1:p_nodeArch.numNode
+    
+    if i == 55
+        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'k.', 'MarkerSize',12);
+        continue
+    end
+    
     switch num2str(p_nodeArch.node(i).CID)
         case {'1'}
             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',12);
