@@ -1,5 +1,7 @@
 function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, netArch )
 % ClusterHead and RelayNode selection phase
+    maxSCH = zeros(1, noOfk);
+    maxSRN = zeros(1, noOfk);
     nodeArch = Model.nodeArch;
     
     locAlive_loc = zeros(length(locAlive), 2);

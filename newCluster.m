@@ -28,10 +28,10 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
 %     end
 
     % run leach.m
-    [nodeArch, clusterNode, numCluster] = feval(clusterFun, clusterModel, clusterFunParam); % execute the cluster function
+    [nodeArch, clusterNode, numCluster] = feval(clusterFun, clusterModel, clusterFunParam);
     
     
     clusterModel.nodeArch = nodeArch;       % new architecture of nodes
-    clusterModel.clusterNode = clusterNode; % the CHs
-    clusterModel.numCluster = numCluster;
+    clusterModel.clusterNode = clusterNode; % CHs
+    clusterModel.numCluster = numCluster; % number of the CHs
 end

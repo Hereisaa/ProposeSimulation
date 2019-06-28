@@ -1,5 +1,3 @@
-% Mohammad Hossein Homaei, Homaei@wsnlab.org & Homaei@wsnlab.ir
-% Ver 1. 10/2014
 function par = plotResults(clusterModel, r, par, netArch)
     nodeArch = clusterModel.nodeArch;
     netArch = netArch;

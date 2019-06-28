@@ -2,7 +2,7 @@
 %%
 figure(3), 
 grid on
-
+hold on
 %% Color para
 % Convert color code to 1-by-3 RGB array (0~1 each) [must do this way, if MATLAB version is R2018b or older]
 color1 = '#00FFFF'; color1 = sscanf(color1(2:end),'%2x%2x%2x',[1 3])/255; %light blue
@@ -12,6 +12,7 @@ color3 = '#BABABA'; color3 = sscanf(color3(2:end),'%2x%2x%2x',[1 3])/255; %light
 %% Nodes
 p_nodeArch = p_clusterModel.nodeArch;
 for i = 1:p_nodeArch.numNode
+        
     switch num2str(p_nodeArch.node(i).CID)
         case {'1'}
             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',12);
@@ -49,10 +50,6 @@ for i = 1:p_nodeArch.numNode
 %               'Color', color1);
 
     end
-    
-    
-    hold on
-    
 end
 
 %% range (d0)
@@ -61,7 +58,7 @@ R = 87;
 x = R*cos(theta); 
 y = R*sin(theta); 
 for i = 1:length(centr)
-%     plot(centr(1, i), centr(2, i),'k*', 'MarkerSize',8); % centr loc
+%      plot(centr(1, i), centr(2, i),'k*', 'MarkerSize',8); % centr loc
     plot(x + centr_node(i).x, y + centr_node(i).y,'Color', color2,'LineStyle',':'); % nearest centr node range i.e.clusterNode
 end
 
@@ -70,9 +67,9 @@ plot(netArch.Sink.x, netArch.Sink.y,'o', ...
     'MarkerSize',8, 'MarkerFaceColor', 'g');
 % Layer 1 near BS 
 plot(x + netArch.Sink.x, y + netArch.Sink.y,'Color', color3,'LineStyle',':');
-% % Layer 2 
+% Layer 2 
 plot(x*2 + netArch.Sink.x, y*2 + netArch.Sink.y,'Color', color3,'LineStyle',':');
-% % Layer 3 
+% Layer 3 
 plot(x*3 + netArch.Sink.x, y*3 + netArch.Sink.y,'Color', color3,'LineStyle',':');
 
 hold off

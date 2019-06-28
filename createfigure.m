@@ -1,5 +1,3 @@
-% Mohammad Hossein Homaei, Homaei@wsnlab.org & Homaei@wsnlab.ir
-% Ver 1. 10/2014
 function createfigure(X1, Y1, Y2, Y3)
 %CREATEFIGURE(X1,Y1,Y2,Y3)
 %  X1:  vector of x data
