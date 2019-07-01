@@ -1,4 +1,4 @@
-function Model = dissEnergyCH(Model, roundArch, netArch)
+function Model = dissEnergyRN(Model, roundArch, netArch)
 % Calculation of Energy dissipated for CHs
 %   Input:
 %       clusterModel     architecture of nodes, network

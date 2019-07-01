@@ -19,8 +19,8 @@ function Model = dissEnergyCM(Model, roundArch, netArch)
     d0 = sqrt(netArch.Energy.freeSpace / ...
               netArch.Energy.multiPath);
     ETX = netArch.Energy.transfer;
-    ERX = netArch.Energy.receive;
-    EDA = netArch.Energy.aggr;
+%     ERX = netArch.Energy.receive;
+%     EDA = netArch.Energy.aggr;
     Emp = netArch.Energy.multiPath;
     Efs = netArch.Energy.freeSpace;
     packetLength = roundArch.packetLength;
@@ -30,9 +30,7 @@ function Model = dissEnergyCM(Model, roundArch, netArch)
     for i = locAlive % search in alive nodes
         %find Associated CH for each normal node
         if (strcmp(Model.nodeArch.node(i).type, 'N') &&  Model.nodeArch.node(i).energy > 0)
-
             countCHs = Model.numCluster; % Number of CHs
-            
             % calculate distance to each CH and find smallest distance
             if countCHs == 0
                 Model.nodeArch.node(i).parent = netArch.Sink;
@@ -57,33 +55,6 @@ function Model = dissEnergyCM(Model, roundArch, netArch)
                     Model.nodeArch.node(i).energy = Model.nodeArch.node(i).energy - ...
                         (packetLength * ETX + Efs * packetLength * (Dist ^ 2));
                 end
-%                 if (strcmp(Model.clusterFun,'leach')) % leach
-%                     % [min , index]
-%                     [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHs, 1) - cluster.loc)' .^ 2)));
-%                     minDisCH =  cluster.no(loc);
-% 
-%                     % assign to nearest CH
-%                     nodeArch.node(i).parent = nodeArch.node(minDisCH);
-%                     nodeArch.node(minDisCH).child = nodeArch.node(minDisCH).child + 1;
-% 
-%                     if (minDis >= d0)
-%                         nodeArch.node(i).energy = nodeArch.node(i).energy - ...
-%                             (packetLength * ETX + Emp * packetLength * (minDis ^ 4));
-%                     else
-%                         nodeArch.node(i).energy = nodeArch.node(i).energy - ...
-%                             (packetLength * ETX + Efs * packetLength * (minDis ^ 2));
-%                     end
-%                 else % proposed
-%                     Dist = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, nodeArch.node(i).parent.x, nodeArch.node(i).parent.y);
-%                 
-%                     if (Dist >= d0)
-%                         nodeArch.node(i).energy = nodeArch.node(i).energy - ...
-%                             (packetLength * ETX + Emp * packetLength * (Dist ^ 4));
-%                     else
-%                         nodeArch.node(i).energy = nodeArch.node(i).energy - ...
-%                             (packetLength * ETX + Efs * packetLength * (Dist ^ 2));
-%                     end
-%                 end
             end
         end % if
     end % for

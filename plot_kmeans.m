@@ -64,24 +64,23 @@ for i = 1:p_nodeArch.init_numNodes
 end
 
 %% range (d0)
-theta = 0:pi/30:2*pi; 
-R = 87;
-x = R*cos(theta); 
-y = R*sin(theta); 
-for i=1:p_nodeArch.init_numNodes
-    if p_nodeArch.node(i).type == 'C'
-         plot(x +p_nodeArch.node(i).x, y + p_nodeArch.node(i).y,'Color', color2,'LineStyle',':'); % nearest centr node range i.e.clusterNode
-    end
-end
+% theta = 0:pi/30:2*pi; 
+% R = 87;
+% x = R*cos(theta); 
+% y = R*sin(theta); 
+% for i=1:p_nodeArch.init_numNodes
+%     if p_nodeArch.node(i).type == 'C'
+%          plot(x +p_nodeArch.node(i).x, y + p_nodeArch.node(i).y,'Color', color2,'LineStyle',':'); % nearest centr node range i.e.clusterNode
+%     end
+% end
 
 %% BS and Layer
-plot(netArch.Sink.x, netArch.Sink.y,'o', ...
-    'MarkerSize',8, 'MarkerFaceColor', 'g');
-% Layer 1 near BS 
-plot(x + netArch.Sink.x, y + netArch.Sink.y,'Color', color3,'LineStyle',':');
-% Layer 2 
-plot(x*2 + netArch.Sink.x, y*2 + netArch.Sink.y,'Color', color3,'LineStyle',':');
-% Layer 3 
-plot(x*3 + netArch.Sink.x, y*3 + netArch.Sink.y,'Color', color3,'LineStyle',':');
+plot(netArch.Sink.x, netArch.Sink.y,'o','MarkerSize',8, 'MarkerFaceColor', 'g');
+% % Layer 1 near BS 
+% plot(x + netArch.Sink.x, y + netArch.Sink.y,'Color', color3,'LineStyle',':');
+% % Layer 2 
+% plot(x*2 + netArch.Sink.x, y*2 + netArch.Sink.y,'Color', color3,'LineStyle',':');
+% % Layer 3 
+% plot(x*3 + netArch.Sink.x, y*3 + netArch.Sink.y,'Color', color3,'LineStyle',':');
 
 hold off
