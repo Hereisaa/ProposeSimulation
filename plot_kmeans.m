@@ -4,6 +4,8 @@ figure(3),
 grid on
 hold on
 
+p_nodeArch = p_clusterModel.nodeArch;
+
 %% Color para
 % Convert color code to 1-by-3 RGB array (0~1 each) [must do this way, if MATLAB version is R2018b or older]
 color1 = '#00FFFF'; color1 = sscanf(color1(2:end),'%2x%2x%2x',[1 3])/255; %light blue
@@ -13,25 +15,24 @@ color3 = '#BABABA'; color3 = sscanf(color3(2:end),'%2x%2x%2x',[1 3])/255; %light
 %% FOR DEBUG
 % plot(p_clusterModel.nodeArch.nodesLoc(222, 1), p_clusterModel.nodeArch.nodesLoc(222, 2),'k*', 'MarkerSize',12); 
 
-%% Nodes
-p_nodeArch = p_clusterModel.nodeArch;
+%% Line
 for i = 1:p_nodeArch.init_numNodes
-
-    % Line
     if(~isempty(p_nodeArch.node(i).parent))
         j = p_nodeArch.node(i).parent;
         plot([p_nodeArch.node(i).x j.x],[p_nodeArch.node(i).y j.y],'Color', color2);
     end
+end
 
-    % Node
+%% Nodes
+for i = 1:p_nodeArch.init_numNodes
     if p_nodeArch.node(i).type == 'C'
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',12); 
+        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',18); 
     elseif p_nodeArch.node(i).type == 'R'
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'b.', 'MarkerSize',12); 
+        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'b.', 'MarkerSize',18); 
     elseif p_nodeArch.node(i).type == 'N'
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'k.', 'MarkerSize',12); 
+        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'k.', 'MarkerSize',18); 
     else
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'Color', color2,'Marker','.', 'MarkerSize',12); 
+        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'Color', color2,'Marker','.', 'MarkerSize',18); 
     end
     
 %     % cluster
@@ -62,6 +63,7 @@ for i = 1:p_nodeArch.init_numNodes
 %             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'k.', 'MarkerSize',12);  
 %     end
 end
+
 
 %% range (d0)
 % theta = 0:pi/30:2*pi; 

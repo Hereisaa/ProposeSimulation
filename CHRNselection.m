@@ -143,6 +143,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     end %for
 
     Model.clusterNode = clusterNode;
+    Model.relayNode = relayNode;
     Model.nodeArch = nodeArch;
 end
 

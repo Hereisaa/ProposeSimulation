@@ -1,15 +1,9 @@
 function Model = dissEnergyCM(Model, roundArch, netArch)
 % Calculation of Energy dissipated for CHs
 %   Input:
-%       clusterModel     architecture of nodes, network
+%       Model            architecture of nodes
 %       roundArch        round Architecture
-%   Example:
-%       r = 10; % round no = 10
-%       clusterModel = newCluster(netArch, nodeArch, 'def', r);
-%       clusterModel = dissEnergyCH(clusterModel);
-%
-% Mohammad Hossein Homaei, Homaei@wsnlab.org & Homaei@wsnlab.ir
-% Ver 1. 10/2014
+%       netArch          network Architecture
     
     nodeArch = Model.nodeArch;
     cluster  = Model.clusterNode;

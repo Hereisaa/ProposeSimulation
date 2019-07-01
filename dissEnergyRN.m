@@ -1,27 +1,21 @@
 function Model = dissEnergyRN(Model, roundArch, netArch)
 % Calculation of Energy dissipated for CHs
 %   Input:
-%       clusterModel     architecture of nodes, network
+%       Model            architecture of nodes
 %       roundArch        round Architecture
-%   Example:
-%       r = 10; % round no = 10
-%       clusterModel = newCluster(netArch, nodeArch, 'def', r);
-%       clusterModel = dissEnergyCH(clusterModel);
-%
-% Mohammad Hossein Homaei, Homaei@wsnlab.org & Homaei@wsnlab.ir
-% Ver 1. 10/2014
+%       netArch          network Architecture
 
     nodeArch = Model.nodeArch;
-    cluster  = Model.clusterNode;
+    cluster  = Model.relayNode;
     
     d0 = sqrt(netArch.Energy.freeSpace / ...
               netArch.Energy.multiPath);
 
-    if Model.clusterNode.countCHs == 0
+    if Model.clusterNode.countRNs == 0
         return
     end
 
-    n = Model.clusterNode.countCHs; % Number of CHs
+    n = Model.clusterNode.countRNs; % Number of RNs
     ETX = netArch.Energy.transfer;
     ERX = netArch.Energy.receive;
     EDA = netArch.Energy.aggr;
@@ -31,21 +25,25 @@ function Model = dissEnergyRN(Model, roundArch, netArch)
     ctrPacketLength = roundArch.ctrPacketLength;
 
     for i = 1:n
-        chNo = Model.clusterNode.no(i);
-        distance = Model.clusterNode.distance(i); % to BS
-        energy = Model.nodeArch.node(chNo).energy;
-        % energy for transferring
-        if(distance >= d0)
-             Model.nodeArch.node(chNo).energy = energy - ...
-                 (ETX * packetLength + Emp * packetLength * (distance ^ 4));
-        else
-             Model.nodeArch.node(chNo).energy = energy - ...
-                 (ETX * packetLength + Efs * packetLength * (distance ^ 2));
-        end
+        rnNo = Model.relayNode.no(i);
+%         Dist = Model.clusterNode.distance(i); % to BS
+        Dist = calDistance(Model.nodeArch.node(rnNo).x, Model.nodeArch.node(rnNo).y,...
+                        Model.nodeArch.node(rnNo).parent.x, Model.nodeArch.node(rnNo).parent.y);
+        energy = Model.nodeArch.node(rnNo).energy;
+
         % energy for aggregation & Rx 
-        Model.nodeArch.node(chNo).energy = energy - ...
-                 (packetLength * ERX * Model.nodeArch.node(chNo).child + ...
-                 packetLength * EDA * (Model.nodeArch.node(chNo).child + 1));
+        energy = energy - (packetLength * ERX * Model.nodeArch.node(rnNo).child + ...
+                 packetLength * EDA * (Model.nodeArch.node(rnNo).child + 1));
+
+        % energy for transferring
+        if(Dist >= d0)
+             Model.nodeArch.node(rnNo).energy = energy - ...
+                 (ETX * packetLength + Emp * packetLength * (Dist ^ 4));
+        else
+             Model.nodeArch.node(rnNo).energy = energy - ...
+                 (ETX * packetLength + Efs * packetLength * (Dist ^ 2));
+        end
+        
     end
     
     Model.nodeArch = Model.nodeArch;

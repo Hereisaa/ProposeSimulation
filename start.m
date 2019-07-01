@@ -2,12 +2,12 @@
 clc, clear all, close all
 %% PARAMETER
 numNodes   = 100;  % number of nodes
-Length     = 100;  % network length
-Width      = 100;  % network width
+Length     = 300;  % network length
+Width      = 300;  % network width
 d0       = 87;  % tx distance threshold
 % sinkX    = Length / 2;
 % sinkY    = Width / 2;
-sinkX    = 50;
+sinkX    = 150;
 sinkY    = 150;
 
 initEnergy  = 0.5;
@@ -168,7 +168,6 @@ for r = 1:roundArch.numRound
     if (clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND % HND
         fprintf('[LEACH] ***HND*** round = %d.\n', r);
         HND = 0;
-        
         plot_leach
     end
     if (clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND % LND

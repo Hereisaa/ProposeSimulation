@@ -1,15 +1,10 @@
 function Model = dissEnergyCH(Model, roundArch, netArch)
 % Calculation of Energy dissipated for CHs
 %   Input:
-%       clusterModel     architecture of nodes, network
+%       Model            architecture of nodes
 %       roundArch        round Architecture
-%   Example:
-%       r = 10; % round no = 10
-%       clusterModel = newCluster(netArch, nodeArch, 'def', r);
-%       clusterModel = dissEnergyCH(clusterModel);
-%
-% Mohammad Hossein Homaei, Homaei@wsnlab.org & Homaei@wsnlab.ir
-% Ver 1. 10/2014
+%       netArch          network Architecture
+
 
     nodeArch = Model.nodeArch;
     cluster  = Model.clusterNode;
@@ -32,7 +27,10 @@ function Model = dissEnergyCH(Model, roundArch, netArch)
 
     for i = 1:n
         chNo = Model.clusterNode.no(i);
-        distance = Model.clusterNode.distance(i); % to BS
+%         Dist = Model.clusterNode.distance(i); % to BS
+        Dist = calDistance(Model.nodeArch.node(chNo).x, Model.nodeArch.node(chNo).y,...
+                        Model.nodeArch.node(chNo).parent.x, Model.nodeArch.node(chNo).parent.y);
+
         energy = Model.nodeArch.node(chNo).energy;
 
         % energy for aggregation & Rx 
@@ -40,12 +38,12 @@ function Model = dissEnergyCH(Model, roundArch, netArch)
                  packetLength * EDA * (Model.nodeArch.node(chNo).child + 1));
 
         % energy for transferring
-        if(distance >= d0)
+        if(Dist >= d0)
              Model.nodeArch.node(chNo).energy = energy - ...
-                 (ETX * packetLength + Emp * packetLength * (distance ^ 4));
+                 (ETX * packetLength + Emp * packetLength * (Dist ^ 4));
         else
              Model.nodeArch.node(chNo).energy = energy - ...
-                 (ETX * packetLength + Efs * packetLength * (distance ^ 2));
+                 (ETX * packetLength + Efs * packetLength * (Dist ^ 2));
         end
     end
     Model.nodeArch = Model.nodeArch;
