@@ -1,4 +1,4 @@
-function Model = dissEnergyNonCH(Model, roundArch, netArch)
+function Model = dissEnergyCM(Model, roundArch, netArch)
 % Calculation of Energy dissipated for CHs
 %   Input:
 %       clusterModel     architecture of nodes, network
@@ -31,7 +31,7 @@ function Model = dissEnergyNonCH(Model, roundArch, netArch)
         %find Associated CH for each normal node
         if (strcmp(Model.nodeArch.node(i).type, 'N') &&  Model.nodeArch.node(i).energy > 0)
 
-            countCHs = Model.clusterNode.countCHs; % Number of CHs
+            countCHs = Model.numCluster; % Number of CHs
             
             % calculate distance to each CH and find smallest distance
             if countCHs == 0
@@ -84,7 +84,6 @@ function Model = dissEnergyNonCH(Model, roundArch, netArch)
 %                             (packetLength * ETX + Efs * packetLength * (Dist ^ 2));
 %                     end
 %                 end
-
             end
         end % if
     end % for

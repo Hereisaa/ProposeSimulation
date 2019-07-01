@@ -23,6 +23,8 @@ function nodeArch = newNodes(netArch, numNode)
         numNode = 100;
     end
     for i = 1:numNode
+        % node id
+        nodeArch.node(i).id     =   i;
         % x coordination of node
         nodeArch.node(i).x      =   rand * netArch.Yard.Length;
         nodeArch.nodesLoc(i, 1) =   nodeArch.node(i).x;

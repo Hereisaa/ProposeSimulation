@@ -1,6 +1,7 @@
-function [ Model, noOfk, centr ] = Clustering( Model, notLayerZero, Temp_xy, Temp_index, T1, T2 )
+function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Temp_xy, Temp_index, T1, T2 )
 %Clustering Phase
     nodeArch = Model.nodeArch;
+    
     % Determine number of k using [Canopy algo].
     [ k, canopy_centr, canopy_centr_node ] = usingCanopy( Temp_xy, T1, T2 );
     % plot_canopy
@@ -23,8 +24,20 @@ function [ Model, noOfk, centr ] = Clustering( Model, notLayerZero, Temp_xy, Tem
 
         nodeArch.node(Temp_index(1,i)).CID = cluster(i); % CID = which cluster belongs to
     end
+    
 
+    % cluster-member relation array     use find(clusterMember(noOfk,:))
+    clusterMember = zeros(1, nodeArch.init_numNodes);
+    for i = 1:noOfk
+        for j = 1:nodeArch.init_numNodes
+            if nodeArch.node(j).CID == i
+               clusterMember(i,j) = 1;
+            end
+        end
+    end
+    
     Model.numCluster = noOfk;
     Model.nodeArch = nodeArch;
+    Model.clusterMember = clusterMember;
 end
 

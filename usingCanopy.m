@@ -2,7 +2,7 @@ function [ k, canopy_centr, canopy_centr_node ] = usingCanopy( S, T1, T2 )
 %Canopy algorithm
     Omega = S; % Temp_xy is a 2 by n metrix
     size_S = size(S, 2); 
-    fprintf('[Canopy] size of S = %d.\n',size_S);
+%     fprintf('[Canopy] size of S = %d.\n',size_S);
     k = 0; % size of C
     
     while size(Omega, 2)~=0
@@ -40,7 +40,7 @@ function [ k, canopy_centr, canopy_centr_node ] = usingCanopy( S, T1, T2 )
         Theta_star(1,1) = Theta_star(1,1)/size(Theta, 2);
         Theta_star(2,1) = Theta_star(2,1)/size(Theta, 2);
         
-        C(:,k) = Theta_star(:,1);
+        C(:,k)  = Theta_star(:,1);
         C2(:,k) = Tau(:,1);
         
 %         clear Tau Theta Theta_star 
@@ -49,5 +49,5 @@ function [ k, canopy_centr, canopy_centr_node ] = usingCanopy( S, T1, T2 )
 %     C
     canopy_centr_node = C2;
 %     C2
-    fprintf('[Canopy] number of canopies = %d.\n',k);
+%     fprintf('[Canopy] number of canopies = %d.\n',k);
 end
