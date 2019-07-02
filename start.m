@@ -1,14 +1,14 @@
 %% MAIN
 clc, clear all, close all
 %% PARAMETER
-numNodes   = 100;  % number of nodes
+numNodes   = 150;  % number of nodes
 Length     = 300;  % network length
 Width      = 300;  % network width
 d0       = 87;  % tx distance threshold
-% sinkX    = Length / 2;
-% sinkY    = Width / 2;
-sinkX    = 150;
-sinkY    = 150;
+sinkX    = Length / 2;
+sinkY    = Width / 2;
+% sinkX    = 150;
+% sinkY    = 150;
 
 initEnergy  = 0.5;
 transEnergy = 50*0.000000001;
@@ -36,6 +36,7 @@ T2 = 87;
 FND = 1; HND = 1; LND = 1;
 % par = struct;
 for r = 1:roundArch.numRound  
+    p_clusterModel.r = r;
     Temp_xy = [];
     Temp_index = [];
     notLayerZero = 0;
@@ -86,6 +87,7 @@ for r = 1:roundArch.numRound
     end
     avgEnergy = avgEnergy / length(locAlive);
     
+    % check dead node
     for i = locAlive
         if p_clusterModel.nodeArch.node(i).energy <= 0
             p_clusterModel.nodeArch.node(i).type = 'D';
@@ -129,7 +131,7 @@ for r = 1:roundArch.numRound
     end
     if (p_clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND
         fprintf('[Proposed] ***LND*** round = %d.\n', r);
-        AND = 0;
+        LND = 0;
         break
     end
     
@@ -172,7 +174,7 @@ for r = 1:roundArch.numRound
     end
     if (clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND % LND
         fprintf('[LEACH] ***LND*** round = %d.\n', r);
-        AND = 0;
+        LND = 0;
         break
     end
 end

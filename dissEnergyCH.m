@@ -27,6 +27,7 @@ function Model = dissEnergyCH(Model, roundArch, netArch)
 
     for i = 1:n
         chNo = Model.clusterNode.no(i);
+
 %         Dist = Model.clusterNode.distance(i); % to BS
         Dist = calDistance(Model.nodeArch.node(chNo).x, Model.nodeArch.node(chNo).y,...
                         Model.nodeArch.node(chNo).parent.x, Model.nodeArch.node(chNo).parent.y);
