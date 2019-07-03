@@ -124,7 +124,6 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
         else
             % RN -> RN / sink
             if strcmp(nodeArch.node(i).type,'R') 
-                c=0;
                 relayLayer = nodeArch.node(i).Layer;
                 while (1)
                     relayLayer = relayLayer - 1;
@@ -146,7 +145,6 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
                         end
                         
                         if isempty(locM)
-                           
                            continue 
                         end
                         
@@ -160,7 +158,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
                         if toRN < toBS
                             nodeArch.node(i).parent.x = nodeArch.node(id).x;
                             nodeArch.node(i).parent.y = nodeArch.node(id).y; 
-                            nodeArch.node(id).child = nodeArch.node(id).child  + 1;
+                            nodeArch.node(id).child = nodeArch.node(id).child +  nodeArch.node(i).child;
                             break
                         end
                     end            
