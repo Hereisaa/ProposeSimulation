@@ -192,7 +192,7 @@ h_clusterModel.nodeArch   = init_nodeArch; % node's arch for LEACH
 h_clusterModel.nodeArch.init_numNodes = numNodes;
 numAliveNode = numNodes;
 p   = 0.05; % ratio of number of CH (default)
-k = 1;% no. of GH
+k = 2;% no. of GH
 FND = 1; HND = 1; LND = 1;
 
 par_hhca = struct;
@@ -209,7 +209,7 @@ for r = 1:roundArch.numRound
     h_clusterModel = dissEnergyGH(h_clusterModel, roundArch, netArch);
     
     %%% plot result
-%     par_leach = plotResults(h_clusterModel, r, par_leach);
+    par_hhca = plotResults(h_clusterModel, r, par_hhca);
     
     %%% FND and HND and LND 
     if (h_clusterModel.nodeArch.numDead >= 1) && FND % FND
@@ -222,6 +222,7 @@ for r = 1:roundArch.numRound
         h_clusterModel.HND = r;
         fprintf('[HHCA] ***HND*** round = %d.\n', r);
         HND = 0;
+        
     end
     if (h_clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND % LND
         h_clusterModel.LND = r;
@@ -234,5 +235,8 @@ end
 
 
 %%
-% createfigure(1:p_clusterModel.LND,1:clusterModel.LND, par_proposed.energy, par_leach.energy, par_proposed.numDead, par_leach.numDead, par_proposed.packetToBS, par_leach.packetToBS);
+createfigure(1:p_clusterModel.LND,1:clusterModel.LND,1:h_clusterModel.LND,...
+             par_proposed.energy, par_leach.energy, par_hhca.energy,...
+             par_proposed.numDead, par_leach.numDead, par_hhca.numDead,...
+             par_proposed.packetToBS, par_leach.packetToBS, par_hhca.packetToBS);
 

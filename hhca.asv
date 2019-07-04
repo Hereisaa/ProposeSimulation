@@ -49,7 +49,7 @@ function [nodeArch, clusterNode, gridNode, numCluster] = hhca(clusterModel, clus
     
     
     %%% Fcm
-    fcm_flag = false;
+    fcm = false;
     locAlive = find(~nodeArch.dead);
     P = zeros(2,length(locAlive));
     for i = 1:length(locAlive)
@@ -57,10 +57,10 @@ function [nodeArch, clusterNode, gridNode, numCluster] = hhca(clusterModel, clus
     end
     % using fcm algo
     if( noOfk < length(locAlive) )
-        fcm_flag = true;
-%         [ cluster, centr ] = usingFcm( P, noOfk );
-        [centr,U,obj_fcn] = fcm(P', noOfk);
-        centr = centr';
+        fcm = true;
+%         [ cluster, centr ] = usingFcm( P, noOftk );
+        [centr,U,obj_fcn] = fcm(P',noOftk);
+
         locAlive_loc = zeros(length(locAlive), 2);
         for i = 1:length(locAlive)
             locAlive_loc(i,1) = nodeArch.node(locAlive(i)).x;
@@ -129,7 +129,7 @@ function [nodeArch, clusterNode, gridNode, numCluster] = hhca(clusterModel, clus
             end
         end
         if ( nodeArch.node(i).type == 'C' )
-            if fcm_flag == true
+            if fcm == true
                 locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
                 [minDis, loc] = min(sqrt(sum((repmat(locNode, noOfk, 1) - gridNode.loc)' .^ 2)));
                 minDisGH =  gridNode.no(loc);

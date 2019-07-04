@@ -1,4 +1,4 @@
-function createfigure(X1, X2, A1, A2, B1, B2, C1, C2)
+function createfigure(X1, X2, X3, A1, A2, A3, B1, B2, B3, C1, C2, C3)
 %CREATEFIGURE(X1,Y1,Y2,Y3)
 %  X1:  vector of x data - round (proposed)
 %  X2:  vector of x data - round (leach)
@@ -12,8 +12,8 @@ function createfigure(X1, X2, A1, A2, B1, B2, C1, C2)
 %%%%%% Sum of energy of nodes vs. round
 figure
 % Create plot
-p = plot(X1,A1,X2,A2,'LineWidth',1);
-p(1).Color=[0 0 1]; p(2).Color=[0 0 0];
+p = plot(X1,A1,X2,A2,X3,A3,'LineWidth',1);
+p(1).Color=[0 0 1]; p(2).Color=[0 0 0]; p(3).Color=[1 0 0];
 
 % Create x-label y-label
 xlabel('Round','FontWeight','bold','FontSize',11,'FontName','Cambria');
@@ -30,8 +30,8 @@ box on
 %%%%%% Number of dead node vs. round
 figure
 % Create plot
-p = plot(X1,B1,X2,B2,'LineWidth',1);
-p(1).Color=[0 0 1]; p(2).Color=[0 0 0];
+p = plot(X1,B1,X2,B2,X3,B3,'LineWidth',1);
+p(1).Color=[0 0 1]; p(2).Color=[0 0 0]; p(3).Color=[1 0 0];
 
 % Create x-label y-label
 xlabel('Round','FontWeight','bold','FontSize',11,'FontName','Cambria');
@@ -49,8 +49,8 @@ box on
 %%%%%% Number of packet sent to BS vs. round
 figure
 % Create plot
-p = plot(X1,C1,X2,C2,'LineWidth',1);
-p(1).Color=[0 0 1]; p(2).Color=[0 0 0];
+p = plot(X1,C1,X2,C2,X3,C3,'LineWidth',1);
+p(1).Color=[0 0 1]; p(2).Color=[0 0 0]; p(3).Color=[1 0 0];
 
 % Create x-label y-label
 xlabel('Round','FontWeight','bold','FontSize',11,'FontName','Cambria');
