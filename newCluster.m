@@ -1,4 +1,4 @@
-function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam, p_numCluster)
+function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam, p_numCluster, k)
 % Create the network architecture with desired parameters
 % This function is called by start.m in every round
 %   Input:
@@ -18,20 +18,28 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
     clusterModel.p = p_numCluster;
     clusterModel.numCluster = 0;
     
-%     if ~exist('p_numCluster','var')
-%         dBS        = sqrt((netArch.Sink.x - netArch.Yard.Length) ^ 2 + ...
-%                           (netArch.Sink.y - netArch.Yard.Width) ^ 2);
-%         kOpt = clusterOptimum(netArch, nodeArch, dBS); 
-%         p = kOpt / nodeArch.numNode;
-%     else
-%         p = p_numCluster;
-%     end
-
-    % run leach.m
-    [nodeArch, clusterNode, numCluster] = feval(clusterFun, clusterModel, clusterFunParam);
+    switch clusterFun 
+        case{'leach'}
+            % run leach.m
+            [nodeArch, clusterNode, numCluster] = feval(clusterFun, clusterModel, clusterFunParam);
+            
+            clusterModel.nodeArch = nodeArch;       % new architecture of nodes
+            clusterModel.clusterNode = clusterNode; % CHs
+            clusterModel.numCluster = numCluster; % number of the CHs
+        case{'hhca'}     
+            % run hhca.m
+            [nodeArch, clusterNode, gridNode, numCluster] = feval(clusterFun, clusterModel, clusterFunParam, k);
+            
+            clusterModel.noOfk = k;
+            clusterModel.nodeArch = nodeArch;       % new architecture of nodes
+            clusterModel.clusterNode = clusterNode; % CHs
+            clusterModel.gridNode = gridNode; % GHs
+            clusterModel.numCluster = numCluster; % number of the CHs
+    end
     
     
-    clusterModel.nodeArch = nodeArch;       % new architecture of nodes
-    clusterModel.clusterNode = clusterNode; % CHs
-    clusterModel.numCluster = numCluster; % number of the CHs
+    
+%     clusterModel.nodeArch = nodeArch;       % new architecture of nodes
+%     clusterModel.clusterNode = clusterNode; % CHs
+%     clusterModel.numCluster = numCluster; % number of the CHs
 end

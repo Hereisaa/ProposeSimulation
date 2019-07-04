@@ -52,6 +52,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
         end
     end
 
+    %%% Find maxSCH and maxSRN
     for i =1:noOfk
         cm = find(Model.clusterMember(i,:));
         [SCH, id] = max(nodeArch.SCH(1, cm));
@@ -71,14 +72,15 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     % which node is nearest to centr becomes CH
     % centr_node = zeros(1,noOfk);
     centr_node_index = zeros(1,noOfk);
-    for i = 1:noOfk
-        
-%         %%% This section is for just nearest centr.
+    
+    %%% select CH & RN in each cluster
+    for i = 1:noOfk   
+%         %%% This section is for just nearest centr node.
 %         centr_xy = [centr(1,i), centr(2,i)];
 %         [minToCentr, index] = min(sqrt(sum((repmat(centr_xy, length(Y), 1) - locAlive_loc)' .^ 2)));
 %         id = Y(index);
 
-        % Max SCH 
+        %%% Max SCH %%%
         id = nodeArch.maxSCH(i,1);
         % becomes CH
         nodeArch.node(id).type = 'C';
@@ -94,7 +96,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
 %         centr_node(i) = nodeArch.node(id);
 %         centr_node_index(i) = id;
         
-        % Max SRN 
+        %%% Max SRN %%%
         id = nodeArch.maxSRN(i,1);
         % becomes RN
         nodeArch.node(id).type = 'R';
@@ -106,7 +108,6 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
         relayNode.distance(i) = sqrt((relayNode.loc(i, 1) - netArch.Sink.x)^2 + (relayNode.loc(i, 2) - netArch.Sink.y)^2);   
         relayNode.countRNs = noOfk;
     end
-
     % Layer 0 -> 'R'
     for i = locAlive
         if (nodeArch.node(i).Layer == 0)

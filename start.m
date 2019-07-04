@@ -1,14 +1,14 @@
 %% MAIN
 clc, clear all, close all
 %% PARAMETER
-numNodes   = 100;  % number of nodes
-Length     = 300;  % network length
-Width      = 300;  % network width
+numNodes   = 100;  % number of nodes 100
+Length     = 100;  % network length 300
+Width      = 100;  % network width 300
 d0       = 87;  % tx distance threshold
 % sinkX    = Length / 2;
 % sinkY    = Width / 2;
-sinkX    = 150;
-sinkY    = 150;
+sinkX    = 50;
+sinkY    = 175;
 d_th = d0;
 initEnergy  = 0.5;
 
@@ -34,8 +34,6 @@ par_proposed = struct;
 recluster    = true;
 T1 = 87;
 T2 = 60;
-
-flag = 1;
 
 FND = 1; HND = 1; LND = 1;
 for r = 1:roundArch.numRound  
@@ -71,7 +69,7 @@ for r = 1:roundArch.numRound
             [ p_clusterModel, noOfk, cluster, centr ] = Clustering( p_clusterModel, notLayerZero, Temp_xy, Temp_index, T1, T2 );
             %%% CH & RN Selection Phase
             [ p_clusterModel ] = CHRNselection( p_clusterModel, locAlive, noOfk, centr, netArch );
-            % centr_node -> plot_kmeans
+            % [ p_clusterModel, centr_node ] for plot_kmeans
         end
         recluster = false;
     end
@@ -121,7 +119,7 @@ for r = 1:roundArch.numRound
         fprintf('[Proposed] ***FND*** round = %d.\n', r);
         p_clusterModel.FND = r;
         FND = 0;
-        flag = 0;
+%         plot_kmeans
 %         deadId = find(p_clusterModel.nodeArch.dead);
 %         fprintf('DEAD loc = [ %f, %f ].\nid = %d\ntype = %s\n', ...
 %              p_clusterModel.nodeArch.node(deadId).x, p_clusterModel.nodeArch.node(deadId).y, deadId, p_clusterModel.nodeArch.node(deadId).type);
@@ -148,15 +146,16 @@ end% for
 
 %% LEACH ROUND LOOP
 clusterModel.nodeArch   = init_nodeArch; % node's arch for LEACH
+clusterModel.nodeArch.init_numNodes = numNodes;
 numAliveNode = numNodes;
-p   = 0.1; % ratio of number of CH (default)
+p   = 0.05; % ratio of number of CH (default)
 FND = 1; HND = 1; LND = 1;
 
 par_leach = struct;
 
 for r = 1:roundArch.numRound
     %%% Clustering Phase
-    clusterModel = newCluster(netArch, clusterModel.nodeArch, 'leach', r, p);
+    clusterModel = newCluster(netArch, clusterModel.nodeArch, 'leach', r, p, 0);
 %     fprintf('[LEACH] number of CH  = %d\n',clusterModel.numCluster);
 
     %%% Transmission Phase
@@ -186,5 +185,54 @@ for r = 1:roundArch.numRound
 end
 % plot_leach
 
-createfigure(1:p_clusterModel.LND,1:clusterModel.LND, par_proposed.energy, par_leach.energy, par_proposed.numDead, par_leach.numDead, par_proposed.packetToBS, par_leach.packetToBS);
+
+
+%% HHCA ROUND LOOP
+h_clusterModel.nodeArch   = init_nodeArch; % node's arch for LEACH
+h_clusterModel.nodeArch.init_numNodes = numNodes;
+numAliveNode = numNodes;
+p   = 0.05; % ratio of number of CH (default)
+k = 1;% no. of GH
+FND = 1; HND = 1; LND = 1;
+
+par_hhca = struct;
+
+for r = 1:roundArch.numRound
+    
+    %%% Clustering Phase
+    h_clusterModel = newCluster(netArch, h_clusterModel.nodeArch, 'hhca', r, p, k);
+%     fprintf('[LEACH] number of CH  = %d\n',clusterModel.numCluster);
+
+    %%% Transmission Phase
+    h_clusterModel = dissEnergyCM(h_clusterModel, roundArch, netArch);
+    h_clusterModel = dissEnergyCH(h_clusterModel, roundArch, netArch);
+    h_clusterModel = dissEnergyGH(h_clusterModel, roundArch, netArch);
+    
+    %%% plot result
+%     par_leach = plotResults(h_clusterModel, r, par_leach);
+    
+    %%% FND and HND and LND 
+    if (h_clusterModel.nodeArch.numDead >= 1) && FND % FND
+        h_clusterModel.FND = r;
+        fprintf('[HHCA] ***FND*** round = %d.\n', r);
+        FND = 0;
+        plot_hhca
+    end
+    if (h_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND % HND
+        h_clusterModel.HND = r;
+        fprintf('[HHCA] ***HND*** round = %d.\n', r);
+        HND = 0;
+    end
+    if (h_clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND % LND
+        h_clusterModel.LND = r;
+        fprintf('[HHCA] ***LND*** round = %d.\n', r);
+        LND = 0;
+        break
+    end
+end
+% plot_hhca
+
+
+%%
+% createfigure(1:p_clusterModel.LND,1:clusterModel.LND, par_proposed.energy, par_leach.energy, par_proposed.numDead, par_leach.numDead, par_proposed.packetToBS, par_leach.packetToBS);
 

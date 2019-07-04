@@ -1,10 +1,10 @@
 % PLOT THE LEACH DEPLOYMENT
 %%
-figure(3), 
+figure, 
 grid on
 hold on
 
-p_nodeArch = p_clusterModel.nodeArch;
+h_nodeArch = h_clusterModel.nodeArch;
 
 %% Color para
 % Convert color code to 1-by-3 RGB array (0~1 each) [must do this way, if MATLAB version is R2018b or older]
@@ -13,26 +13,26 @@ color2 = '#8E8E8E'; color2 = sscanf(color2(2:end),'%2x%2x%2x',[1 3])/255; %light
 color3 = '#BABABA'; color3 = sscanf(color3(2:end),'%2x%2x%2x',[1 3])/255; %light gray 
 
 %% FOR DEBUG
-% plot(p_clusterModel.nodeArch.nodesLoc(222, 1), p_clusterModel.nodeArch.nodesLoc(222, 2),'k*', 'MarkerSize',12); 
+
 
 %% Association Line
-for i = 1:p_nodeArch.init_numNodes
-    if(~isempty(p_nodeArch.node(i).parent))
-        j = p_nodeArch.node(i).parent;
-        plot([p_nodeArch.node(i).x j.x],[p_nodeArch.node(i).y j.y],'Color', color2);
+for i = 1:h_nodeArch.init_numNodes
+    if(~isempty(h_nodeArch.node(i).parent))
+        j = h_nodeArch.node(i).parent;
+        plot([h_nodeArch.node(i).x j.x],[h_nodeArch.node(i).y j.y],'Color', color2);
     end
 end
 
 %% Nodes
-for i = 1:p_nodeArch.init_numNodes
-    if p_nodeArch.node(i).type == 'C'
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',18); 
-    elseif p_nodeArch.node(i).type == 'R'
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'b.', 'MarkerSize',18); 
-    elseif p_nodeArch.node(i).type == 'N'
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'k.', 'MarkerSize',18); 
+for i = 1:h_nodeArch.init_numNodes
+    if h_nodeArch.node(i).type == 'C'
+        plot(h_nodeArch.nodesLoc(i, 1), h_nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',18); 
+    elseif h_nodeArch.node(i).type == 'G'
+        plot(h_nodeArch.nodesLoc(i, 1), h_nodeArch.nodesLoc(i, 2),'b.', 'MarkerSize',18); 
+    elseif h_nodeArch.node(i).type == 'N'
+        plot(h_nodeArch.nodesLoc(i, 1), h_nodeArch.nodesLoc(i, 2),'k.', 'MarkerSize',18); 
     else
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'Color', color2,'Marker','.', 'MarkerSize',18); 
+        plot(h_nodeArch.nodesLoc(i, 1), h_nodeArch.nodesLoc(i, 2),'Color', color2,'Marker','.', 'MarkerSize',18); 
     end
     
 %     % cluster

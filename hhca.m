@@ -1,4 +1,4 @@
-function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunParam)
+function [nodeArch, clusterNode, gridNode, numCluster] = hhca(clusterModel, clusterFunParam, k)
 % Create the new node architecture using leach algorithm in beginning of each round. 
 % This function is called by newCluster.m
 %   Input:
@@ -10,9 +10,11 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
     nodeArch = clusterModel.nodeArch;
     netArch  = clusterModel.netArch;
     numCluster = clusterModel.numCluster;
+    gridNode = struct;
 
     r = clusterFunParam(1); % round no
     p = clusterModel.p;
+    noOfk = k;
     N = nodeArch.numNode; % number of nodes
     
     %%%%%%%% reset the CH after numCluster round
@@ -45,14 +47,52 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
     % define cluster structure
     clusterNode     = struct();
     
+    
+    %%% Fcm
+    fcm = false;
     locAlive = find(~nodeArch.dead);
+    P = zeros(2,length(locAlive));
+    for i = 1:length(locAlive)
+       P(:,i) = [nodeArch.node(i).x; nodeArch.node(i).y]; 
+    end
+    % using fcm algo
+    if( noOfk < length(locAlive) )
+        fcm = true;
+        [ cluster, centr ] = usingFcm( P, noOfk );
+
+        locAlive_loc = zeros(length(locAlive), 2);
+        for i = 1:length(locAlive)
+            locAlive_loc(i,1) = nodeArch.node(locAlive(i)).x;
+            locAlive_loc(i,2) = nodeArch.node(locAlive(i)).y;
+        end
+
+        for i = 1:noOfk   
+            % nearest to centr.
+            centr_xy = [centr(1,i), centr(2,i)];
+            [minToCentr, index] = min(sqrt(sum((repmat(centr_xy, length(locAlive), 1) - locAlive_loc)' .^ 2)));
+            id = locAlive(index);
+            % becomes GH
+            nodeArch.node(id).type = 'G';
+            gridNode.no(i) = id; % the no of node
+            xLoc = nodeArch.node(id).x; % x location of GH
+            yLoc = nodeArch.node(id).y; % y location of GH
+            gridNode.loc(i, 1) = xLoc;
+            gridNode.loc(i, 2) = yLoc;
+            % Calculate distance of GH from BS
+            gridNode.distance(i) = sqrt((xLoc - netArch.Sink.x)^2 + (yLoc - netArch.Sink.y)^2);    
+        end
+    end% if
+    
+    
+    %%% leach
     countCHs = 0;
     % CH selection
     for i = locAlive % search in alive nodes
         temp_rand = rand;
         if (nodeArch.node(i).G <= 0) && ...
            (temp_rand <= leachProbability(r, p)) && ...
-           (nodeArch.node(i).energy > 0)
+           (nodeArch.node(i).energy > 0) && ...
+           (nodeArch.node(i).type ~= 'G')
 
             countCHs = countCHs+1;
 
@@ -75,7 +115,7 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
     
     % CM select parent
     for i = locAlive
-        if ( nodeArch.node(i).type ~= 'C' )
+        if ( nodeArch.node(i).type == 'N' )
             if ( countCHs ~= 0 )
                 locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
                 [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHs, 1) - clusterNode.loc)' .^ 2)));
@@ -87,8 +127,24 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
                 nodeArch.node(i).parent.y = netArch.Sink.y;
             end
         end
+        if ( nodeArch.node(i).type == 'C' )
+            if fcm == true
+                locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
+                [minDis, loc] = min(sqrt(sum((repmat(locNode, noOfk, 1) - gridNode.loc)' .^ 2)));
+                minDisGH =  gridNode.no(loc);
+                nodeArch.node(i).parent = nodeArch.node(minDisGH);
+                nodeArch.node(minDisGH).child = nodeArch.node(minDisGH).child + 1;
+            else
+                nodeArch.node(i).parent.x = netArch.Sink.x;
+                nodeArch.node(i).parent.y = netArch.Sink.y;
+            end
+        end
+        if ( nodeArch.node(i).type == 'G' )
+            nodeArch.node(i).parent.x = netArch.Sink.x;
+            nodeArch.node(i).parent.y = netArch.Sink.y;
+        end
     end
-%     countCHs
+
     numCluster = numCluster + countCHs;
 %     fprintf('[LEACH] number of CH (countCHs) = %d\n',countCHs);
 %     fprintf('[LEACH] number of total CH (numCluster) = %d\n',numCluster);
