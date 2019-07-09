@@ -1,6 +1,6 @@
 % PLOT THE LEACH DEPLOYMENT
 %%
-figure, 
+figure
 grid on
 hold on
 

@@ -7,7 +7,7 @@ Width      = 300;  % network width 300
 d0       = 87;  % tx distance threshold
 % sinkX    = Length / 2;
 % sinkY    = Width / 2;
-sinkX    = 300;
+sinkX    = 150;
 sinkY    = 150;
 d_th = d0;
 initEnergy  = 0.5;
@@ -38,9 +38,7 @@ T2 = 60;
 noOfk = 0;
 centr = [];
 
-FND = 1; HND = 1; LND = 1; 
-HND9 =1;
-
+FND = 1; HND = 1; LND = 1;
 for r = 1:roundArch.numRound  
     p_clusterModel.r = r;
     Temp_xy = [];
@@ -53,6 +51,7 @@ for r = 1:roundArch.numRound
     % first time or recluster
     if recluster == true
         p_clusterModel.numCluster = 0;
+
         p_clusterModel.clusterNode.no = [];
         p_clusterModel.clusterNode.CID = [];
         p_clusterModel.clusterNode.loc = [];
@@ -79,13 +78,7 @@ for r = 1:roundArch.numRound
         end
     end
     
-    
     locAlive = find(~p_clusterModel.nodeArch.dead);
-    for i = locAlive
-        p_clusterModel.nodeArch.node(i).type    = 'N'; 
-        p_clusterModel.nodeArch.node(i).parent  = [];
-        p_clusterModel.nodeArch.node(i).child   = 0;
-    end
     %%% CH & RN Selection Phase
     [ p_clusterModel ] = CHRNselection( p_clusterModel, locAlive, p_clusterModel.numCluster, p_clusterModel.centr, netArch );
     
@@ -101,10 +94,7 @@ for r = 1:roundArch.numRound
     p_clusterModel = dissEnergyCH(p_clusterModel, roundArch, netArch);
     p_clusterModel = dissEnergyRN(p_clusterModel, roundArch, netArch);
 
-    
     % check new dead node
-    locAlive = find(~p_clusterModel.nodeArch.dead);
-
     for i = locAlive
         if p_clusterModel.nodeArch.node(i).energy <= 0
             p_clusterModel.nodeArch.node(i).type = 'D';
@@ -112,13 +102,13 @@ for r = 1:roundArch.numRound
             p_clusterModel.nodeArch.node(i).parent = []; 
             p_clusterModel.nodeArch.node(i).CID = []; 
             p_clusterModel.nodeArch.node(i).child = 0; 
-
+            
             recluster = true; % have to exec new clustering phase 
         end
     end
-
     
     % no of alive node
+    locAlive = find(~p_clusterModel.nodeArch.dead); % alive node's index
     numAlive = length(locAlive);
     
     % avg energy of network
@@ -127,7 +117,7 @@ for r = 1:roundArch.numRound
         avgEnergy = avgEnergy + p_clusterModel.nodeArch.node(i).energy;
     end
     avgEnergy = avgEnergy / length(locAlive);
-%     
+    
 %     % avg energy of each cluster
 %     avgEnergyCluster = zeros(1, noOfk);
 %     for j = 1:noOfk
@@ -146,33 +136,32 @@ for r = 1:roundArch.numRound
 %             avgEnergyCluster(j) = 0;
 %         end
 %     end
-%     
+    
 %     % check CH and RN energy
 %     cn = find(p_clusterModel.clusterNode.no);
 %     rn = find(p_clusterModel.relayNode.no);
 %     crn = union(cn, rn);
-%     if ~isempty(crn)
-%         for j = crn
-%             crnid = p_clusterModel.nodeArch.node(j).CID;
-%             if  p_clusterModel.nodeArch.node(j).energy < avgEnergyCluster(crnid)*0.5
-%                 reselect = true; % have to exec new selection phase 
-%             end
+%     for j = crn
+%         crnid = p_clusterModel.nodeArch.node(j).CID;
+%         if  p_clusterModel.nodeArch.node(j).energy < avgEnergyCluster(crnid)*0.5
+%             reselect = true; % have to exec new selection phase 
 %         end
 %     end
-
+    
     
     %%% STATISTICS
     p_clusterModel.nodeArch.numDead = sum(p_clusterModel.nodeArch.dead);
     p_clusterModel.nodeArch.numNode = numAlive; % number of Alive nodes
     p_clusterModel.nodeArch.avgEnergy = avgEnergy; % averagy
 %     p_clusterModel.clusterNode.avgEnergyCluster = avgEnergyCluster; % averagy
-    %%% plot STATISTICS
-    par_proposed = plotResults(p_clusterModel, r, par_proposed);
     
-    %%% plot network deployment (first round)
+    %%% plot result (round 1)
     if r == 1
         plot_kmeans
     end
+    
+    par_proposed = plotResults(p_clusterModel, r, par_proposed);
+
     
     %%% FND and HND and LND 
     if p_clusterModel.nodeArch.numDead > 0 && FND
@@ -189,7 +178,7 @@ for r = 1:roundArch.numRound
         fprintf('[Proposed] ***HND*** round = %d.\n', r);
         HND = 0;
         plot_kmeans
-    end  
+    end
     if (p_clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND
         p_clusterModel.LND = r;
         fprintf('[Proposed] ***LND*** round = %d.\n', r);
@@ -198,7 +187,7 @@ for r = 1:roundArch.numRound
     end    
 end% for
 
-
+% plot_kmeans
 
 
 
@@ -291,12 +280,12 @@ for r = 1:roundArch.numRound
         break
     end
 end
-plot_hhca
+% plot_hhca
 
 
 %%
-createfigure(1:p_clusterModel.LND,1:clusterModel.LND,1:h_clusterModel.LND,... % round
-             par_proposed.energy, par_leach.energy, par_hhca.energy,... % 
+createfigure(1:p_clusterModel.LND,1:clusterModel.LND,1:h_clusterModel.LND,...
+             par_proposed.energy, par_leach.energy, par_hhca.energy,...
              par_proposed.numDead, par_leach.numDead, par_hhca.numDead,...
              par_proposed.packetToBS, par_leach.packetToBS, par_hhca.packetToBS);
 

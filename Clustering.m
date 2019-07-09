@@ -37,6 +37,7 @@ function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Tem
         end
     end
     
+    Model.centr = centr;
     Model.numCluster = noOfk;
     Model.nodeArch = nodeArch;
     Model.clusterMember = clusterMember;

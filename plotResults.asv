@@ -2,18 +2,15 @@ function par = plotResults(Model, r, par)
     nodeArch = Model.nodeArch;
     switch (Model.clusterFun)
          case {'proposed'}
-            %%%%% Number of packets sent from CH RN to BS
+            %%%%% Number of packets sent from CHs to BS
             if r == 1
                 par.packetToBS(r) = Model.clusterNode.countCHs;
             else
-                par.packetToBS(r) = par.packetToBS(r-1) + Model.clusterNode.countCHs + Model.relayNode.countRNs;
+                par.packetToBS(r) = par.packetToBS(r-1) + Model.clusterNode.countCHs + Model.relayNode.countCHs;
             end
             
             %%%%% Number of dead node
             par.numDead(r) = nodeArch.numDead;
-            
-            %%%%% Number of alive node
-            par.numAlive(r) = nodeArch.init_numNodes - nodeArch.numDead;
             
             %%%%% Residual energy
             par.energy(r) = 0;
@@ -25,7 +22,7 @@ function par = plotResults(Model, r, par)
             end
 %             par.energy(r) = par.energy(r) / nodeArch.numNode;
 
-            %%%%% Sum of Energy consumption
+            %%%%% Energy consumption
 %             par.consumption(r) = 0;
 %             node = Model.nodeArch;
 %             for i = find(~node.dead)
