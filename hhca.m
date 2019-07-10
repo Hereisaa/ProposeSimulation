@@ -1,4 +1,4 @@
-function [nodeArch, clusterNode, gridNode, numCluster] = hhca(clusterModel, clusterFunParam, k)
+function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterModel, clusterFunParam, k)
 % Create the new node architecture using leach algorithm in beginning of each round. 
 % This function is called by newCluster.m
 %   Input:
@@ -15,6 +15,7 @@ function [nodeArch, clusterNode, gridNode, numCluster] = hhca(clusterModel, clus
     r = clusterFunParam(1); % round no
     p = clusterModel.p;
     noOfk = k;
+    numOfGrid = 0;
     N = nodeArch.numNode; % number of nodes
     
     %%%%%%%% reset the CH after numCluster round
@@ -39,13 +40,17 @@ function [nodeArch, clusterNode, gridNode, numCluster] = hhca(clusterModel, clus
         else
             nodeArch.node(i).type = 'N';
             nodeArch.node(i).parent = [];
+            nodeArch.node(i).child = 0;
         end
     end
+    
     nodeArch.numDead = sum(nodeArch.dead);
+   
     
     %%%%%%%% find the cluster head
     % define cluster structure
     clusterNode     = struct();
+    
     
     
     %%% Fcm
@@ -57,30 +62,72 @@ function [nodeArch, clusterNode, gridNode, numCluster] = hhca(clusterModel, clus
     end
     % using fcm algo
     if( noOfk < length(locAlive) )
+        numOfGrid = noOfk;
+        E_avg = zeros(noOfk,1);
         fcm_flag = true;
 %         [ cluster, centr ] = usingFcm( P, noOfk );
-        [centr,U,obj_fcn] = fcm(P', noOfk);
-        centr = centr';
+        [centr,U,obj_fcn] = usingFcm(P', noOfk);
+
         locAlive_loc = zeros(length(locAlive), 2);
         for i = 1:length(locAlive)
             locAlive_loc(i,1) = nodeArch.node(locAlive(i)).x;
             locAlive_loc(i,2) = nodeArch.node(locAlive(i)).y;
         end
+        
+        for i = 1:length(locAlive)
+            lloc = [nodeArch.node(locAlive(i)).x, nodeArch.node(locAlive(i)).y];
+%             centr_xy = [centr(1,i), centr(2,i)];
+            [minToCentr, index] = min(sqrt(sum((repmat(lloc, noOfk, 1) - centr)' .^ 2)));
+            nodeArch.node(i).GID = index;
+        end
 
+        centr = centr';
         for i = 1:noOfk   
-            % nearest to centr.
-            centr_xy = [centr(1,i), centr(2,i)];
-            [minToCentr, index] = min(sqrt(sum((repmat(centr_xy, length(locAlive), 1) - locAlive_loc)' .^ 2)));
-            id = locAlive(index);
-            % becomes GH
-            nodeArch.node(id).type = 'G';
-            gridNode.no(i) = id; % the no of node
-            xLoc = nodeArch.node(id).x; % x location of GH
-            yLoc = nodeArch.node(id).y; % y location of GH
-            gridNode.loc(i, 1) = xLoc;
-            gridNode.loc(i, 2) = yLoc;
-            % Calculate distance of GH from BS
-            gridNode.distance(i) = sqrt((xLoc - netArch.Sink.x)^2 + (yLoc - netArch.Sink.y)^2);    
+            for j = 1:length(locAlive)
+                locAlive_loc(j,1) = nodeArch.node(locAlive(j)).x;
+                locAlive_loc(j,2) = nodeArch.node(locAlive(j)).y;
+            end
+        
+            %%%%% E_avg
+            for k = 1:noOfk
+                c = 0;
+                energy = 0;
+                for j = locAlive
+                    if (nodeArch.node(j).energy > 0 && nodeArch.node(j).GID == k) 
+                        energy = energy + nodeArch.node(j).energy;
+                        c = c + 1;
+                    end
+                end
+                energy = energy / c;
+                energy(isnan(energy)==1) = 0;
+                E_avg(k) = energy;
+            end
+            
+
+            
+            while 1
+                % nearest to centr.
+                centr_xy = [centr(1,i), centr(2,i)];
+                [minToCentr, index] = min(sqrt(sum((repmat(centr_xy, length(locAlive), 1) - locAlive_loc)' .^ 2)));
+                id = locAlive(index);
+                if nodeArch.node(id).energy >= E_avg(i)
+                    % becomes GH
+                    nodeArch.node(id).type = 'G';
+                    gridNode.no(i) = id; % the no of node
+                    xLoc = nodeArch.node(id).x; % x location of GH
+                    yLoc = nodeArch.node(id).y; % y location of GH
+                    gridNode.loc(i, 1) = xLoc;
+                    gridNode.loc(i, 2) = yLoc;
+                    % Calculate distance of GH from BS
+                    gridNode.distance(i) = sqrt((xLoc - netArch.Sink.x)^2 + (yLoc - netArch.Sink.y)^2);    
+                    break
+                else
+                    locAlive_loc(index,1) = inf;
+                    locAlive_loc(index,2) = inf;
+                end
+            end
+            
+            
         end
     end% if
     
@@ -91,7 +138,7 @@ function [nodeArch, clusterNode, gridNode, numCluster] = hhca(clusterModel, clus
     for i = locAlive % search in alive nodes
         temp_rand = rand;
         if (nodeArch.node(i).G <= 0) && ...
-           (temp_rand <= leachProbability(r, p)) && ...
+           (temp_rand <= hhcaProbability(r, p)) && ...
            (nodeArch.node(i).energy > 0) && ...
            (nodeArch.node(i).type ~= 'G')
 
@@ -129,12 +176,15 @@ function [nodeArch, clusterNode, gridNode, numCluster] = hhca(clusterModel, clus
             end
         end
         if ( nodeArch.node(i).type == 'C' )
-            if fcm_flag == true
+            if fcm_flag == true % exist GH
                 locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
+                disBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
                 [minDis, loc] = min(sqrt(sum((repmat(locNode, noOfk, 1) - gridNode.loc)' .^ 2)));
                 minDisGH =  gridNode.no(loc);
-                nodeArch.node(i).parent = nodeArch.node(minDisGH);
-                nodeArch.node(minDisGH).child = nodeArch.node(minDisGH).child + 1;
+                if minDis < disBS
+                    nodeArch.node(i).parent = nodeArch.node(minDisGH);
+                    nodeArch.node(minDisGH).child = nodeArch.node(minDisGH).child + 1;
+                end
             else
                 nodeArch.node(i).parent.x = netArch.Sink.x;
                 nodeArch.node(i).parent.y = netArch.Sink.y;
@@ -147,6 +197,7 @@ function [nodeArch, clusterNode, gridNode, numCluster] = hhca(clusterModel, clus
     end
 
     numCluster = numCluster + countCHs;
+    numGrid = numOfGrid;
 %     fprintf('[LEACH] number of CH (countCHs) = %d\n',countCHs);
 %     fprintf('[LEACH] number of total CH (numCluster) = %d\n',numCluster);
 end

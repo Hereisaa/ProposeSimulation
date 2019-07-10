@@ -1,6 +1,6 @@
 % PLOT THE LEACH DEPLOYMENT
 %%
-figure(1), hold on
+figure, hold on
 grid on
 
 %% Color para
@@ -33,9 +33,12 @@ for i = 1:init_nodeArch.numNode
        % plot(x+nodeArch.nodesLoc(i, 1),y+nodeArch.nodesLoc(i, 2),'k:') 
        plot(clusterModel.nodeArch.nodesLoc(i, 1), clusterModel.nodeArch.nodesLoc(i, 2),...
            'r.', 'MarkerSize',15);
-    else
+    elseif(strcmp(clusterModel.nodeArch.node(i).type, 'N'))
        plot(clusterModel.nodeArch.nodesLoc(i, 1), clusterModel.nodeArch.nodesLoc(i, 2),...
-           'b.', 'MarkerSize',15);
+           'k.', 'MarkerSize',15);
+    else
+        plot(clusterModel.nodeArch.nodesLoc(i, 1), clusterModel.nodeArch.nodesLoc(i, 2),...
+           'Color', color1,'Marker','.', 'MarkerSize',15);
     end
 end
 

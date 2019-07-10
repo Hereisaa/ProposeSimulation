@@ -13,6 +13,9 @@ function par = plotResults(Model, r, par)
             par.numDead(r) = nodeArch.numDead;
             
             %%%%% Number of alive node
+            par.numAlive(r) = nodeArch.numAlive;
+            
+            %%%%% Number of alive node
             par.numAlive(r) = nodeArch.init_numNodes - nodeArch.numDead;
             
             %%%%% Residual energy
@@ -50,7 +53,11 @@ function par = plotResults(Model, r, par)
             end
             %%%%% Number of dead neurons
             par.numDead(r) = nodeArch.numDead;
-            %%%%% Energy
+            
+            %%%%% Number of alive node
+            par.numAlive(r) = nodeArch.numAlive;
+            
+            %%%%% Residual Energy
             par.energy(r) = 0;
             node = Model.nodeArch;
             for i = find(~node.dead)
@@ -67,8 +74,12 @@ function par = plotResults(Model, r, par)
             else
                 par.packetToBS(r) = par.packetToBS(r-1) + Model.clusterNode.countCHs;
             end
-            %%%%% Number of dead neurons
+            %%%%% Number of dead nodes
             par.numDead(r) = nodeArch.numDead;
+            
+            %%%%% Number of alive node
+            par.numAlive(r) = nodeArch.numAlive;
+            
             %%%%% Energy
             par.energy(r) = 0;
             node = Model.nodeArch;

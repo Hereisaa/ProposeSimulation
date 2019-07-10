@@ -11,12 +11,18 @@ function [ SCH, SRN ] = calSelection( E_res, E_avg, E_max, E_min, d_Centr, d_toC
     
 %     SCH = a * (E_res / E_avg) + b * ( 1 - (d_Centr / d_toCentr) );
 %     SRN = a * (E_res / E_avg) + b * ( 1 - (d_BS / d_toBS) );
-    
-%     SCH = a * ((E_res - E_min) / (E_max - E_min)) + b * ( 1 - ((d_Centr - minToCentr) / (maxToCentr - minToCentr)) );
-%     SRN = a * ((E_res - E_min) / (E_max - E_min)) + b * ( 1 - ((d_BS - minToBS) / (maxToBS - minToBS)) );
+%     
+    x = (E_res - E_min) / (E_max - E_min);
+    y = (d_Centr - minToCentr) / (maxToCentr - minToCentr);
+    z = (d_BS - minToBS) / (maxToBS - minToBS);
+    x(isnan(x)==1) = 0;
+    y(isnan(y)==1) = 0;
+    z(isnan(z)==1) = 0;
+    SCH = a * x + b * ( 1 - y );
+    SRN = a * x + b * ( 1 - z );
 
-    SCH = a * ((E_res) / (E_max)) + b * ( 1 - ((d_Centr) / (maxToCentr)) );
-    SRN = a * ((E_res) / (E_max)) + b * ( 1 - ((d_BS) / (maxToBS)) );
+%     SCH = a * ((E_res) / (E_max)) + b * ( 1 - ((d_Centr) / (maxToCentr)) );
+%     SRN = a * ((E_res) / (E_max)) + b * ( 1 - ((d_BS) / (maxToBS)) );
     
 %     SCH = ( 1 - (d_Centr / d_toCentr) );
 %     SRN = ( 1 - (d_BS / d_toBS) );

@@ -39,7 +39,9 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
             nodeArch.node(i).parent = [];
         end
     end
+ 
     nodeArch.numDead = sum(nodeArch.dead);
+    
     
     %%%%%%%% find the cluster head
     % define cluster structure

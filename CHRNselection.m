@@ -155,11 +155,31 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     end
 
     % Layer 0 -> 'R'
+    c = 0;
+    energy = 0;
     for i = locAlive
         if (nodeArch.node(i).Layer == 0)
-            nodeArch.node(i).type = 'R';
+            energy = energy + nodeArch.node(i).energy;
+            c = c + 1;
         end
     end    
+    energy = energy / c;
+    for i = locAlive
+        if (nodeArch.node(i).Layer == 0) 
+            if (nodeArch.node(i).energy >= energy)
+                nodeArch.node(i).type = 'R';
+            else
+                nodeArch.node(i).parent.x = netArch.Sink.x;
+                nodeArch.node(i).parent.y = netArch.Sink.y;
+                nodeArch.node(i).parent.id = 0;
+            end
+        end
+    end 
+%     for i = locAlive
+%         if (nodeArch.node(i).Layer == 0) 
+%             nodeArch.node(i).type = 'R';
+%         end
+%     end 
     
     
     %%
@@ -239,13 +259,17 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     for i = locAlive
         if strcmp(nodeArch.node(i).type,'N')
             pid = nodeArch.node(i).parent.id;
-            nodeArch.node(pid).child = nodeArch.node(pid).child + 1;
+            if pid ~=0
+                nodeArch.node(pid).child = nodeArch.node(pid).child + 1;
+            end
         end
     end
     for i = locAlive
         if strcmp(nodeArch.node(i).type,'C')
             pid = nodeArch.node(i).parent.id;
-            nodeArch.node(pid).child = nodeArch.node(pid).child + 1;
+            if pid ~=0
+                nodeArch.node(pid).child = nodeArch.node(pid).child + 1;
+            end
         end
     end
     for i = locAlive
