@@ -4,7 +4,7 @@ clc, clear all, close all
 numNodes   = 300;  % number of nodes 100
 Length     = 300;  % network length 300
 Width      = 300;  % network width 300
-d0       = 87;  % tx distance threshold
+d0         = 87;  % tx distance threshold
 % sinkX    = Length / 2;
 % sinkY    = Width / 2;
 sinkX    = 150;
@@ -12,12 +12,12 @@ sinkY    = 300;
 d_th = d0;
 initEnergy  = 0.5;
 
-transEnergy = 50*0.000000001;
-recEnergy   = 50*0.000000001;
-fsEnergy    = 10*0.000000000001;
+transEnergy = 50*    0.000000001;
+recEnergy   = 50*    0.000000001;
+fsEnergy    = 10*    0.000000000001;
 mpEnergy    = 0.0013*0.000000000001;
-aggrEnergy  = 5*0.000000001;
-packetLength    = 4000;
+aggrEnergy  = 5*     0.000000001;
+packetLength    = 6400;
 ctrPacketLength = 200;
 r       = 99999;
 
@@ -33,8 +33,8 @@ p_clusterModel.nodeArch.init_numNodes = numNodes;
 par_proposed = struct;
 recluster    = true;
 reselect     = true;
-T1 = 87;
-T2 = 60;
+T1 = 100;
+T2 = 87;
 noOfk = 0;
 centr = [];
 
@@ -263,7 +263,7 @@ h_clusterModel.nodeArch   = init_nodeArch; % node's arch for LEACH
 h_clusterModel.nodeArch.init_numNodes = numNodes;
 numAliveNode = numNodes;
 p   = 0.05; % ratio of number of CH (default)
-k = 3;% no. of GH
+k = 4;% no. of GH
 FND_flag = 1; HND_flag = 1; LND_flag = 1;
 FND = 0; HND = 0; LND = 0;
 par_hhca = struct;
@@ -312,11 +312,10 @@ h_clusterModel.LND = LND;
 
 %%
 
-createfigure(p_clusterModel.LND,clusterModel.LND,h_clusterModel.LND,... % round
+createfigure(numNodes,initEnergy,...
+             p_clusterModel.LND,clusterModel.LND,h_clusterModel.LND,... % round
              par_proposed.energy, par_leach.energy, par_hhca.energy,...
              par_proposed.numAlive, par_leach.numAlive, par_hhca.numAlive,...
-             p_clusterModel.FND, p_clusterModel.HND,...
-             clusterModel.FND, clusterModel.HND,...
-             h_clusterModel.FND, h_clusterModel.HND,...
+             p_clusterModel.FND, p_clusterModel.HND,clusterModel.FND, clusterModel.HND,h_clusterModel.FND, h_clusterModel.HND,...
              par_proposed.packetToBS, par_leach.packetToBS, par_hhca.packetToBS);
 

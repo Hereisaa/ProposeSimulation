@@ -31,15 +31,15 @@ for k=1:1
     p = plot(X,Y1(X),'-x',...
              X,Y2(X),'--+',...
              X,Y3(X),'-o');
-    p(1).LineWidth =1; p(1).MarkerSize=8; p(1).Color=[0 0 1];
-    p(2).LineWidth =1; p(2).MarkerSize=8; p(2).Color=[0 0 0];
-    p(3).LineWidth =1; p(3).MarkerSize=8; p(3).Color=[1 0 0];
+    p(1).LineWidth =1; p(1).MarkerSize=8; p(1).Color=color1;
+    p(2).LineWidth =1; p(2).MarkerSize=8; p(2).Color=color2;
+    p(3).LineWidth =1; p(3).MarkerSize=8; p(3).Color=color4;
     axis([0,1200,0,150]);
     set(gca,'XTick',[0:200:1200]);
     set(gca,'YTick',[0:30:150]);
     % Create x-label y-label
-    xlabel('Round','FontWeight','bold','FontSize',11,'FontName','Cambria');
-    ylabel('Total remaining energy','FontWeight','bold','FontSize',30,'FontName','Cambria');
+    xlabel('Round','FontWeight','bold','FontSize',15);
+    ylabel('Total remaining energy','FontWeight','bold','FontSize',15);
     % % Create title
     % title('Total remaining energy','FontWeight','bold',...
     %     'FontSize',12,...
@@ -71,7 +71,7 @@ end
 for k=1:1
     figure
     hold on;
-    xr = (X1/100 +1)*100;
+    xr = X1;
     Y1 = zeros(1,xr);
     Y2 = zeros(1,xr);
     Y3 = zeros(1,xr);
@@ -84,15 +84,15 @@ for k=1:1
     p = plot(X,Y1(Z),'-x',...
              X,Y2(Z),'--+',...
              X,Y3(Z),'-o');
-    p(1).LineWidth =1; p(1).MarkerSize=8; p(1).Color=[0 0 1];
-    p(2).LineWidth =1; p(2).MarkerSize=8; p(2).Color=[0 0 0];
-    p(3).LineWidth =1; p(3).MarkerSize=8; p(3).Color=[1 0 0];
-    axis([0,xr,0,300]);
+    p(1).LineWidth =1; p(1).MarkerSize=8; p(1).Color=color1;
+    p(2).LineWidth =1; p(2).MarkerSize=8; p(2).Color=color2;
+    p(3).LineWidth =1; p(3).MarkerSize=8; p(3).Color=color4;
+    axis([0,ceixr,0,300]);
     set(gca,'XTick',[0:200:xr]);
     set(gca,'YTick',[0:30:300]);
     % Create x-label y-label
-    xlabel('Round','FontWeight','bold','FontSize',11,'FontName','Cambria');
-    ylabel('Number of dead nodes','FontWeight','bold','FontSize',11,'FontName','Cambria');
+    xlabel('Round','FontWeight','bold','FontSize',15);
+    ylabel('Number of dead nodes','FontWeight','bold','FontSize',15);
     % % Create title
     % title('Number of dead node','FontWeight','bold',...
     %     'FontSize',12,...
