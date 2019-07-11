@@ -3,22 +3,22 @@ function par = plotResults(Model, r, par)
     switch (Model.clusterFun)
          case {'proposed'}
             %%%%% Number of packets sent from CH RN to BS
-            if r == 1
-                par.packetToBS(r) = Model.clusterNode.countCHs;
-            else
-                par.packetToBS(r) = par.packetToBS(r-1) + Model.clusterNode.countCHs + Model.relayNode.countRNs;
-            end
+%             if r == 1
+%                 par.packetToBS(r) = Model.clusterNode.countCHs;
+%             else
+%                 par.packetToBS(r) = par.packetToBS(r-1) + Model.clusterNode.countCHs + Model.relayNode.countRNs;
+%             end
             
             %%%%% Number of dead node
             par.numDead(r) = nodeArch.numDead;
             
-            %%%%% Number of alive node
+            %%%%% Number of alive node [v]
             par.numAlive(r) = nodeArch.numAlive;
             
-            %%%%% Number of alive node
+            %%%%% Number of alive node 
             par.numAlive(r) = nodeArch.init_numNodes - nodeArch.numDead;
             
-            %%%%% Residual energy
+            %%%%% Residual energy [v]
             par.energy(r) = 0;
             node = Model.nodeArch;
             for i = find(~node.dead)
@@ -28,16 +28,8 @@ function par = plotResults(Model, r, par)
             end
 %             par.energy(r) = par.energy(r) / nodeArch.numNode;
 
-            %%%%% Sum of Energy consumption
-%             par.consumption(r) = 0;
-%             node = Model.nodeArch;
-%             for i = find(~node.dead)
-%                 if node.node(i).energy > 0
-%                     par.energy(r) = par.energy(r) + node.node(i).energy;
-%                 end
-%             end
-            
-            
+            %%%%% Energy consumption
+
             %%%%% Energy efficiency
             
             %%%%% Packet delivery ratio
