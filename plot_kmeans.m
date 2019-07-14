@@ -25,43 +25,53 @@ end
 
 %% Nodes
 for i = 1:p_nodeArch.init_numNodes
+%     if p_nodeArch.node(i).type == 'C'
+%         plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',18); 
+%     elseif p_nodeArch.node(i).type == 'R'
+%         plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'b.', 'MarkerSize',18); 
+%     elseif p_nodeArch.node(i).type == 'N'
+%         plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'k.', 'MarkerSize',18); 
+%     else
+%         plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'Color', color2,'Marker','.', 'MarkerSize',18); 
+%     end
+    
+    % cluster
+    switch num2str(p_nodeArch.node(i).CID)
+        case {'1'}
+            plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',12);
+        case {'2'}
+            plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'g.', 'MarkerSize',12);
+        case {'3'}
+            plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'b.', 'MarkerSize',12);    
+        case {'4'}
+            plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'c.', 'MarkerSize',12);
+        case {'5'}
+            plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'m.', 'MarkerSize',12);
+        case {'6'}
+            plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'mo', 'MarkerSize',4);
+        case {'7'}
+            plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'ko', 'MarkerSize',4);
+        case {'8'}
+            plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'ro', 'MarkerSize',4);
+        case {'9'}
+            plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'go', 'MarkerSize',4);
+        case {'10'}
+            plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'bo', 'MarkerSize',4);
+        case {'11'}
+            plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'co', 'MarkerSize',4);    
+        otherwise
+            plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'k.', 'MarkerSize',12);  
+    end
+    
     if p_nodeArch.node(i).type == 'C'
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',18); 
+        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r*', 'MarkerSize',18); 
     elseif p_nodeArch.node(i).type == 'R'
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'b.', 'MarkerSize',18); 
-    elseif p_nodeArch.node(i).type == 'N'
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'k.', 'MarkerSize',18); 
-    else
+        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'b*', 'MarkerSize',18); 
+    elseif p_nodeArch.node(i).type == 'D'
         plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'Color', color2,'Marker','.', 'MarkerSize',18); 
     end
     
-%     % cluster
-%     switch num2str(p_nodeArch.node(i).CID)
-%         case {'1'}
-%             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',12);
-%         case {'2'}
-%             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'g.', 'MarkerSize',12);
-%         case {'3'}
-%             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'b.', 'MarkerSize',12);    
-%         case {'4'}
-%             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'c.', 'MarkerSize',12);
-%         case {'5'}
-%             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'m.', 'MarkerSize',12);
-%         case {'6'}
-%             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'mo', 'MarkerSize',4);
-%         case {'7'}
-%             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'ko', 'MarkerSize',4);
-%         case {'8'}
-%             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'ro', 'MarkerSize',4);
-%         case {'9'}
-%             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'go', 'MarkerSize',4);
-%         case {'10'}
-%             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'bo', 'MarkerSize',4);
-%         case {'11'}
-%             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'co', 'MarkerSize',4);    
-%         otherwise
-%             plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'k.', 'MarkerSize',12);  
-%     end
+    
 end
 
 

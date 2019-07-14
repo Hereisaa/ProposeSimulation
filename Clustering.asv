@@ -4,31 +4,26 @@ function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Tem
     nodeArch = Model.nodeArch;
     
     %%% Determine number of k using [Canopy algo].
-    [ k, canopy_centr, canopy_centr_node ] = usingCanopy( Temp_xy, T1, T2 ); % T1 > T2 
-    % Temp_xy is a 2 by n metrix with xy
-    % Temp_index is a 1 by n metrix with id 
+    [ k, canopy_centr, canopy_centr_node ] = usingCanopy( Temp_xy, T1, T2 ); % T1 > T2
     % plot_canopy
 
     % %%% Determine number of k using [kOpt].
     % % notLayer0 = count;
     % % noOfk = round(notLayer0 * p);
     % % fprintf('Proposed : number of k = %d.\n',noOfk);
-    % %%%
     
     %%% Determine number of k using [Spectral Clustering algo].
-%     [noOfk, cluster, centr] = usingSpectralClustering( Temp_xy, Temp_index );
-%     disp(noOfk);
-    
+
     %%% Clustering using [K-means algo].   
     noOfk = k; % no. of cluster
     [cluster, centr] = usingKmeans(Temp_xy, noOfk, canopy_centr_node);
-
+    
     % mark cluster id (CID) of each node
     for i = 1:notLayerZero
         locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
         % find minmum dis node to centr
         % [dist, id]
-% % %         [minToCentr, index] = min(sqrt(sum((repmat(locNode, noOfk, 1) - (centr'))' .^ 2)));
+        [minToCentr, index] = min(sqrt(sum((repmat(locNode, noOfk, 1) - (centr'))' .^ 2)));
 
         nodeArch.node(Temp_index(1,i)).CID = cluster(i); % CID = which cluster belongs to
     end

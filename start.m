@@ -9,7 +9,7 @@ d0         = 87;  % tx distance threshold
 % sinkY    = Width / 2;
 sinkX    = 150;
 sinkY    = 300;
-d_th = d0;
+d_th = 87;
 initEnergy  = 0.5;
 
 transEnergy = 50*    0.000000001;
@@ -79,7 +79,7 @@ for r = 1:roundArch.numRound
         end
     end % if recluster
     
-    
+    plot_kmeans
     locAlive = find(~p_clusterModel.nodeArch.dead);
     for i = locAlive
         p_clusterModel.nodeArch.node(i).type    = 'N'; 
@@ -316,6 +316,6 @@ createfigure(numNodes,initEnergy,...
              p_clusterModel.LND,clusterModel.LND,h_clusterModel.LND,... % round
              par_proposed.energy, par_leach.energy, par_hhca.energy,...
              par_proposed.numAlive, par_leach.numAlive, par_hhca.numAlive,...
-             p_clusterModel.FND, p_clusterModel.HND,clusterModel.FND, clusterModel.HND,h_clusterModel.FND, h_clusterModel.HND,...
-             par_proposed.packetToBS, par_leach.packetToBS, par_hhca.packetToBS);
+             p_clusterModel.FND, p_clusterModel.HND,clusterModel.FND, clusterModel.HND,h_clusterModel.FND, h_clusterModel.HND);
+%              par_proposed.packetToBS, par_leach.packetToBS, par_hhca.packetToBS
 
