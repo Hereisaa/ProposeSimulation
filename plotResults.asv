@@ -37,21 +37,13 @@ function par = plotResults(Model, r, par, roundArch)
 
 
         case {'leach'}
-            %%%%% Number of packets sent from CH RN to BS
+            %%%%% number of packets sent from CHs to BS
             if r == 1
-                par.packetToBS(r) = Model.nodeArch.numAlive * roundArch.packetLength;
+                par.packetToBS(r) = Model.clusterNode.countCHs;
             else
-                par.packetToBS(r) = par.packetToBS(r-1) + Model.nodeArch.numAlive * roundArch.packetLength;
+                par.packetToBS(r) = par.packetToBS(r-1) + Model.clusterNode.countCHs;
             end
-            
-%             %%%%% number of packets sent from CHs to BS
-%             if r == 1
-%                 par.packetToBS(r) = Model.clusterNode.countCHs;
-%             else
-%                 par.packetToBS(r) = par.packetToBS(r-1) + Model.clusterNode.countCHs;
-%             end
-
-            %%%%% Number of dead node
+            %%%%% Number of dead neurons
             par.numDead(r) = nodeArch.numDead;
             
             %%%%% Number of alive node
@@ -68,20 +60,12 @@ function par = plotResults(Model, r, par, roundArch)
 %             par.energy(r) = par.energy(r) / nodeArch.numNode;
 
         case {'hhca'}
-            %%%%% Number of packets sent from CH RN to BS
+            %%%%% number of packets sent from CHs to BS
             if r == 1
-                par.packetToBS(r) = Model.nodeArch.numAlive * roundArch.packetLength;
+                par.packetToBS(r) = Model.clusterNode.countCHs;
             else
-                par.packetToBS(r) = par.packetToBS(r-1) + Model.nodeArch.numAlive * roundArch.packetLength;
+                par.packetToBS(r) = par.packetToBS(r-1) + Model.clusterNode.countCHs;
             end
-            
-%             %%%%% number of packets sent from CHs to BS
-%             if r == 1
-%                 par.packetToBS(r) = Model.clusterNode.countCHs;
-%             else
-%                 par.packetToBS(r) = par.packetToBS(r-1) + Model.clusterNode.countCHs;
-%             end
-            
             %%%%% Number of dead nodes
             par.numDead(r) = nodeArch.numDead;
             

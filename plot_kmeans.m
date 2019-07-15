@@ -64,12 +64,15 @@ for i = 1:p_nodeArch.init_numNodes
     end
     
     if p_nodeArch.node(i).type == 'C'
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r*', 'MarkerSize',18); 
+        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',18); 
     elseif p_nodeArch.node(i).type == 'R'
-        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'b*', 'MarkerSize',18); 
-    elseif p_nodeArch.node(i).type == 'D'
+        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'b.', 'MarkerSize',18); 
+    elseif p_nodeArch.node(i).type == 'N'
+        plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'k.', 'MarkerSize',18); 
+    else
         plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'Color', color2,'Marker','.', 'MarkerSize',18); 
     end
+
     
     
 end

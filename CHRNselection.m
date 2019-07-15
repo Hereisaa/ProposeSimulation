@@ -13,6 +13,8 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     %%% cal avg. para
     nodeArch.SCH = zeros(1, nodeArch.init_numNodes);
     nodeArch.SRN = zeros(1, nodeArch.init_numNodes);
+    nodeArch.maxSCH = zeros(noOfk, 2);
+    nodeArch.maxSRN = zeros(noOfk, 2);
     E_avg        = zeros(noOfk, 1);
     d_toCentr    = zeros(noOfk, 1);
     d_toBS       = zeros(noOfk, 1);
@@ -97,17 +99,19 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     %%% Find maxSCH and maxSRN
     for i =1:noOfk
         cm = find(Model.clusterMember(i,:));
-        [SCH, id] = max(nodeArch.SCH(1, cm));
-        id = cm(id);
-        nodeArch.maxSCH(i,1) = id;
-        nodeArch.maxSCH(i,2) = SCH;
-        
-        
-        cm = find(Model.clusterMember(i,:));
-        [SRN, id] = max(nodeArch.SRN(1, cm));
-        id = cm(id);
-        nodeArch.maxSRN(i,1) = id;
-        nodeArch.maxSRN(i,2) = SRN;
+        if ~isempty(cm)
+            [SCH, id] = max(nodeArch.SCH(1, cm));
+            id = cm(id);
+            nodeArch.maxSCH(i,1) = id(1);
+            nodeArch.maxSCH(i,2) = SCH(1);
+
+
+            cm = find(Model.clusterMember(i,:));
+            [SRN, id] = max(nodeArch.SRN(1, cm));
+            id = cm(id);
+            nodeArch.maxSRN(i,1) = id(1);
+            nodeArch.maxSRN(i,2) = SCH(1);
+        end
     end
     
     
@@ -117,7 +121,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     
     %%% select CH & RN in each cluster
     if noOfk ~= 0
-            for i = 1:noOfk   
+       for i = 1:noOfk   
     %         %%% This section is for just nearest centr node.
     %         centr_xy = [centr(1,i), centr(2,i)];
     %         [minToCentr, index] = min(sqrt(sum((repmat(centr_xy, length(Y), 1) - locAlive_loc)' .^ 2)));

@@ -1,14 +1,14 @@
 %% MAIN
 clc, clear all, close all
 %% PARAMETER
-numNodes   = 300;  % number of nodes 100
-Length     = 300;  % network length 300
-Width      = 300;  % network width 300
+numNodes   = 100;  % number of nodes 100
+Length     = 100;  % network length 300
+Width      = 100;  % network width 300
 d0         = 87;  % tx distance threshold
 % sinkX    = Length / 2;
 % sinkY    = Width / 2;
-sinkX    = 150;
-sinkY    = 300;
+sinkX    = 50;
+sinkY    = 175;
 d_th = 87;
 initEnergy  = 0.5;
 
@@ -28,6 +28,7 @@ init_nodeArch = newNodes(netArch, numNodes);
 
 %% PROPOSED ROUND LOOP
 p_clusterModel.nodeArch   = init_nodeArch; % node's arch for Proposed
+p_clusterModel.netArch   = netArch;
 p_clusterModel.clusterFun = 'proposed';
 p_clusterModel.nodeArch.init_numNodes = numNodes;
 par_proposed = struct;
@@ -79,7 +80,7 @@ for r = 1:roundArch.numRound
         end
     end % if recluster
     
-    plot_kmeans
+%     plot_kmeans
     locAlive = find(~p_clusterModel.nodeArch.dead);
     for i = locAlive
         p_clusterModel.nodeArch.node(i).type    = 'N'; 
@@ -168,7 +169,7 @@ for r = 1:roundArch.numRound
     p_clusterModel.nodeArch.avgEnergy = avgEnergy; % averagy
 %     p_clusterModel.clusterNode.avgEnergyCluster = avgEnergyCluster; % averagy
     %%% plot STATISTICS
-    par_proposed = plotResults(p_clusterModel, r, par_proposed);
+    par_proposed = plotResults(p_clusterModel, r, par_proposed, roundArch);
     
     %%% plot network deployment (first round)
     if r == 1
@@ -229,7 +230,7 @@ for r = 1:roundArch.numRound
     clusterModel.nodeArch.numAlive = length(locAlive);
     
     %%% plot result
-    par_leach = plotResults(clusterModel, r, par_leach);
+    par_leach = plotResults(clusterModel, r, par_leach, roundArch);
     
     %%% FND and HND and LND 
     if (clusterModel.nodeArch.numDead >= 1) && FND_flag % FND
@@ -282,7 +283,7 @@ for r = 1:roundArch.numRound
     h_clusterModel.nodeArch.numAlive = length(locAlive);
     
     %%% plot result
-    par_hhca = plotResults(h_clusterModel, r, par_hhca);
+    par_hhca = plotResults(h_clusterModel, r, par_hhca, roundArch);
     
     %%% FND and HND and LND 
     if (h_clusterModel.nodeArch.numDead >= 1) && FND_flag % FND
@@ -316,6 +317,6 @@ createfigure(numNodes,initEnergy,...
              p_clusterModel.LND,clusterModel.LND,h_clusterModel.LND,... % round
              par_proposed.energy, par_leach.energy, par_hhca.energy,...
              par_proposed.numAlive, par_leach.numAlive, par_hhca.numAlive,...
-             p_clusterModel.FND, p_clusterModel.HND,clusterModel.FND, clusterModel.HND,h_clusterModel.FND, h_clusterModel.HND);
-%              par_proposed.packetToBS, par_leach.packetToBS, par_hhca.packetToBS
+             p_clusterModel.FND, p_clusterModel.HND,clusterModel.FND, clusterModel.HND,h_clusterModel.FND, h_clusterModel.HND,...
+             par_proposed.packetToBS, par_leach.packetToBS, par_hhca.packetToBS);
 

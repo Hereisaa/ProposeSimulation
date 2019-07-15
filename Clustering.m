@@ -24,7 +24,7 @@ function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Tem
     [cluster, centr] = usingKmeans(Temp_xy, noOfk, canopy_centr_node);
 
     % mark cluster id (CID) of each node
-    for i = 1:notLayerZero
+    for i = 1:size(Temp_xy,2)
         locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
         % find minmum dis node to centr
         % [dist, id]
@@ -35,7 +35,7 @@ function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Tem
     
 
     % create [cluster-member] noOfk by no. of all nodes relation matrix     use find(clusterMember(noOfk,:))
-    clusterMember = zeros(1, nodeArch.init_numNodes);
+    clusterMember = zeros(noOfk, nodeArch.init_numNodes);
     for i = 1:noOfk
         for j = 1:nodeArch.init_numNodes
             if nodeArch.node(j).CID == i
@@ -43,6 +43,21 @@ function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Tem
             end
         end
     end
+    
+    centr = zeros(2,noOfk);
+    for i = 1:noOfk
+        num = length(find(clusterMember(i,:)));
+        x = 0;
+        y = 0;
+        for j = find(clusterMember(i,:))
+            x = x + nodeArch.node(j).x;
+            y = y + nodeArch.node(j).y;
+        end
+        centr(1,i) = x / num;
+        centr(2,i) = y / num;
+    end
+    
+    
     
     Model.centr = centr;
     Model.numCluster = noOfk;

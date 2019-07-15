@@ -1,5 +1,5 @@
 function createfigure(N, E, X1, X2, X3, proposedEnergy, leachEnergy, hhcaEnergy, proposedAlive, leachAlive, hhcaAlive, ...
-                        pFND, pHND, FND, HND, hFND, hHND, C1, C2, C3)
+                        pFND, pHND, FND, HND, hFND, hHND, packetToBS, packetToBS2, packetToBS3)
 %CREATEFIGURE(X1,Y1,Y2,Y3)
 %  N :  number of nodes
 %  E :  initial energy
@@ -42,7 +42,7 @@ for k=1:1
     p(3).LineWidth =1; p(3).MarkerSize=8; p(3).Color=color4;
     axis([0,xr,0,N*E]);
     set(gca,'XTick',[0:200:xr]);
-    set(gca,'YTick',[0:30:N*E]);
+    set(gca,'YTick',[0:25:N*E]);
     % Create x-label y-label
     xlabel('Round','FontWeight','bold','FontSize',15);
     ylabel('Residual energy of WSN','FontWeight','bold','FontSize',15);
@@ -89,7 +89,8 @@ end
 for k=1:1
     figure
     hold on;
-    xr = ceil(X1/200)*200;
+%     xr = ceil(X1/200)*200;
+    xr = 1200;
     Y1 = zeros(1,xr+1);
     Y2 = zeros(1,xr+1);
     Y3 = zeros(1,xr+1);
@@ -107,11 +108,11 @@ for k=1:1
     p(3).LineWidth =1; p(3).MarkerSize=8; p(3).Color=color4;
     axis([0,ceil(xr/200)*200,0,N]);
     set(gca,'XTick',[0:200:ceil(xr/200)*200]);
-    set(gca,'YTick',[0:50:N]);
+    set(gca,'YTick',[0:25:N]);
     % Create x-label y-label
     xlabel('Round','FontWeight','bold','FontSize',15);
     ylabel('Number of alive nodes','FontWeight','bold','FontSize',15);
-    legend({'LEACH','HHCA','Proposed'},'FontSize',12,'Location','SouthWest');
+    legend({'LEACH','HHCA','Proposed'},'FontSize',12,'Location','NorthEast');
     % Create title
     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
         'FontSize',12,...
@@ -128,24 +129,61 @@ end
 
 
 
+
+%%%%%% Throughput vs. round
+for k=1:1
+    figure
+    hold on;
+%     xr = ceil(X1/200)*200;
+    xr = 1200;
+    Y1 = zeros(1,xr+1);
+    Y2 = zeros(1,xr+1);
+    Y3 = zeros(1,xr+1);
+    Y1(1:xr+1) = packetToBS(X1);
+    Y2(1:xr+1) = packetToBS2(X2);
+    Y3(1:xr+1) = packetToBS3(X3);
+    Y1(1:X1) = packetToBS(1:X1); %proposed
+    Y2(1:X2) = packetToBS2(1:X2); %leach
+    Y3(1:X3) = packetToBS3(1:X3); %hhca
+    
+    X = 0:100:xr;
+    Z = 1:100:xr+1;
+    p = plot(X,Y2(Z),'--+',...
+             X,Y3(Z),'--s',...
+             X,Y1(Z),'-o');
+    p(1).LineWidth =1; p(1).MarkerSize=8; p(1).Color=color1;
+    p(2).LineWidth =1; p(2).MarkerSize=8; p(2).Color=color2;
+    p(3).LineWidth =1; p(3).MarkerSize=8; p(3).Color=color4;
+%     axis([0,ceil(xr/200)*200,0,ceil(xr/200)*200*6400]);
+%     set(gca,'XTick',[0:200:ceil(xr/200)*200]);
+%     set(gca,'YTick',[0:6400:ceil(xr/200)*200]);
+    % Create x-label y-label
+    xlabel('Round','FontWeight','bold','FontSize',15);
+    ylabel('Throughput','FontWeight','bold','FontSize',15);
+    legend({'LEACH','HHCA','Proposed'},'FontSize',12,'Location','SouthEast');
+    % Create title
+    title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
+        'FontSize',12,...
+        'FontName','Cambria');
+    grid on
+    box on
+    s=strcat(folder,'Throughput');
+    savefig(s);
+    s=strcat(s,'.png');
+    saveas(gcf,s);
+%     % Create plot
+%     p = plot(X1,C1,X2,C2,X3,C3,'LineWidth',1);
+%     p(1).Color=[0 0 1]; p(2).Color=[0 0 0]; p(3).Color=[1 0 0];
 % 
-% %%%%%% Throughput vs. round
-% figure
-% % Create plot
-% p = plot(X1,C1,X2,C2,X3,C3,'LineWidth',1);
-% p(1).Color=[0 0 1]; p(2).Color=[0 0 0]; p(3).Color=[1 0 0];
+%     % Create x-label y-label
+%     xlabel('Round','FontWeight','bold','FontSize',11,'FontName','Cambria');
+%     ylabel('# of packets sent to BS nodes','FontWeight','bold','FontSize',11,'FontName','Cambria');
 % 
-% % Create x-label y-label
-% xlabel('Round','FontWeight','bold','FontSize',11,'FontName','Cambria');
-% ylabel('# of packets sent to BS nodes','FontWeight','bold','FontSize',11,'FontName','Cambria');
-% 
-% % Create title
-% title('Number of packet sent to BS','FontWeight','bold',...
-%     'FontSize',12,...
-%     'FontName','Cambria');
-% 
-% grid on
-% box on
+%     % Create title
+%     title('Number of packet sent to BS','FontWeight','bold',...
+%         'FontSize',12,...
+%         'FontName','Cambria');
+end
 
 
 
