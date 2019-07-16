@@ -22,18 +22,23 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
         case{'leach'}
             % run leach.m
             [nodeArch, clusterNode, numCluster] = feval(clusterFun, clusterModel, clusterFunParam);
-            
-  
-            
+
             clusterModel.nodeArch = nodeArch;       % new architecture of nodes
             clusterModel.clusterNode = clusterNode; % CHs
             clusterModel.numCluster = numCluster; % number of the CHs
+            
+        case{'TLleach'}
+            % run leach.m
+            [nodeArch, clusterNode, numCluster] = feval(clusterFun, clusterModel, clusterFunParam);
+
+            clusterModel.nodeArch = nodeArch;       % new architecture of nodes
+            clusterModel.clusterNode = clusterNode; % CHs
+            clusterModel.numCluster = numCluster; % number of the CHs
+            
         case{'hhca'}     
             % run hhca.m
             [nodeArch, clusterNode, gridNode, numCluster, numGrid] = feval(clusterFun, clusterModel, clusterFunParam, k);
-            
-            
-            
+
             clusterModel.noOfk = k;
             clusterModel.nodeArch = nodeArch;       % new architecture of nodes
             clusterModel.clusterNode = clusterNode; % CHs

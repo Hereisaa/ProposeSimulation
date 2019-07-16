@@ -24,34 +24,11 @@ function Model = dissEnergyCH(Model, roundArch, netArch)
     Efs = netArch.Energy.freeSpace;
     packetLength = roundArch.packetLength;
     ctrPacketLength = roundArch.ctrPacketLength;
-
-%     for i = 1:n
-%         chNo = Model.clusterNode.no(i);
-% 
-% %         Dist = Model.clusterNode.distance(i); % to BS
-%         Dist = calDistance(Model.nodeArch.node(chNo).x, Model.nodeArch.node(chNo).y,...
-%                         Model.nodeArch.node(chNo).parent.x, Model.nodeArch.node(chNo).parent.y);
-% 
-%         energy = Model.nodeArch.node(chNo).energy;
-% 
-%         % energy for aggregation & Rx 
-%         energy = energy - (packetLength * ERX * Model.nodeArch.node(chNo).child + ...
-%                  packetLength * EDA * (Model.nodeArch.node(chNo).child + 1));
-% 
-%         % energy for transferring
-%         if(Dist >= d0)
-%              Model.nodeArch.node(chNo).energy = energy - ...
-%                  (ETX * packetLength + Emp * packetLength * (Dist ^ 4));
-%         else
-%              Model.nodeArch.node(chNo).energy = energy - ...
-%                  (ETX * packetLength + Efs * packetLength * (Dist ^ 2));
-%         end
-%     end
     
     locAlive = find(~Model.nodeArch.dead); % find the nodes that are alive
     for i = locAlive % search in alive nodes
         %find Associated CH for each normal node
-        if (strcmp(Model.nodeArch.node(i).type, 'C')  &&  Model.nodeArch.node(i).energy > 0)
+        if (strcmp(Model.nodeArch.node(i).type, 'Cv2')  &&  Model.nodeArch.node(i).energy > 0)
             Dist = calDistance(Model.nodeArch.node(i).x, Model.nodeArch.node(i).y,...
                         Model.nodeArch.node(i).parent.x, Model.nodeArch.node(i).parent.y);
             energy = Model.nodeArch.node(i).energy;
