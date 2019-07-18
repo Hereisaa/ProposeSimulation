@@ -1,4 +1,4 @@
-function [ result ] = calSimilarities(S_xy, S_id, max_dist ,similaritySigma)
+function [ result ] = calSimilarities(Model, S_xy, S_id, max_dist ,similaritySigma)
 %SIMILARIT Summary of this function goes here
 %   Temp_xy ,Temp_index 
 %   S_xy    ,S_id       ,similaritySigma
@@ -12,6 +12,7 @@ function [ result ] = calSimilarities(S_xy, S_id, max_dist ,similaritySigma)
 %             end
         end
     end
+    
     % standardization
     re_location_differences=[];
     for i=1:length(location_differences)
@@ -23,7 +24,8 @@ function [ result ] = calSimilarities(S_xy, S_id, max_dist ,similaritySigma)
     for i=1:length(S_xy)
         for j=1:length(S_xy)
             sDist=calDistance(S_xy(1,i), S_xy(2,i), S_xy(1,j), S_xy(2,j));
-            if (i==j || sDist > max_dist)%
+            maxDist=calDistance(S_xy(1,i), Model.netArch.Sink.x, S_xy(1,j),Model.netArch.Sink.y);
+            if ((i==j) || (sDist > 87))
                 similarity_matrix(i,j)=0;
             else
                 rescale_dist=(sDist-min(location_differences))/(max(location_differences)-min(location_differences));

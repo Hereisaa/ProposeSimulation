@@ -11,10 +11,10 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     end
 
     %%% cal avg. para
-    nodeArch.SCH = zeros(1, nodeArch.init_numNodes);
-    nodeArch.SRN = zeros(1, nodeArch.init_numNodes);
-    nodeArch.maxSCH = zeros(noOfk, 2);
-    nodeArch.maxSRN = zeros(noOfk, 2);
+    SCH = zeros(1, nodeArch.init_numNodes);
+    SRN = zeros(1, nodeArch.init_numNodes);
+    maxSCH = zeros(noOfk, 2);
+    maxSRN = zeros(noOfk, 2);
     E_avg        = zeros(noOfk, 1);
     d_toCentr    = zeros(noOfk, 1);
     d_toBS       = zeros(noOfk, 1);
@@ -80,8 +80,8 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     %%% cal SCH SRN ( without layer 0 )
     for i =1:nodeArch.init_numNodes
         if ~isempty(nodeArch.node(i).CID)
-            nodeArch.SCH(i) = 0;
-            nodeArch.SCH(i) = 0;
+            SCH(i) = 0;
+            SCH(i) = 0;
             nCID            = nodeArch.node(i).CID;
             E_res           = nodeArch.node(i).energy;
 
@@ -91,26 +91,27 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
             [ calSCH, calSRN ] = calSelection( E_res, E_avg(nCID,1), E_max(nCID,1), E_min(nCID,1), d_Centr, d_toCentr(nCID,1), d_BS, d_toBS(nCID,1),...
                                     maxToCentr(nCID,1), minToCentr(nCID,1), maxToBS(nCID,1), minToBS(nCID,1));
             
-            nodeArch.SCH(i) = calSCH;
-            nodeArch.SRN(i) = calSRN;
+            SCH(i) = calSCH;
+            SRN(i) = calSRN;
+        else
+            SCH(i) = 0;
+            SCH(i) = 0;
         end
     end
 
     %%% Find maxSCH and maxSRN
     for i =1:noOfk
-        cm = find(Model.clusterMember(i,:));
+        cm = find(Model.clusterMember(i,:));     
         if ~isempty(cm)
-            [SCH, id] = max(nodeArch.SCH(1, cm));
-            id = cm(id);
-            nodeArch.maxSCH(i,1) = id(1);
-            nodeArch.maxSCH(i,2) = SCH(1);
+            [res, indexSCH] = max(SCH(cm));
+            indexSCH = cm(indexSCH);
+            maxSCH(i,1) = indexSCH(1);
+            maxSCH(i,2) = res(1);
 
-
-            cm = find(Model.clusterMember(i,:));
-            [SRN, id] = max(nodeArch.SRN(1, cm));
-            id = cm(id);
-            nodeArch.maxSRN(i,1) = id(1);
-            nodeArch.maxSRN(i,2) = SCH(1);
+            [res, indexSRN] = max(SRN(cm));
+            indexSRN = cm(indexSRN);
+            maxSRN(i,1) = indexSRN(1);
+            maxSRN(i,2) = res(1);
         end
     end
     
@@ -126,35 +127,36 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     %         centr_xy = [centr(1,i), centr(2,i)];
     %         [minToCentr, index] = min(sqrt(sum((repmat(centr_xy, length(Y), 1) - locAlive_loc)' .^ 2)));
     %         id = Y(index);
+            if ~isempty(find(Model.clusterMember(i,:)))
+                %%% Max SCH %%%
+                id = maxSCH(i,1);
+                % becomes CH
+                nodeArch.node(id).type = 'C';
+                % clusterNode struct
+                clusterNode.no(i) = id;
 
-            %%% Max SCH %%%
-            id = nodeArch.maxSCH(i,1);
-            % becomes CH
-            nodeArch.node(id).type = 'C';
-            % clusterNode struct
-            clusterNode.no(i) = id;
+                clusterNode.CID(i) = nodeArch.node(id).CID;
+                clusterNode.loc(i, 1) = nodeArch.node(id).x;
+                clusterNode.loc(i, 2) = nodeArch.node(id).y;
+                clusterNode.distance(i) = sqrt((clusterNode.loc(i, 1) - netArch.Sink.x)^2 + (clusterNode.loc(i, 2) - netArch.Sink.y)^2);   
+                clusterNode.countCHs = noOfk;
 
-            clusterNode.CID(i) = nodeArch.node(id).CID;
-            clusterNode.loc(i, 1) = nodeArch.node(id).x;
-            clusterNode.loc(i, 2) = nodeArch.node(id).y;
-            clusterNode.distance(i) = sqrt((clusterNode.loc(i, 1) - netArch.Sink.x)^2 + (clusterNode.loc(i, 2) - netArch.Sink.y)^2);   
-            clusterNode.countCHs = noOfk;
+        %         % temp
+        %         centr_node(i) = nodeArch.node(id);
+        %         centr_node_index(i) = id;
 
-    %         % temp
-    %         centr_node(i) = nodeArch.node(id);
-    %         centr_node_index(i) = id;
-
-            %%% Max SRN %%%
-            id = nodeArch.maxSRN(i,1);
-            % becomes RN
-            nodeArch.node(id).type = 'R';
-            % relayNode struct
-            relayNode.no(i) = id;
-            relayNode.CID(i) = nodeArch.node(id).CID;
-            relayNode.loc(i, 1) = nodeArch.node(id).x;
-            relayNode.loc(i, 2) = nodeArch.node(id).y;
-            relayNode.distance(i) = sqrt((relayNode.loc(i, 1) - netArch.Sink.x)^2 + (relayNode.loc(i, 2) - netArch.Sink.y)^2);   
-            relayNode.countRNs = noOfk;
+                %%% Max SRN %%%
+                id = maxSRN(i,1);
+                % becomes RN
+                nodeArch.node(id).type = 'R';
+                % relayNode struct
+                relayNode.no(i) = id;
+                relayNode.CID(i) = nodeArch.node(id).CID;
+                relayNode.loc(i, 1) = nodeArch.node(id).x;
+                relayNode.loc(i, 2) = nodeArch.node(id).y;
+                relayNode.distance(i) = sqrt((relayNode.loc(i, 1) - netArch.Sink.x)^2 + (relayNode.loc(i, 2) - netArch.Sink.y)^2);   
+                relayNode.countRNs = noOfk;
+            end
         end
     end
 

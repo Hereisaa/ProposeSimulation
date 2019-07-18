@@ -4,7 +4,7 @@ function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Tem
     nodeArch = Model.nodeArch;
     
     %%% Determine number of k using [Canopy algo].
-    [ k, canopy_centr, canopy_centr_node ] = usingCanopy( Temp_xy, T1, T2 ); % T1 > T2 
+%     [ k, canopy_centr, canopy_centr_node ] = usingCanopy( Temp_xy, T1, T2 ); % T1 > T2 
     % Temp_xy is a 2 by n metrix with xy
     % Temp_index is a 1 by n metrix with id 
     % plot_canopy
@@ -16,12 +16,12 @@ function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Tem
     % %%%
     
     %%% Determine number of k using [Spectral Clustering algo].
-%     [noOfk, cluster, centr] = usingSpectralClustering( Temp_xy, Temp_index );
-%     disp(noOfk);
+    [noOfk, cluster, centr] = usingSpectralClustering(Model, Temp_xy, Temp_index );
+    disp(noOfk);
     
     %%% Clustering using [K-means algo].   
-    noOfk = k; % no. of cluster
-    [cluster, centr] = usingKmeans(Temp_xy, noOfk, canopy_centr_node);
+%     noOfk = k; % no. of cluster
+%     [cluster, centr] = usingKmeans(Temp_xy, noOfk, canopy_centr_node);
 
     % mark cluster id (CID) of each node
     for i = 1:size(Temp_xy,2)

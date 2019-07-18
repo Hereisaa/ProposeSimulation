@@ -1,300 +1,156 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                      %
-% SEP: A Stable Election Protocol for clustered                        %
-%      heterogeneous wireless sensor networks                          %
-%                                                                      %
-% (c) Georgios Smaragdakis                                             %
-% WING group, Computer Science Department, Boston University           %
-%                                                                      %
-% You can find full documentation and related information at:          %
-% http://csr.bu.edu/sep                                                %
-%                                                                      %  
-% To report your comment or any bug please send e-mail to:             %
-% gsmaragd@cs.bu.edu                                                   %
-%                                                                      %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% MAIN
+clc, clear all, close all
+%% PARAMETER
+numNodes   = 300;  % number of nodes 100
+Length     = 300;  % network length 300
+Width      = 300;  % network width 300
+d0         = 87;  % tx distance threshold
+sinkX    = 150;
+sinkY    = 300;
+d_th = 87;
+initEnergy  = 0.5;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                      %
-% This is the LEACH [1] code we have used.                             %
-% The same code can be used for FAIR if m=1                            %
-%                                                                      %
-% [1] W.R.Heinzelman, A.P.Chandrakasan and H.Balakrishnan,             %
-%     "An application-specific protocol architecture for wireless      % 
-%      microsensor networks"                                           % 
-%     IEEE Transactions on Wireless Communications, 1(4):660-670,2002  %
-%                                                                      %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+transEnergy = 50*    0.000000001;
+recEnergy   = 50*    0.000000001;
+fsEnergy    = 10*    0.000000000001;
+mpEnergy    = 0.0013*0.000000000001;
+aggrEnergy  = 5*     0.000000001;
+packetLength    = 6400;
+ctrPacketLength = 200;
+r       = 99999;
 
-clear;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+netArch       = newNetwork(Length, Width, sinkX, sinkY, initEnergy, transEnergy, recEnergy, fsEnergy, mpEnergy, aggrEnergy);
+roundArch     = newRound(r, packetLength, ctrPacketLength);
+init_nodeArch = newNodes(netArch, numNodes);
 
-%Field Dimensions - x and y maximum (in meters)
-xm=100;
-ym=100;
+%% PROPOSED ROUND LOOP
+p_clusterModel.nodeArch   = init_nodeArch; % node's arch for Proposed
+p_clusterModel.netArch   = netArch;
+p_clusterModel.clusterFun = 'proposed';
+p_clusterModel.nodeArch.init_numNodes = numNodes;
+par_proposed = struct;
+recluster    = true;
+reselect     = true;
+T1 = 100;
+T2 = 87;
+noOfk = 0;
+centr = [];
 
-%x and y Coordinates of the Sink
-sink.x=0.5*xm;
-sink.y=0.5*ym;
+FND_flag = 1; HND_flag = 1; LND_flag = 1; 
+HND9 =1;
 
-%Number of Nodes in the field
-n=100
-
-%Optimal Election Probability of a node
-%to become cluster head
-p=0.1;
-
-%Energy Model (all values in Joules)
-%Initial Energy 
-Eo=0.5;
-%Eelec=Etx=Erx
-ETX=50*0.000000001;
-ERX=50*0.000000001;
-%Transmit Amplifier types
-Efs=10*0.000000000001;
-Emp=0.0013*0.000000000001;
-%Data Aggregation Energy
-EDA=5*0.000000001;
-
-%Values for Hetereogeneity
-%Percentage of nodes than are advanced
-m=0.1;
-%\alpha
-a=1;
-
-%maximum number of rounds
-rmax=9999
-
-%%%%%%%%%%%%%%%%%%%%%%%%% END OF PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%
-
-%Computation of do
-do=sqrt(Efs/Emp);
-
-%Creation of the random Sensor Network
-figure(1);
-for i=1:1:n
-    S(i).xd=rand(1,1)*xm;
-    XR(i)=S(i).xd;
-    S(i).yd=rand(1,1)*ym;
-    YR(i)=S(i).yd;
-    S(i).G=0;
-    %initially there are no cluster heads only nodes
-    S(i).type='N';
-   
-    temp_rnd0=i;
-    %Random Election of Normal Nodes
-    if (temp_rnd0>=m*n+1) 
-        S(i).E=Eo;
-        S(i).ENERGY=0;
-        plot(S(i).xd,S(i).yd,'o');
-        hold on;
-    end
-    %Random Election of Advanced Nodes
-    if (temp_rnd0<m*n+1)  
-        S(i).E=Eo*(1+a)
-        S(i).ENERGY=1;
-        plot(S(i).xd,S(i).yd,'+');
-        hold on;
-    end
-end
-
-S(n+1).xd=sink.x;
-S(n+1).yd=sink.y;
-plot(S(n+1).xd,S(n+1).yd,'x');
+for r = 1:roundArch.numRound  
+    p_clusterModel.r = r;
+    Temp_xy = [];
+    Temp_index = [];
+    notLayerZero = 0;
+    cluster = [];
+%     centr = [];
+    centr_node = [];
     
-        
-%First Iteration
-figure(1);
+    % first time or recluster
+    if recluster == true
+        p_clusterModel.numCluster = 0;
+        p_clusterModel.clusterNode.no = [];
+        p_clusterModel.clusterNode.CID = [];
+        p_clusterModel.clusterNode.loc = [];
+        p_clusterModel.clusterNode.distance = [];   
+        p_clusterModel.clusterNode.countCHs = 0;
 
-%counter for CHs
-countCHs=0;
-%counter for CHs per round
-rcountCHs=0;
-cluster=1;
-
-countCHs;
-rcountCHs=rcountCHs+countCHs;
-flag_first_dead=0;
-
-for r=0:1:rmax
-    r
-
-  %Operation for epoch
-  if(mod(r, round(1/p) )==0)
-    for i=1:1:n
-        S(i).G=0;
-        S(i).cl=0;
-    end
-  end
-
-hold off;
-
-%Number of dead nodes
-dead=0;
-%Number of dead Advanced Nodes
-dead_a=0;
-%Number of dead Normal Nodes
-dead_n=0;
-
-%counter for bit transmitted to Bases Station and to Cluster Heads
-packets_TO_BS=0;
-packets_TO_CH=0;
-%counter for bit transmitted to Bases Station and to Cluster Heads 
-%per round
-PACKETS_TO_CH(r+1)=0;
-PACKETS_TO_BS(r+1)=0;
-
-figure(1);
-
-for i=1:1:n
-    %checking if there is a dead node
-    if (S(i).E<=0)
-        plot(S(i).xd,S(i).yd,'red .');
-        dead=dead+1;
-        if(S(i).ENERGY==1)
-            dead_a=dead_a+1;
+        locAlive = find(~p_clusterModel.nodeArch.dead); % alive node's index
+        % reset
+        for i = locAlive
+            p_clusterModel.nodeArch.node(i).type    = 'N';                
+            p_clusterModel.nodeArch.node(i).parent  = [];
+            p_clusterModel.nodeArch.node(i).CID     = [];
+            p_clusterModel.nodeArch.node(i).child   = 0;
         end
-        if(S(i).ENERGY==0)
-            dead_n=dead_n+1;
+        %%% Network Dimension Phase
+        [ p_clusterModel, Temp_xy, Temp_index, notLayerZero ] = NetworkDimension( p_clusterModel, d_th, netArch );
+        if ~isempty(Temp_xy) && size(Temp_xy,2)>1
+            %%% Clustering Phase
+            [ p_clusterModel, noOfk, cluster, centr ] = Clustering( p_clusterModel, notLayerZero, Temp_xy, Temp_index, T1, T2 );
         end
-        hold on;    
-    end
-    if S(i).E>0
-        S(i).type='N';
-        if (S(i).ENERGY==0)  
-        plot(S(i).xd,S(i).yd,'o');
-        end
-        if (S(i).ENERGY==1)  
-        plot(S(i).xd,S(i).yd,'+');
-        end
-        hold on;
-    end
-end
-plot(S(n+1).xd,S(n+1).yd,'x');
-
-
-STATISTICS(r+1).DEAD=dead;
-DEAD(r+1)=dead;
-DEAD_N(r+1)=dead_n;
-DEAD_A(r+1)=dead_a;
-
-%When the first node dies
-if (dead==1)
-    if(flag_first_dead==0)
-        first_dead=r
-        flag_first_dead=1;
-    end
-end
-
-countCHs=0;
-cluster=1;
-for i=1:1:n
-   if(S(i).E>0)
-   temp_rand=rand;     
-   if ( (S(i).G)<=0)
-
- %Election of Cluster Heads
- if(temp_rand<= (p/(1-p*mod(r,round(1/p)))))
-            countCHs=countCHs+1;
-            packets_TO_BS=packets_TO_BS+1;
-            PACKETS_TO_BS(r+1)=packets_TO_BS;
-            
-            S(i).type='C';
-            S(i).G=round(1/p)-1;
-            C(cluster).xd=S(i).xd;
-            C(cluster).yd=S(i).yd;
-            plot(S(i).xd,S(i).yd,'k*');
-            
-            distance=sqrt( (S(i).xd-(S(n+1).xd) )^2 + (S(i).yd-(S(n+1).yd) )^2 );
-            C(cluster).distance=distance;
-            C(cluster).id=i;
-            X(cluster)=S(i).xd;
-            Y(cluster)=S(i).yd;
-            cluster=cluster+1;
-            
-            %Calculation of Energy dissipated
-            distance;
-            if (distance>do)
-                S(i).E=S(i).E- ( (ETX+EDA)*(4000) + Emp*4000*( distance*distance*distance*distance )); 
-            end
-            if (distance<=do)
-                S(i).E=S(i).E- ( (ETX+EDA)*(4000)  + Efs*4000*( distance * distance )); 
-            end
-        end     
+        recluster = false;
+    end % if recluster
     
+%     plot_kmeans
+    locAlive = find(~p_clusterModel.nodeArch.dead);
+    for i = locAlive
+        p_clusterModel.nodeArch.node(i).type    = 'N'; 
+        p_clusterModel.nodeArch.node(i).parent  = [];
+        p_clusterModel.nodeArch.node(i).child   = 0;
     end
-  end 
-end
+    %%% CH & RN Selection Phase
+    [ p_clusterModel ] = CHRNselection( p_clusterModel, locAlive, p_clusterModel.numCluster, p_clusterModel.centr, netArch );
 
-STATISTICS(r+1).CLUSTERHEADS=cluster-1;
-CLUSTERHS(r+1)=cluster-1;
+    %%% Transmission Phase
+    p_clusterModel = dissEnergyCM(p_clusterModel, roundArch, netArch);
+    p_clusterModel = dissEnergyCH(p_clusterModel, roundArch, netArch);
+    p_clusterModel = dissEnergyRN(p_clusterModel, roundArch, netArch);
 
-%Election of Associated Cluster Head for Normal Nodes
-for i=1:1:n
-   if ( S(i).type=='N' && S(i).E>0 )
-     if(cluster-1>=1)
-       min_dis=sqrt( (S(i).xd-S(n+1).xd)^2 + (S(i).yd-S(n+1).yd)^2 );
-       min_dis_cluster=1;
-       for c=1:1:cluster-1
-           temp=min(min_dis,sqrt( (S(i).xd-C(c).xd)^2 + (S(i).yd-C(c).yd)^2 ) );
-           if ( temp<min_dis )
-               min_dis=temp;
-               min_dis_cluster=c;
-           end
-       end
-       
-       %Energy dissipated by associated Cluster Head
-            min_dis;
-            if (min_dis>do)
-                S(i).E=S(i).E- ( ETX*(4000) + Emp*4000*( min_dis * min_dis * min_dis * min_dis)); 
-            end
-            if (min_dis<=do)
-                S(i).E=S(i).E- ( ETX*(4000) + Efs*4000*( min_dis * min_dis)); 
-            end
-        %Energy dissipated
-        if(min_dis>0)
-          S(C(min_dis_cluster).id).E = S(C(min_dis_cluster).id).E- ( (ERX + EDA)*4000 ); 
-         PACKETS_TO_CH(r+1)=n-dead-cluster+1; 
+    
+    % check new dead node
+    locAlive = find(~p_clusterModel.nodeArch.dead);
+
+    for i = locAlive
+        if p_clusterModel.nodeArch.node(i).energy <= 0
+            p_clusterModel.nodeArch.node(i).type = 'D';
+            p_clusterModel.nodeArch.dead(i) = 1;
+            p_clusterModel.nodeArch.node(i).parent = []; 
+            p_clusterModel.nodeArch.node(i).CID = []; 
+            p_clusterModel.nodeArch.node(i).child = 0; 
+
+            recluster = true; % have to exec new clustering phase 
         end
+    end
 
-       S(i).min_dis=min_dis;
-       S(i).min_dis_cluster=min_dis_cluster;
-           
-   end
- end
-end
-hold on;
-
-countCHs;
-rcountCHs=rcountCHs+countCHs;
-
-
-
-%Code for Voronoi Cells
-%Unfortynately if there is a small
-%number of cells, Matlab's voronoi
-%procedure has some problems
-
-%[vx,vy]=voronoi(X,Y);
-%plot(X,Y,'r*',vx,vy,'b-');
-% hold on;
-% voronoi(X,Y);
-% axis([0 xm 0 ym]);
-
-end
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   STATISTICS    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                                     %
-%  DEAD  : a rmax x 1 array of number of dead nodes/round 
-%  DEAD_A : a rmax x 1 array of number of dead Advanced nodes/round
-%  DEAD_N : a rmax x 1 array of number of dead Normal nodes/round
-%  CLUSTERHS : a rmax x 1 array of number of Cluster Heads/round
-%  PACKETS_TO_BS : a rmax x 1 array of number packets send to Base Station/round
-%  PACKETS_TO_CH : a rmax x 1 array of number of packets send to ClusterHeads/round
-%  first_dead: the round where the first node died                   
-%                                                                                     %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
+    
+    % no of alive node
+    numAlive = length(locAlive);
+    
+    % avg energy of network
+    avgEnergy = 0;
+    for i = locAlive
+        avgEnergy = avgEnergy + p_clusterModel.nodeArch.node(i).energy;
+    end
+    avgEnergy = avgEnergy / length(locAlive);
+    
+    %%% STATISTICS
+    p_clusterModel.nodeArch.numDead = sum(p_clusterModel.nodeArch.dead);
+    p_clusterModel.nodeArch.numNode = numAlive; % number of Alive nodes
+    p_clusterModel.nodeArch.numAlive = numAlive; % number of Alive nodes
+    p_clusterModel.nodeArch.avgEnergy = avgEnergy; % averagy
+%     p_clusterModel.clusterNode.avgEnergyCluster = avgEnergyCluster; % averagy
+    %%% plot STATISTICS
+    par_proposed = plotResults(p_clusterModel, r, par_proposed, roundArch);
+    
+    %%% plot network deployment (first round)
+    if r == 1
+        plot_kmeans
+    end
+    
+    %%% FND and HND and LND 
+    if p_clusterModel.nodeArch.numDead > 0 && FND_flag
+        fprintf('[Proposed] ***FND*** round = %d.\n', r);
+        p_clusterModel.FND = r;
+        FND_flag = 0;
+        plot_kmeans
+%         deadId = find(p_clusterModel.nodeArch.dead);
+%         fprintf('DEAD loc = [ %f, %f ].\nid = %d\ntype = %s\n', ...
+%              p_clusterModel.nodeArch.node(deadId).x, p_clusterModel.nodeArch.node(deadId).y, deadId, p_clusterModel.nodeArch.node(deadId).type);
+    end
+    if (p_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag
+        p_clusterModel.HND = r;
+        fprintf('[Proposed] ***HND*** round = %d.\n', r);
+        HND_flag = 0;
+        plot_kmeans
+    end  
+    if (p_clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND_flag
+        p_clusterModel.LND = r;
+        fprintf('[Proposed] ***LND*** round = %d.\n', r);
+        LND_flag = 0;
+        break
+    end    
+end% for
