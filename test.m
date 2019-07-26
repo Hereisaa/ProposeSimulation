@@ -85,6 +85,7 @@ for r = 1:roundArch.numRound
     %%% CH & RN Selection Phase
     [ p_clusterModel ] = CHRNselection( p_clusterModel, locAlive, p_clusterModel.numCluster, p_clusterModel.centr, netArch );
 
+    plot_kmeans
     %%% Transmission Phase
     p_clusterModel = dissEnergyCM(p_clusterModel, roundArch, netArch);
     p_clusterModel = dissEnergyCH(p_clusterModel, roundArch, netArch);

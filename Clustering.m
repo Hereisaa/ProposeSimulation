@@ -1,13 +1,20 @@
-function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Temp_xy, Temp_index, T1, T2 )
+function [ Model, k, cluster, centr ] = Clustering( Model, notLayerZero, Temp_xy, Temp_index, T1, T2, para )
 % _Clustering Phase
 %
     nodeArch = Model.nodeArch;
-    
+    if para == 0
+        [ k, canopy_centr, canopy_centr_node ] = usingCanopy( Temp_xy, T1, T2 ); % T1 > T2 
+    else
+                   dBS        = sqrt((Model.netArch.Sink.x - Model.netArch.Yard.Length) ^ 2 + ...
+                           (Model.netArch.Sink.y - Model.netArch.Yard.Width) ^ 2);
+            k = clusterOptimum(Model.netArch, nodeArch, dBS); 
+    end
     %%% Determine number of k using [Canopy algo].
 %     [ k, canopy_centr, canopy_centr_node ] = usingCanopy( Temp_xy, T1, T2 ); % T1 > T2 
+%     fprintf('Canopy %d',k);
     % Temp_xy is a 2 by n metrix with xy
     % Temp_index is a 1 by n metrix with id 
-    % plot_canopy
+%     plot_canopy
 
     % %%% Determine number of k using [kOpt].
     % % notLayer0 = count;
@@ -16,12 +23,13 @@ function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Tem
     % %%%
     
     %%% Determine number of k using [Spectral Clustering algo].
-    [noOfk, cluster, centr] = usingSpectralClustering(Model, Temp_xy, Temp_index );
-    disp(noOfk);
+%     [noOfk, cluster, centr] = usingSpectralClustering(Model, Temp_xy, Temp_index);
+%     k = noOfk;
+%     k
     
     %%% Clustering using [K-means algo].   
-%     noOfk = k; % no. of cluster
-%     [cluster, centr] = usingKmeans(Temp_xy, noOfk, canopy_centr_node);
+    noOfk = k; % no. of cluster
+    [cluster, centr] = usingKmeans(Temp_xy, noOfk);
 
     % mark cluster id (CID) of each node
     for i = 1:size(Temp_xy,2)

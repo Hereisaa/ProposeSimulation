@@ -2,7 +2,8 @@
 %%
 figure(4), 
 grid on
-
+proposed_nodeArch = Model.nodeArch;
+netArch = Model.netArch;
 for i = 1:proposed_nodeArch.numNode
     nodeArch = proposed_nodeArch;
     switch num2str(proposed_nodeArch.node(i).CID)
@@ -56,7 +57,7 @@ for i = 1:length(canopy_centr_node)
 end
 
 %% BS and Layer
-d = d0;
+d = 87;
 x = d*cos(theta); 
 y = d*sin(theta);
 plot(netArch.Sink.x, netArch.Sink.y,'o', ...
