@@ -51,7 +51,25 @@ for r = 1:roundArch.numRound
 %     centr = [];
     centr_node = [];
     
-
+    %%% FND and HND and LND 
+    if p_clusterModel.nodeArch.numDead > 0 && FND_flag
+        fprintf('[Proposed] ***FND*** round = %d.\n', r);
+        p_clusterModel.FND = r;
+        FND_flag = 0;
+        plot_kmeans
+    end
+    if (p_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag
+        p_clusterModel.HND = r;
+        fprintf('[Proposed] ***HND*** round = %d.\n', r);
+        HND_flag = 0;
+        plot_kmeans
+    end  
+    if (p_clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND_flag
+        p_clusterModel.LND = r;
+        fprintf('[Proposed] ***LND*** round = %d.\n', r);
+        LND_flag = 0;
+        break
+    end  
     
     
     % first time or recluster
@@ -180,26 +198,7 @@ for r = 1:roundArch.numRound
         plot_kmeans
     end
     
-    %%% FND and HND and LND 
-    if p_clusterModel.nodeArch.numDead > 0 && FND_flag
-        fprintf('[Proposed] ***FND*** round = %d.\n', r);
-        p_clusterModel.FND = r;
-        FND_flag = 0;
-        plot_kmeans
-    end
-    if (p_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag
-        p_clusterModel.HND = r;
-        fprintf('[Proposed] ***HND*** round = %d.\n', r);
-        HND_flag = 0;
-        plot_kmeans
-    end  
-    if (p_clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND_flag
-        p_clusterModel.LND = r;
-        fprintf('[Proposed] ***LND*** round = %d.\n', r);
-        LND_flag = 0;
-        break
-    end  
-    
+  
 end% for
 
 
