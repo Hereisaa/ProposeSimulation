@@ -1,10 +1,10 @@
 %% MAIN
 clc, clear all, close all
 %% PARAMETER
-numNodes   = 300;  % number of nodes 100
+numNodes   = 100;  % number of nodes 100
 Length     = 300;  % network length 300
 Width      = 300;  % network width 300
-d0         = 87;  % tx distance threshold
+d0         = 0;  % tx distance threshold
 d_th = 87;
 % sinkX    = Length / 2;
 % sinkY    = Width / 2;
@@ -22,7 +22,7 @@ packetLength    = 4000;
 ctrPacketLength = 200;
 r       = 99999;
 
-
+for time = 1:10
 netArch       = newNetwork(Length, Width, sinkX, sinkY, initEnergy, transEnergy, recEnergy, fsEnergy, mpEnergy, aggrEnergy);
 roundArch     = newRound(r, packetLength, ctrPacketLength);
 init_nodeArch = newNodes(netArch, numNodes);
@@ -32,18 +32,19 @@ p_clusterModel.nodeArch   = init_nodeArch; % node's arch for Proposed
 p_clusterModel.netArch   = netArch;
 p_clusterModel.clusterFun = 'proposed';
 p_clusterModel.nodeArch.init_numNodes = numNodes;
-par_proposed = struct;
+% par_proposed = struct;
 p_clusterModel.recluster=true;
 recluster    = true;
 reselect     = true;
-T1 = 100;
-T2 = 87;
+T1 = 87;
+T2 = 60;
 noOfk = 0;
 centr = [];
 
 FND_flag = 1; HND_flag = 1; LND_flag = 1; 
 HND9 =1;
 
+par_p = struct;
 for r = 1:roundArch.numRound  
     p_clusterModel.r = r;
     Temp_xy = [];
@@ -175,7 +176,8 @@ for r = 1:roundArch.numRound
 %     p_clusterModel.clusterNode.avgEnergyCluster = avgEnergyCluster; % averagy
 
     %%% plot STATISTICS
-    par_proposed = plotResults(p_clusterModel, r, par_proposed, roundArch);
+    
+    par_p = plotResults(p_clusterModel, r, par_p, roundArch);
     
     %%% plot network deployment (first round)
     if r == 1
@@ -202,19 +204,20 @@ for r = 1:roundArch.numRound
         break
     end  
 end% for
+par_proposed(time) = par_p;
 
 
 
 %% LEACH ROUND LOOP
 clusterModel.nodeArch   = init_nodeArch; % node's arch for LEACH
 clusterModel.nodeArch.init_numNodes = numNodes;
-numAliveNode = numNodes;
-clusterModel.nodeArch.numAlive = numAliveNode;
+% numAliveNode = numNodes;
+clusterModel.nodeArch.numAlive = numNodes;
 p   = 0.05; % ratio of number of CH (default)
 FND_flag = 1; HND_flag = 1; LND_flag = 1;
 FND = 0; HND = 0; LND = 0;
-par_leach = struct;
 
+par_l = struct;
 for r = 1:roundArch.numRound
     
     
@@ -231,20 +234,20 @@ for r = 1:roundArch.numRound
     clusterModel.nodeArch.numAlive = length(locAlive);
     
     %%% plot result
-    par_leach = plotResults(clusterModel, r, par_leach, roundArch);
+    par_l = plotResults(clusterModel, r, par_l, roundArch);
     
     %%% FND and HND and LND 
     if (clusterModel.nodeArch.numDead >= 1) && FND_flag % FND
         FND = r;
         fprintf('[LEACH] ***FND*** round = %d.\n', r);
         FND_flag = 0;
-        
+        plot_leach
     end
     if (clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag % HND
         HND = r;
         fprintf('[LEACH] ***HND*** round = %d.\n', r);
         HND_flag = 0;
-        
+        plot_leach
     end
     if (clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND_flag % LND
         LND = r;
@@ -256,6 +259,7 @@ end
 clusterModel.FND = FND;
 clusterModel.HND = HND;
 clusterModel.LND = LND;
+par_leach(time) = par_l;
 % plot_leach
 
 
@@ -264,10 +268,10 @@ tl_clusterModel.nodeArch   = init_nodeArch; % node's arch for LEACH
 tl_clusterModel.nodeArch.init_numNodes = numNodes;
 numAliveNode = numNodes;
 p   = 0.05; % ratio of number of CH (default)
-FND_flag = 1; HND_flag = 1; LND_flag = 1;
+FND_flag = 1; HND_flag = 1; LND_flag = 1;      TEST_flag = 1;
 FND = 0; HND = 0; LND = 0;
-par_TLleach = struct;
 
+par_TL = struct;
 for r = 1:roundArch.numRound
     
     
@@ -284,20 +288,24 @@ for r = 1:roundArch.numRound
     tl_clusterModel.nodeArch.numAlive = length(locAlive);
     
     %%% plot result
-    par_TLleach = plotResults(tl_clusterModel, r, par_TLleach, roundArch);
+    par_TL = plotResults(tl_clusterModel, r, par_TL, roundArch);
     
     %%% FND and HND and LND 
     if (tl_clusterModel.nodeArch.numDead >= 1) && FND_flag % FND
         FND = r;
         fprintf('[TL-LEACH] ***FND*** round = %d.\n', r);
         FND_flag = 0;
-        
+        plot_TLleach
     end
     if (tl_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag % HND
         HND = r;
         fprintf('[TL-LEACH] ***HND*** round = %d.\n', r);
         HND_flag = 0;
-        
+        plot_TLleach
+    end
+    if (tl_clusterModel.nodeArch.numDead >= init_nodeArch.numNode*0.8) && TEST_flag % HND
+        TEST_flag = 0;
+        plot_TLleach
     end
     if (tl_clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND_flag % LND
         LND = r;
@@ -309,6 +317,7 @@ end
 tl_clusterModel.FND = FND;
 tl_clusterModel.HND = HND;
 tl_clusterModel.LND = LND;
+par_TLleach(time) = par_TL;
 % plot_TLleach
 
 
@@ -318,11 +327,11 @@ h_clusterModel.nodeArch   = init_nodeArch; % node's arch for LEACH
 h_clusterModel.nodeArch.init_numNodes = numNodes;
 numAliveNode = numNodes;
 p   = 0.05; % ratio of number of CH (default)
-k = 2;% no. of GH
+k = 3;% no. of GH
 FND_flag = 1; HND_flag = 1; LND_flag = 1;
 FND = 0; HND = 0; LND = 0;
-par_hhca = struct;
 
+par_h = struct;
 for r = 1:roundArch.numRound
     
     %%% Clustering Phase
@@ -338,7 +347,7 @@ for r = 1:roundArch.numRound
     h_clusterModel.nodeArch.numAlive = length(locAlive);
     
     %%% plot result
-    par_hhca = plotResults(h_clusterModel, r, par_hhca, roundArch);
+    par_h = plotResults(h_clusterModel, r, par_h, roundArch);
     
     %%% FND and HND and LND 
     if (h_clusterModel.nodeArch.numDead >= 1) && FND_flag % FND
@@ -363,7 +372,10 @@ end
 h_clusterModel.FND = FND;
 h_clusterModel.HND = HND;
 h_clusterModel.LND = LND;
+par_hhca(time) = par_h;
 % plot_hhca
+
+end
 
 
 %%

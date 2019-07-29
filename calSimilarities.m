@@ -62,8 +62,8 @@ function [ result ] = calSimilarities(Model, S_xy, S_id, max_dist ,similaritySig
 %     
 %     for i=1:length(S_xy)
 %         for j=1:length(S_xy)
-%             sDist=calDistance(S_xy(1,i), S_xy(1,j), S_xy(2,i), S_xy(2,j));
-%             maxDist=calDistance(S_xy(1,i), Model.netArch.Sink.x, S_xy(1,j),Model.netArch.Sink.y);
+%             sDist=calDistance(S_xy(1,i),  S_xy(2,i), S_xy(1,j),S_xy(2,j));
+%             maxDist=calDistance(S_xy(1,i),  S_xy(1,j),Model.netArch.Sink.x,Model.netArch.Sink.y);
 %             if (i==j) || (sDist >= 87)
 %                 similarity_matrix(i,j)=0;
 %             else

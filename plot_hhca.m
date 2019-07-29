@@ -77,12 +77,8 @@ end
 % end
 
 %% BS and Layer
-plot(netArch.Sink.x, netArch.Sink.y,'o','MarkerSize',8, 'MarkerFaceColor', 'g');
-% % Layer 1 near BS 
-% plot(x + netArch.Sink.x, y + netArch.Sink.y,'Color', color3,'LineStyle',':');
-% % Layer 2 
-% plot(x*2 + netArch.Sink.x, y*2 + netArch.Sink.y,'Color', color3,'LineStyle',':');
-% % Layer 3 
-% plot(x*3 + netArch.Sink.x, y*3 + netArch.Sink.y,'Color', color3,'LineStyle',':');
-
+plot(netArch.Sink.x, netArch.Sink.y,'ko','MarkerSize',8, 'MarkerFaceColor', 'k');
+title('HHCA','FontWeight','bold',...
+        'FontSize',12,...
+        'FontName','Cambria');
 hold off

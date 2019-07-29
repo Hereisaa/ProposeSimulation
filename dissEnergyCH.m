@@ -9,8 +9,7 @@ function Model = dissEnergyCH(Model, roundArch, netArch)
     nodeArch = Model.nodeArch;
     cluster  = Model.clusterNode;
     
-    d0 = sqrt(netArch.Energy.freeSpace / ...
-              netArch.Energy.multiPath);
+    d0 = sqrt(netArch.Energy.freeSpace / netArch.Energy.multiPath);
 
     if Model.clusterNode.countCHs == 0
         return
@@ -25,29 +24,6 @@ function Model = dissEnergyCH(Model, roundArch, netArch)
     packetLength = roundArch.packetLength;
     ctrPacketLength = roundArch.ctrPacketLength;
 
-%     for i = 1:n
-%         chNo = Model.clusterNode.no(i);
-% 
-% %         Dist = Model.clusterNode.distance(i); % to BS
-%         Dist = calDistance(Model.nodeArch.node(chNo).x, Model.nodeArch.node(chNo).y,...
-%                         Model.nodeArch.node(chNo).parent.x, Model.nodeArch.node(chNo).parent.y);
-% 
-%         energy = Model.nodeArch.node(chNo).energy;
-% 
-%         % energy for aggregation & Rx 
-%         energy = energy - (packetLength * ERX * Model.nodeArch.node(chNo).child + ...
-%                  packetLength * EDA * (Model.nodeArch.node(chNo).child + 1));
-% 
-%         % energy for transferring
-%         if(Dist >= d0)
-%              Model.nodeArch.node(chNo).energy = energy - ...
-%                  (ETX * packetLength + Emp * packetLength * (Dist ^ 4));
-%         else
-%              Model.nodeArch.node(chNo).energy = energy - ...
-%                  (ETX * packetLength + Efs * packetLength * (Dist ^ 2));
-%         end
-%     end
-    
     locAlive = find(~Model.nodeArch.dead); % find the nodes that are alive
     for i = locAlive % search in alive nodes
         %find Associated CH for each normal node

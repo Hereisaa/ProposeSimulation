@@ -14,7 +14,7 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
     clusterModel.netArch = netArch;
     clusterModel.nodeArch = nodeArch;
     clusterModel.clusterFun = clusterFun;
-    clusterModel.clusterFunParam = clusterFunParam;
+    clusterModel.clusterFunParam = clusterFunParam; %round
     clusterModel.p = p_numCluster;
     clusterModel.numCluster = 0;
     

@@ -5,7 +5,6 @@ function createfigure(N, E, X1, X2, X3, X4,...
                       packetToBS, packetToBS2, packetToBS3, packetToBS4)
 %CREATEFIGURE
 color1 = '#118DF0'; color1 = sscanf(color1(2:end),'%2x%2x%2x',[1 3])/255; % light blue
-% color3 = '#6abe83'; color3 = sscanf(color3(2:end),'%2x%2x%2x',[1 3])/255; % green
 color2 = '#20938b'; color2 = sscanf(color2(2:end),'%2x%2x%2x',[1 3])/255; % green
 color3 = '#004182'; color3 = sscanf(color3(2:end),'%2x%2x%2x',[1 3])/255; % heavy blue
 color4 = '#FF4B68'; color4 = sscanf(color4(2:end),'%2x%2x%2x',[1 3])/255; % red
@@ -57,7 +56,7 @@ for k=1:1
     % Create x-label y-label
     xlabel('Round','FontWeight','bold','FontSize',15);
     ylabel('Residual energy of WSN','FontWeight','bold','FontSize',15);
-    legend({'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','NorthEast');
+    legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','NorthEast');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
 %         'FontSize',12,...
@@ -128,7 +127,7 @@ for k=1:1
     % Create x-label y-label
     xlabel('Round','FontWeight','bold','FontSize',15);
     ylabel('Number of alive nodes','FontWeight','bold','FontSize',15);
-    legend({'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','NorthEast');
+    legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','NorthEast');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
 %         'FontSize',12,...
@@ -165,6 +164,8 @@ for k=1:1
     Y3(1:X3) = packetToBS3(1:X3); %hhca
     Y4(1:X4) = packetToBS4(1:X4); %tlleach
     
+    maxTP = max([packetToBS(X1),packetToBS2(X2),packetToBS3(X3),packetToBS4(X4)]);
+    
     X = 0:100:xr;
     Z = 1:100:xr+1;
     p = plot(X,Y2(Z),'-s',...
@@ -175,13 +176,13 @@ for k=1:1
     p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color9; p(2).MarkerFaceColor=color8;
     p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color9; p(3).MarkerFaceColor=color7;
     p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
-%     axis([0,ceil(xr/200)*200,0,ceil(xr/200)*200*6400]);
-%     set(gca,'XTick',[0:200:ceil(xr/200)*200]);
-%     set(gca,'YTick',[0:6400:ceil(xr/200)*200]);
+    axis([0,xr,0,ceil(maxTP/(10^8))*(10^8)]);
+    set(gca,'XTick',[0:200:xr]);
+    set(gca,'YTick',[0:(10^8):ceil(maxTP/(10^8))*(10^8)]);
     % Create x-label y-label
     xlabel('Round','FontWeight','bold','FontSize',15);
     ylabel('Throughput','FontWeight','bold','FontSize',15);
-    legend({'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','SouthEast');
+    legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','SouthEast');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
 %         'FontSize',12,...

@@ -59,7 +59,7 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
             countCHs = countCHs+1;
 
             nodeArch.node(i).type        = 'C';
-%             nodeArch.node(i).parent      = netArch.Sink;
+            nodeArch.node(i).parent      = netArch.Sink;
 %             nodeArch.node(i).parent.x = netArch.Sink.x;
 %             nodeArch.node(i).parent.y = netArch.Sink.y;
 %             nodeArch.node(1,1).G       = round(1/p)-1;
@@ -86,8 +86,8 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
         iOfCH(i) = clusterNode.no(i);
     end 
     [res, index] = sort(eOfCH,'descend');
+    
     countCHv2 = 0;
-%     eOfCH = eOfCH(1:numCHv2); % id of CHv2 
     for i = 1:numCHv2
         countCHv2 = countCHv2 + 1;
         nodeArch.node(iOfCH(index(i))).type  = 'Cv2';
@@ -103,15 +103,21 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
     
     % CM select parent sink/C/Cv2
     for i = locAlive
-        dtoBS = calDistance(nodeArch.node(i).x, netArch.Sink.x, nodeArch.node(i).y, netArch.Sink.y);
+            dtoBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
             if ( countCHs ~= 0 )
                     if ( nodeArch.node(i).type == 'C' )
-                        locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
-                        [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHv2, 1) - Cv2Node.loc)' .^ 2)));
-                        if minDis < dtoBS
-                            minDisCv2 =  Cv2Node.no(loc);
-                            nodeArch.node(i).parent = nodeArch.node(minDisCv2);
-                            nodeArch.node(minDisCv2).child = nodeArch.node(minDisCv2).child + 1;
+                       
+                        if countCHv2 ~= 0
+                            locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
+                            [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHv2, 1) - Cv2Node.loc)' .^ 2)));
+                            if minDis < dtoBS
+                                minDisCv2 =  Cv2Node.no(loc);
+                                nodeArch.node(i).parent = nodeArch.node(minDisCv2);
+                                nodeArch.node(minDisCv2).child = nodeArch.node(minDisCv2).child + 1;
+                            else
+                                nodeArch.node(i).parent.x = netArch.Sink.x;
+                                nodeArch.node(i).parent.y = netArch.Sink.y;
+                            end
                         else
                             nodeArch.node(i).parent.x = netArch.Sink.x;
                             nodeArch.node(i).parent.y = netArch.Sink.y;
@@ -119,9 +125,14 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
                     elseif ( nodeArch.node(i).type == 'N' )
                         locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
                         [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHs, 1) - clusterNode.loc)' .^ 2)));
-                        minDisCH =  clusterNode.no(loc);
-                        nodeArch.node(i).parent = nodeArch.node(minDisCH);
-                        nodeArch.node(minDisCH).child = nodeArch.node(minDisCH).child + 1;
+                        if minDis < dtoBS
+                            minDisCH =  clusterNode.no(loc);
+                            nodeArch.node(i).parent = nodeArch.node(minDisCH);
+                            nodeArch.node(minDisCH).child = nodeArch.node(minDisCH).child + 1;
+                        else
+                            nodeArch.node(i).parent.x = netArch.Sink.x;
+                            nodeArch.node(i).parent.y = netArch.Sink.y;
+                        end
                     end
             else
                 nodeArch.node(i).parent.x = netArch.Sink.x;

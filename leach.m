@@ -77,7 +77,7 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
     
     % CM select parent
     for i = locAlive
-        if ( nodeArch.node(i).type ~= 'C' )
+        if ( nodeArch.node(i).type == 'N' )
             if ( countCHs ~= 0 )
                 locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
                 [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHs, 1) - clusterNode.loc)' .^ 2)));
@@ -91,7 +91,8 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
         end
     end
 %     countCHs
-    numCluster = numCluster + countCHs;
+%     numCluster = numCluster + countCHs;
+    numCluster = countCHs;
 %     fprintf('[LEACH] number of CH (countCHs) = %d\n',countCHs);
 %     fprintf('[LEACH] number of total CH (numCluster) = %d\n',numCluster);
 end

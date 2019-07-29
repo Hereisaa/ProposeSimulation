@@ -43,7 +43,8 @@ for i = 1:init_nodeArch.numNode
 end
 
 %% BS
-plot(netArch.Sink.x, netArch.Sink.y,'o', ...
-    'MarkerSize',8, 'MarkerFaceColor', 'g');
-
+plot(netArch.Sink.x, netArch.Sink.y,'ko','MarkerSize',8, 'MarkerFaceColor', 'k');
+title('LEACH','FontWeight','bold',...
+        'FontSize',12,...
+        'FontName','Cambria');
 hold off

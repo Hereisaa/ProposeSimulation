@@ -1,5 +1,5 @@
 function Model = dissEnergyCtl(Model, roundArch, netArch, func)
-% Calculation of Energy dissipated for CHs
+% Calculation of consumption of Control packet
 %   Input:
 %       Model            architecture of nodes
 %       roundArch        round Architecture
@@ -17,6 +17,7 @@ function Model = dissEnergyCtl(Model, roundArch, netArch, func)
     end
 
     n = Model.clusterNode.countCHs; % Number of CHs
+    
     ETX = netArch.Energy.transfer;
     ERX = netArch.Energy.receive;
     EDA = netArch.Energy.aggr;
@@ -41,9 +42,9 @@ function Model = dissEnergyCtl(Model, roundArch, netArch, func)
                         Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from CH
                     end
                 case{'leach'}
-                    Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from CH
+                    Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX) * Model.clusterNode.countCHs; % Rx from CH
                 case{'TLleach'}
-                    Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from CH
+                    Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX) * Model.clusterNode.countCHs; % Rx from CH
                 case{'hhca'}
                     energy = energy - (ctrPacketLength * ERX); % Rx from BS
                     Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from CH
@@ -60,9 +61,11 @@ function Model = dissEnergyCtl(Model, roundArch, netArch, func)
                         Model.nodeArch.node(i).energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (87 ^ 2)); % Broadcast in cluster
                     end
                 case{'leach'}
-                    Model.nodeArch.node(i).energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (87 ^ 2)); % Broadcast in cluster
+                    energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (87 ^ 2)); % Broadcast in cluster
+                    Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX)*Model.nodeArch.node(i).child; % Rx from CM
                 case{'TLleach'}
-                    Model.nodeArch.node(i).energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (87 ^ 2)); % Broadcast in cluster
+                    energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (87 ^ 2)); % Broadcast in cluster
+                    Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX)*Model.nodeArch.node(i).child; % Rx from CM
                 case{'hhca'}
                     energy = energy - (ctrPacketLength * ERX); % Rx from BS
                     energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (87 ^ 2)); % Broadcast in cluster
@@ -70,8 +73,8 @@ function Model = dissEnergyCtl(Model, roundArch, netArch, func)
             end   
             
         elseif (strcmp(Model.nodeArch.node(i).type, 'Cv2')  &&  Model.nodeArch.node(i).energy > 0) % TLleach
-            energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (87 ^ 2)); % Broadcast in cluster
-            Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX)*Model.nodeArch.node(i).child; % Rx from CM                
+            energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (150 ^ 2)); % Broadcast in cluster
+            Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX) * Model.nodeArch.node(i).child; % Rx from CM                
             
         elseif (strcmp(Model.nodeArch.node(i).type, 'G')  &&  Model.nodeArch.node(i).energy > 0) % hhca
             energy = energy - (ctrPacketLength * ERX); % Rx from BS
