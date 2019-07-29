@@ -24,6 +24,7 @@ function Model = dissEnergyCM(Model, roundArch, netArch)
     for i = locAlive % search in alive nodes
         %find Associated CH for each normal node
         if (strcmp(Model.nodeArch.node(i).type, 'N') &&  Model.nodeArch.node(i).energy > 0)
+            energy = Model.nodeArch.node(i).energy;
             countCHs = Model.numCluster; % Number of CHs
             % calculate distance to each CH and find smallest distance
             if countCHs == 0
@@ -32,10 +33,10 @@ function Model = dissEnergyCM(Model, roundArch, netArch)
                         netArch.Sink.x, netArch.Sink.y);
                 
                 if (Dist >= d0)
-                    Model.nodeArch.node(i).energy = Model.nodeArch.node(i).energy - ...
+                    Model.nodeArch.node(i).energy = energy - ...
                         (packetLength * ETX + Emp * packetLength * (Dist ^ 4));
                 else
-                    Model.nodeArch.node(i).energy = Model.nodeArch.node(i).energy - ...
+                    Model.nodeArch.node(i).energy = energy - ...
                         (packetLength * ETX + Efs * packetLength * (Dist ^ 2));
                 end
             else
@@ -43,10 +44,10 @@ function Model = dissEnergyCM(Model, roundArch, netArch)
                         Model.nodeArch.node(i).parent.x, Model.nodeArch.node(i).parent.y);
                 
                 if (Dist >= d0)
-                    Model.nodeArch.node(i).energy = Model.nodeArch.node(i).energy - ...
+                    Model.nodeArch.node(i).energy = energy - ...
                         (packetLength * ETX + Emp * packetLength * (Dist ^ 4));
                 else
-                    Model.nodeArch.node(i).energy = Model.nodeArch.node(i).energy - ...
+                    Model.nodeArch.node(i).energy = energy - ...
                         (packetLength * ETX + Efs * packetLength * (Dist ^ 2));
                 end
             end

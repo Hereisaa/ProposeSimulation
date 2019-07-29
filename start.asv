@@ -4,13 +4,12 @@ clc, clear all, close all
 numNodes   = 300;  % number of nodes 100
 Length     = 300;  % network length 300
 Width      = 300;  % network width 300
-d0         = 87;  % tx distance threshold
-d_th = 87;
+d0         = 0;  % tx distance threshold
 % sinkX    = Length / 2;
 % sinkY    = Width / 2;
 sinkX    = 150;
-sinkY    = 350;
-
+sinkY    = 300;
+d_th = 87;
 initEnergy  = 0.5;
 
 transEnergy = 50*    0.000000001;
@@ -33,7 +32,6 @@ p_clusterModel.netArch   = netArch;
 p_clusterModel.clusterFun = 'proposed';
 p_clusterModel.nodeArch.init_numNodes = numNodes;
 par_proposed = struct;
-p_clusterModel.recluster=true;
 recluster    = true;
 reselect     = true;
 T1 = 100;
@@ -105,7 +103,7 @@ for r = 1:roundArch.numRound
     p_clusterModel = dissEnergyCM(p_clusterModel, roundArch, netArch);
     p_clusterModel = dissEnergyCH(p_clusterModel, roundArch, netArch);
     p_clusterModel = dissEnergyRN(p_clusterModel, roundArch, netArch);
-    p_clusterModel.recluster=false;
+
     
     % check new dead node
     locAlive = find(~p_clusterModel.nodeArch.dead);
@@ -117,9 +115,8 @@ for r = 1:roundArch.numRound
             p_clusterModel.nodeArch.node(i).parent = []; 
             p_clusterModel.nodeArch.node(i).CID = []; 
             p_clusterModel.nodeArch.node(i).child = 0; 
-        
+
             recluster = true; % have to exec new clustering phase 
-            p_clusterModel.recluster=true;
         end
     end
 
@@ -274,7 +271,7 @@ for r = 1:roundArch.numRound
     %%% Clustering Phase
     tl_clusterModel = newCluster(netArch, tl_clusterModel.nodeArch, 'TLleach', r, p, 0);
 
-    tl_clusterModel = dissEnergyCtl(tl_clusterModel, roundArch, netArch, 'TLleach');
+    tl_clusterModel = dissEnergyCtl(tl_clusterModel, roundArch, netArch, );
     %%% Transmission Phase
     tl_clusterModel = dissEnergyCM(tl_clusterModel, roundArch, netArch);
     tl_clusterModel = dissEnergyCH(tl_clusterModel, roundArch, netArch);
@@ -328,7 +325,6 @@ for r = 1:roundArch.numRound
     %%% Clustering Phase
     h_clusterModel = newCluster(netArch, h_clusterModel.nodeArch, 'hhca', r, p, k);
 
-    h_clusterModel = dissEnergyCtl(h_clusterModel, roundArch, netArch, 'hhca');
     %%% Transmission Phase
     h_clusterModel = dissEnergyCM(h_clusterModel, roundArch, netArch);
     h_clusterModel = dissEnergyCH(h_clusterModel, roundArch, netArch);

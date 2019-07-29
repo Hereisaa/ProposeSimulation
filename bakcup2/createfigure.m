@@ -11,15 +11,7 @@ color3 = '#004182'; color3 = sscanf(color3(2:end),'%2x%2x%2x',[1 3])/255; % heav
 color4 = '#FF4B68'; color4 = sscanf(color4(2:end),'%2x%2x%2x',[1 3])/255; % red
 
 color5 = '#fed95c'; color5 = sscanf(color5(2:end),'%2x%2x%2x',[1 3])/255; % yellow
-color6 = '#7FB8DE'; color6 = sscanf(color6(2:end),'%2x%2x%2x',[1 3])/255; % blue
-% color6 = '#4695d6'; color6 = sscanf(color6(2:end),'%2x%2x%2x',[1 3])/255; % blue
-
-color7 = '#ffffff'; color7 = sscanf(color7(2:end),'%2x%2x%2x',[1 3])/255; % white
-color8 = '#F5F5F5'; color8 = sscanf(color8(2:end),'%2x%2x%2x',[1 3])/255; % gray
-color9 = '#0F0F0F'; color9 = sscanf(color9(2:end),'%2x%2x%2x',[1 3])/255; % black
-color10 = '#969696'; color10 = sscanf(color10(2:end),'%2x%2x%2x',[1 3])/255; % heavy gray
-
-
+color6 = '#4695d6'; color6 = sscanf(color6(2:end),'%2x%2x%2x',[1 3])/255; % blue
 
 folder = 'result\';
 
@@ -29,7 +21,7 @@ folder = 'result\';
 for k=1:1
     figure
     hold on
-    xr = ceil(X1/200)*200+200;
+    xr = ceil(X1/200)*200;
     Y1 = zeros(1,xr+1);
     Y2 = zeros(1,xr+1);
     Y3 = zeros(1,xr+1);
@@ -43,14 +35,12 @@ for k=1:1
     Z = 1:100:xr+1;
     p = plot(X,Y2(Z),'-s',...
              X,Y4(Z),'-d',...
-             X,Y1(Z),'-o',...
-             X,Y3(Z),'-*');
-             
-    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color9; p(1).MarkerFaceColor=color10;
-    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color9; p(2).MarkerFaceColor=color8;
-    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color9; p(3).MarkerFaceColor=color7;
-    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
-    
+             X,Y3(Z),'-x',...
+             X,Y1(Z),'-o');
+    p(1).LineWidth =1; p(1).MarkerSize=8; p(1).Color=color1;
+    p(2).LineWidth =1; p(2).MarkerSize=8; p(2).Color=color2;
+    p(3).LineWidth =1; p(3).MarkerSize=8; p(3).Color=color3;
+    p(4).LineWidth =1; p(4).MarkerSize=8; p(4).Color=color4;
     axis([0,xr,0,N*E]);
     set(gca,'XTick',[0:200:xr]);
     set(gca,'YTick',[0:25:N*E]);
@@ -59,9 +49,9 @@ for k=1:1
     ylabel('Residual energy of WSN','FontWeight','bold','FontSize',15);
     legend({'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','NorthEast');
     % Create title
-%     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
-%         'FontSize',12,...
-%         'FontName','Cambria');
+    title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
+        'FontSize',12,...
+        'FontName','Cambria');
     grid on
     box on
     
@@ -76,7 +66,7 @@ for k =1:1
     figure
     x = 1:4; 	
     y = [pFND pHND; hFND hHND; tlFND tlHND; FND HND];
-    b = bar(x, y, 1,'FaceAlpha',.8);  	
+    b = bar(x, y, 1);  	
     hT = [];
     for i = 1:length(x)
         text(x(i)-0.136,y(i,1)+5,num2str(y(i,1)),'HorizontalAlignment','center', 'VerticalAlignment','bottom');
@@ -101,8 +91,8 @@ end
 for k=1:1
     figure
     hold on;
-    xr = ceil(X1/200)*200+200;
-%     xr = 1200+200;
+%     xr = ceil(X1/200)*200;
+    xr = 1200;
     Y1 = zeros(1,xr+1);
     Y2 = zeros(1,xr+1);
     Y3 = zeros(1,xr+1);
@@ -116,12 +106,12 @@ for k=1:1
     Z = 1:100:xr+1;
     p = plot(X,Y2(Z),'-s',...
              X,Y4(Z),'-d',...
-             X,Y1(Z),'-o',...
-             X,Y3(Z),'-*');
-    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color9; p(1).MarkerFaceColor=color10;
-    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color9; p(2).MarkerFaceColor=color8;
-    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color9; p(3).MarkerFaceColor=color7;
-    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
+             X,Y3(Z),'-x',...
+             X,Y1(Z),'-o');
+    p(1).LineWidth =1; p(1).MarkerSize=8; p(1).Color=color1;
+    p(2).LineWidth =1; p(2).MarkerSize=8; p(2).Color=color2;
+    p(3).LineWidth =1; p(3).MarkerSize=8; p(3).Color=color3;
+    p(4).LineWidth =1; p(4).MarkerSize=8; p(4).Color=color4;
     axis([0,ceil(xr/200)*200,0,N]);
     set(gca,'XTick',[0:200:ceil(xr/200)*200]);
     set(gca,'YTick',[0:25:N]);
@@ -150,8 +140,8 @@ end
 for k=1:1
     figure
     hold on;
-    xr = ceil(X1/200)*200+200;
-%     xr = 1200;
+%     xr = ceil(X1/200)*200;
+    xr = 1200;
     Y1 = zeros(1,xr+1);
     Y2 = zeros(1,xr+1);
     Y3 = zeros(1,xr+1);
@@ -169,12 +159,12 @@ for k=1:1
     Z = 1:100:xr+1;
     p = plot(X,Y2(Z),'-s',...
              X,Y4(Z),'-d',...
-             X,Y1(Z),'-o',...
-             X,Y3(Z),'-*');
-    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color9; p(1).MarkerFaceColor=color10;
-    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color9; p(2).MarkerFaceColor=color8;
-    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color9; p(3).MarkerFaceColor=color7;
-    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
+             X,Y3(Z),'-x',...
+             X,Y1(Z),'-o');
+    p(1).LineWidth =1; p(1).MarkerSize=8; p(1).Color=color1;
+    p(2).LineWidth =1; p(2).MarkerSize=8; p(2).Color=color2;
+    p(3).LineWidth =1; p(3).MarkerSize=8; p(3).Color=color3;
+    p(4).LineWidth =1; p(4).MarkerSize=8; p(4).Color=color4;
 %     axis([0,ceil(xr/200)*200,0,ceil(xr/200)*200*6400]);
 %     set(gca,'XTick',[0:200:ceil(xr/200)*200]);
 %     set(gca,'YTick',[0:6400:ceil(xr/200)*200]);

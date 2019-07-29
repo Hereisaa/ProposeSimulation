@@ -76,7 +76,7 @@ for k =1:1
     figure
     x = 1:4; 	
     y = [pFND pHND; hFND hHND; tlFND tlHND; FND HND];
-    b = bar(x, y, 1,'FaceAlpha',.8);  	
+    b = bar(x, y, 1,'FaceAlpha',.5);  	
     hT = [];
     for i = 1:length(x)
         text(x(i)-0.136,y(i,1)+5,num2str(y(i,1)),'HorizontalAlignment','center', 'VerticalAlignment','bottom');

@@ -130,6 +130,4 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
     end
 %     countCHs
     numCluster = numCluster + countCHs;
-%     fprintf('[LEACH] number of CH (countCHs) = %d\n',countCHs);
-%     fprintf('[LEACH] number of total CH (numCluster) = %d\n',numCluster);
 end
