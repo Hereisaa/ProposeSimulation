@@ -16,8 +16,9 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
     N = nodeArch.numNode; % number of nodes
     
     %%%%%%%% reset the CH after numCluster round
+    locAlive = find(~nodeArch.dead); % find the nodes that are alive
     if (mod(r, round(1/p)) == 0)
-        for i = 1:N
+        for i = locAlive
             nodeArch.node(i).G = 0; % not selected for CH
         end
     end
@@ -74,6 +75,8 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
     end 
 
     clusterNode.countCHs = countCHs;
+    
+    
     
     % CM select parent
     for i = locAlive

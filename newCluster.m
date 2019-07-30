@@ -28,7 +28,7 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
 %             %p = Optimal Election Probability of a node to become cluster head
 %             clusterModel.numCluster = numCluster;
 %             clusterModel.p          = p;
-
+            clusterModel.p = p_numCluster;
             % run leach.m
             [nodeArch, clusterNode, numCluster] = feval(clusterFun, clusterModel, clusterFunParam);
 

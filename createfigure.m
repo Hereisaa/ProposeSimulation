@@ -193,6 +193,9 @@ for k=1:1
     savefig(s);
     s=strcat(s,'.png');
     saveas(gcf,s);
+    
+    
+    
 end
 
 
