@@ -33,8 +33,12 @@ function Model = dissEnergyGH(Model, roundArch, netArch)
             energy = Model.nodeArch.node(i).energy;
 
             % energy for aggregation & Rx 
-            energy = energy - (packetLength * ERX * Model.nodeArch.node(i).child + ...
-                     packetLength * EDA * (Model.nodeArch.node(i).child + 1));
+            if Model.nodeArch.node(i).child>0
+                energy = energy - (packetLength * ERX * Model.nodeArch.node(i).child + ...
+                         packetLength * EDA * (Model.nodeArch.node(i).child + 1));
+            else
+                energy = energy - (packetLength * ERX * Model.nodeArch.node(i).child);
+            end
 
             % energy for transferring
             if(Dist >= d0)

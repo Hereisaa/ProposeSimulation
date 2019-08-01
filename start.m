@@ -1,7 +1,7 @@
 %% MAIN
 clc, clear all, close all
 %% PARAMETER
-numNodes   = 100;  % number of nodes 100
+numNodes   = 500;  % number of nodes 100
 Length     = 300;  % network length 300
 Width      = 300;  % network width 300
 d_th = 87;         % Network Dimension threshold
@@ -18,7 +18,7 @@ aggrEnergy  = 5*     0.000000001;
 packetLength    = 4000;
 ctrPacketLength = 64;
 r       = 99999;
-simulationTime = 20;
+simulationTime = 5;
 
 
 for m = 1:simulationTime
@@ -230,7 +230,14 @@ for r = 1:roundArch.numRound
 %     fprintf('[LEACH] number of CH  = %d\n',clusterModel.numCluster);
 
     clusterModel = dissEnergyCtl(clusterModel, roundArch, netArch, 'leach');
-    
+%     
+%     if (r == 1)
+%         FND = r;
+%         fprintf('[LEACH] ***ROUND 1*** round = %d.\n', r);
+%         FND_flag = 0;
+%         plot_leach
+%     end
+%     
     
     %%% Transmission Phase
     clusterModel = dissEnergyCM(clusterModel, roundArch, netArch);

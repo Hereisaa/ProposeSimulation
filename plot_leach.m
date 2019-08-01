@@ -2,10 +2,12 @@
 %%
 figure, hold on
 grid on
+box on
 
 %% Color para
 % Convert color code to 1-by-3 RGB array (0~1 each) [must do this way, if MATLAB version is R2018b or older]
 color1 = '#00FFFF'; color1 = sscanf(color1(2:end),'%2x%2x%2x',[1 3])/255;
+color2 = '#8E8E8E'; color2 = sscanf(color2(2:end),'%2x%2x%2x',[1 3])/255; %light gray 
 
 %% Circle para
 % angle of each line sector 
@@ -19,11 +21,10 @@ y = R*sin(t);
 %% Line
 locAlive = find(~clusterModel.nodeArch.dead);
 for i = locAlive
-%     if(nodeArch.node(i).parent)
-       j = clusterModel.nodeArch.node(i).parent;
-       plot([clusterModel.nodeArch.node(i).x j.x],[clusterModel.nodeArch.node(i).y j.y],...
-           	'k');
-%     end
+    if(~strcmp(clusterModel.nodeArch.node(i).type, 'C'))
+        j = clusterModel.nodeArch.node(i).parent;
+        plot([clusterModel.nodeArch.node(i).x j.x],[clusterModel.nodeArch.node(i).y j.y],'Color', color2);
+    end
 end
 
 %% Sensors
@@ -44,7 +45,7 @@ end
 
 %% BS
 plot(netArch.Sink.x, netArch.Sink.y,'ko','MarkerSize',8, 'MarkerFaceColor', 'k');
-title('LEACH','FontWeight','bold',...
+title('Base station','FontWeight','bold',...
         'FontSize',12,...
         'FontName','Cambria');
 hold off

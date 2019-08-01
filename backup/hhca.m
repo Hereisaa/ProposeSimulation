@@ -164,12 +164,19 @@ function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterMo
     % CM select parent
     for i = locAlive
         if ( nodeArch.node(i).type == 'N' )
+            disBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
             if ( countCHs ~= 0 )
+                
                 locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
                 [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHs, 1) - clusterNode.loc)' .^ 2)));
-                minDisCH =  clusterNode.no(loc);
-                nodeArch.node(i).parent = nodeArch.node(minDisCH);
-                nodeArch.node(minDisCH).child = nodeArch.node(minDisCH).child + 1;
+                if minDis < disBS
+                    minDisCH =  clusterNode.no(loc);
+                    nodeArch.node(i).parent = nodeArch.node(minDisCH);
+                    nodeArch.node(minDisCH).child = nodeArch.node(minDisCH).child + 1;
+                else
+                    nodeArch.node(i).parent.x = netArch.Sink.x;
+                    nodeArch.node(i).parent.y = netArch.Sink.y;
+                end
             else
                 nodeArch.node(i).parent.x = netArch.Sink.x;
                 nodeArch.node(i).parent.y = netArch.Sink.y;
@@ -181,10 +188,13 @@ function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterMo
                 disBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
                 [minDis, loc] = min(sqrt(sum((repmat(locNode, noOfk, 1) - gridNode.loc)' .^ 2)));
                 minDisGH =  gridNode.no(loc);
-                if minDis < disBS
+%                 if minDis < disBS
                     nodeArch.node(i).parent = nodeArch.node(minDisGH);
                     nodeArch.node(minDisGH).child = nodeArch.node(minDisGH).child + 1;
-                end
+%                 else
+%                     nodeArch.node(i).parent.x = netArch.Sink.x;
+%                     nodeArch.node(i).parent.y = netArch.Sink.y;
+%                 end
             else
                 nodeArch.node(i).parent.x = netArch.Sink.x;
                 nodeArch.node(i).parent.y = netArch.Sink.y;
@@ -196,7 +206,7 @@ function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterMo
         end
     end
 
-    numCluster = numCluster + countCHs;
+    numCluster = countCHs;
     numGrid = numOfGrid;
 %     fprintf('[LEACH] number of CH (countCHs) = %d\n',countCHs);
 %     fprintf('[LEACH] number of total CH (numCluster) = %d\n',numCluster);

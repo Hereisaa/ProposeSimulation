@@ -3,6 +3,8 @@ function createfigure(N, E, X1, X2, X3, X4,...
                       proposedAlive, leachAlive, hhcaAlive, tlleachAlive,...
                       pFND, pHND, FND, HND, hFND, hHND, tlFND, tlHND,...
                       packetToBS, packetToBS2, packetToBS3, packetToBS4)
+
+                  
 %CREATEFIGURE
 color1 = '#118DF0'; color1 = sscanf(color1(2:end),'%2x%2x%2x',[1 3])/255; % light blue
 color2 = '#20938b'; color2 = sscanf(color2(2:end),'%2x%2x%2x',[1 3])/255; % green
@@ -55,7 +57,7 @@ for k=1:1
     set(gca,'YTick',[0:25:N*E]);
     % Create x-label y-label
     xlabel('Round','FontWeight','bold','FontSize',15);
-    ylabel('Residual energy of WSN','FontWeight','bold','FontSize',15);
+    ylabel('Residual energy of WSNs','FontWeight','bold','FontSize',15);
     legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','NorthEast');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
@@ -195,7 +197,8 @@ for k=1:1
     saveas(gcf,s);
     
     
-    
+
+
 end
 
 

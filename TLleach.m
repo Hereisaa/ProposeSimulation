@@ -79,7 +79,8 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
     
     
     % level 2 CH selection
-    if countCHs > 1
+%     if countCHs > 1
+    if countCHs * p > 0.5
         numCHv2 = ceil(countCHs * p);
     else
         numCHv2 = 0;

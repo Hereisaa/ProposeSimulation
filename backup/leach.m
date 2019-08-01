@@ -16,8 +16,9 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
     N = nodeArch.numNode; % number of nodes
     
     %%%%%%%% reset the CH after numCluster round
+    locAlive = find(~nodeArch.dead); % find the nodes that are alive
     if (mod(r, round(1/p)) == 0)
-        for i = 1:N
+        for i = locAlive
             nodeArch.node(i).G = 0; % not selected for CH
         end
     end
@@ -75,9 +76,11 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
 
     clusterNode.countCHs = countCHs;
     
+    
+    
     % CM select parent
     for i = locAlive
-        if ( nodeArch.node(i).type ~= 'C' )
+        if ( nodeArch.node(i).type == 'N' )
             if ( countCHs ~= 0 )
                 locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
                 [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHs, 1) - clusterNode.loc)' .^ 2)));
@@ -91,7 +94,8 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
         end
     end
 %     countCHs
-    numCluster = numCluster + countCHs;
+%     numCluster = numCluster + countCHs;
+    numCluster = countCHs;
 %     fprintf('[LEACH] number of CH (countCHs) = %d\n',countCHs);
 %     fprintf('[LEACH] number of total CH (numCluster) = %d\n',numCluster);
 end

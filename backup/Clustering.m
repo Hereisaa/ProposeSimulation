@@ -5,6 +5,7 @@ function [ Model, k, cluster, centr ] = Clustering( Model, notLayerZero, Temp_xy
     
     %%% Determine number of k using [Canopy algo].
     [ k, canopy_centr, canopy_centr_node ] = usingCanopy( Temp_xy, T1, T2 ); % T1 > T2 
+
 %     fprintf('Canopy %d',k);
     % Temp_xy is a 2 by n metrix with xy
     % Temp_index is a 1 by n metrix with id 

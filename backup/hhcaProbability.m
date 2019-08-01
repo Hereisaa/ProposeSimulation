@@ -1,4 +1,4 @@
-function P = leachProbability(r, p)
+function P = hhcaProbability(r, p)
 % Probability function for elect the node as CH
 %   Input:
 %       r     round no

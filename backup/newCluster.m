@@ -14,21 +14,22 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
     clusterModel.netArch = netArch;
     clusterModel.nodeArch = nodeArch;
     clusterModel.clusterFun = clusterFun;
-    clusterModel.clusterFunParam = clusterFunParam;
-%     clusterModel.p = p_numCluster;
+    clusterModel.clusterFunParam = clusterFunParam; %round
+    clusterModel.p = p_numCluster;
     clusterModel.numCluster = 0;
     
     switch clusterFun 
         case{'leach'}
+           
+%             dBS        = sqrt((netArch.Sink.x - netArch.Yard.Length) ^ 2 + ...
+%                            (netArch.Sink.y - netArch.Yard.Width) ^ 2);
+%             numCluster = clusterOptimum(netArch, nodeArch, dBS); 
+%             p = numCluster / clusterModel.nodeArch.numAlive;
+%             %p = Optimal Election Probability of a node to become cluster head
+%             clusterModel.numCluster = numCluster;
+%             clusterModel.p          = p;
+            clusterModel.p = p_numCluster;
             % run leach.m
-            dBS        = sqrt((netArch.Sink.x - netArch.Yard.Length) ^ 2 + ...
-                           (netArch.Sink.y - netArch.Yard.Width) ^ 2);
-            numCluster = clusterOptimum(netArch, nodeArch, dBS); 
-            p = numCluster / clusterModel.nodeArch.numAlive;
-            %p = Optimal Election Probability of a node to become cluster head
-            clusterModel.numCluster = numCluster;
-            clusterModel.p          = p;
-            
             [nodeArch, clusterNode, numCluster] = feval(clusterFun, clusterModel, clusterFunParam);
 
             clusterModel.nodeArch = nodeArch;       % new architecture of nodes
