@@ -226,11 +226,11 @@ for k=1:1
 end
 
 
-%%%%%%%%%%%%%%%%%% Number of alive nodes vs. Number of Received Data Packets %%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% Energy vs. Packets %%%%%%%%%%%%%%%%%%
 for k=1:1
     figure
     hold on;
-
+    % energy consumption
     Y1 = N*E - zeros(1,xr+1);
     Y2 = N*E - zeros(1,xr+1);
     Y3 = N*E - zeros(1,xr+1);
@@ -239,7 +239,7 @@ for k=1:1
     Y2(1:X2) = N*E - leachEnergy(1:X2);
     Y3(1:X3) = N*E - hhcaEnergy(1:X3);
     Y4(1:X4) = N*E - tlleachEnergy(1:X4);
-    
+    % packets
     P1(1:xr+1) = packetToBS(X1);
     P2(1:xr+1) = packetToBS2(X2);
     P3(1:xr+1) = packetToBS3(X3);
@@ -304,10 +304,87 @@ for k=1:1
     s=strcat(s,'.png');
     saveas(gcf,s);
     
+    
+    
+%%%%%%%%%%%%%%%%%% Number of alive nodes vs. Number of Received Data Packets %%%%%%%%%%%%%%%%%%
+for k=1:1
+    figure
+    hold on;
+
+    xr = ceil(X1/200)*200+200;
+%     xr = 1200+200;
+    Y1 = zeros(1,xr+1);
+    Y2 = zeros(1,xr+1);
+    Y3 = zeros(1,xr+1);
+    Y4 = zeros(1,xr+1);
+    Y1(1:X1) = proposedAlive(1:X1);
+    Y2(1:X2) = leachAlive(1:X2);
+    Y3(1:X3) = hhcaAlive(1:X3);
+    Y4(1:X4) = tlleachAlive(1:X4);
+    
+    Y1 = zeros(1,xr+1);
+    Y2 = zeros(1,xr+1);
+    Y3 = zeros(1,xr+1);
+    Y4 = zeros(1,xr+1);
+    P1(1:X1) = packetToBS(1:X1);
+    P2(1:X2) = packetToBS2(1:X2);
+    P3(1:X3) = packetToBS3(1:X3);
+    P4(1:X4) = packetToBS4(1:X4);
+    
+    X = 0:100:xr;
+    Z = 1:100:xr+1;
+    p = plot(X,Y2(Z),'-s',...
+             X,Y4(Z),'-d',...
+             X,Y1(Z),'-o',...
+             X,Y3(Z),'-*');
+    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color9; p(1).MarkerFaceColor=color10;
+    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color9; p(2).MarkerFaceColor=color8;
+    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color9; p(3).MarkerFaceColor=color7;
+    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
+%     axis([0,N*E,0,300]);
+    set(gca,'XTick',[0:N*E/10:N*E]);
+%     set(gca,'YTick',[0:30:300]);
+    % Create x-label y-label
+    xlabel('Energy consumption (J)','FontWeight','bold','FontSize',15);
+    ylabel('Number of Received Data Packets','FontWeight','bold','FontSize',15);
+    legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','NorthWest');
+    % Create title
+%     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
+%         'FontSize',12,...
+%         'FontName','Cambria');
+    grid on
+    box on
+    s=strcat(folder,'EnergyVSPackets');
+    savefig(s);
+    s=strcat(s,'.png');
+    saveas(gcf,s);
+    
 end
 
 
 
-
+%%%%%%%%%%%%%%%%%% FND vs. different energy %%%%%%%%%%%%%%%%%%
+for k =1:1
+    figure
+    x = 1:4; 	
+    y = [pFND_0p5J pFND_1J pFND_1p5J ;hFND_0p5J hFND_1J hFND_1p5J ;tlFND_0p5J tlFND_1J tlFND_1p5J ; FND ];
+    b = bar(x, y, 1,'FaceAlpha',.8);  	
+    hT = [];
+    for i = 1:length(x)
+        text(x(i)-0.136,y(i,1)+5,num2str(y(i,1)),'HorizontalAlignment','center', 'VerticalAlignment','bottom');
+        text(x(i)+0.136,y(i,2)+5,num2str(y(i,2)),'HorizontalAlignment','center', 'VerticalAlignment','bottom');
+    end
+    set(b(:,1),'FaceColor',color6);
+    set(b(:,2),'FaceColor',color5);
+    ylabel('Round','FontWeight','bold','FontSize',15);
+    legend({'FND','HND'},'FontSize',12,'Location','NorthEast');
+    set(gca,'YGrid','on','GridLineStyle','-', 'xticklabel', {'PROPOSED','HHCA','TL-LEACH','LEACH'});
+    ylim([0 ceil(pHND/100)*100+100]);
+    
+    s=strcat(folder,'FND_HND');
+    savefig(s);
+    s=strcat(s,'.png');
+    saveas(gcf,s);
+end
 
 
