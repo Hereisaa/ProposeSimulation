@@ -1,4 +1,4 @@
-function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Temp_xy, Temp_index, T1, T2)
+function [ Model, noOfk, cluster, centr ] = Clustering_2( Model, notLayerZero, Temp_xy, Temp_index, T1, T2)
 % _Clustering Phase
 %
     if isempty(Temp_xy)
@@ -26,12 +26,12 @@ function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Tem
 %     k
     
     %%% Clustering using [K-means algo].   
-    noOfk = k; % no. of cluster
-%     N = length(intersect(find(Model.nodeArch.Layer > 0),find(~Model.nodeArch.dead)));
-%     noOfk = round(N * 0.05);
-%     if noOfk == 0
-%         noOfk = 1;
-%     end
+%     noOfk = k; % no. of cluster
+    N = length(intersect(find(Model.nodeArch.Layer > 0),find(~Model.nodeArch.dead)));
+    noOfk = round(N * 0.05);
+    if noOfk == 0
+        noOfk = 1;
+    end
     [cluster, centr] = usingKmeans(Temp_xy, noOfk);
 
     %%% mark cluster id (CID)

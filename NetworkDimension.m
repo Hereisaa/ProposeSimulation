@@ -6,7 +6,6 @@ function [ Model, Temp_xy, Temp_index, notLayerZero ] = NetworkDimension( Model,
     Temp_index = [];
     
     % Temp_xy : (x, y) of {all nodes} \ {nodes in Layer 0}.
-    % Layer marking using threshold d_th for each layer
     locAlive = find(~nodeArch.dead);
     for i = locAlive
         dist = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);

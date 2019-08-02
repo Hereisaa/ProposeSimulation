@@ -1,6 +1,7 @@
 function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, netArch )
 % ClusterHead and RelayNode selection phase
     nodeArch = Model.nodeArch;
+    relayNode.countRNs = 0;
 
     X = find(nodeArch.Layer); % nodes that not in Layer 0
     Y = intersect(locAlive, X); % alive and not in Layer 0
@@ -62,8 +63,8 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
            end
            
            totalEnergy       = totalEnergy       +   nodeArch.node(member(j)).energy;
-           totalDisToCentr	= totalDisToCentr   +   calDistance(nodeArch.node(member(j)).x, nodeArch.node(member(j)).y, centr(1,i), centr(2,i));
-           totalDisToBS      = totalDisToBS      +   calDistance(nodeArch.node(member(j)).x, nodeArch.node(member(j)).y, netArch.Sink.x, netArch.Sink.y);
+           totalDisToCentr	 = totalDisToCentr   +   toCentr;
+           totalDisToBS      = totalDisToBS      +   toBS;
        end
        
        E_avg(i,1)       = totalEnergy       / noOfMember;
@@ -81,7 +82,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     for i =1:nodeArch.init_numNodes
         if ~isempty(nodeArch.node(i).CID)
             SCH(i) = 0;
-            SCH(i) = 0;
+            SRN(i) = 0;
             nCID            = nodeArch.node(i).CID;
             E_res           = nodeArch.node(i).energy;
 
@@ -95,7 +96,15 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
             SRN(i) = calSRN;
         else
             SCH(i) = 0;
+            SRN(i) = 0;
+        end
+    end
+    
+    %%% dead node --> 0
+    for i =1:nodeArch.init_numNodes
+        if(strcmp(nodeArch.node(i).type,'D') )
             SCH(i) = 0;
+            SRN(i) = 0;
         end
     end
 
@@ -128,6 +137,19 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     %         [minToCentr, index] = min(sqrt(sum((repmat(centr_xy, length(Y), 1) - locAlive_loc)' .^ 2)));
     %         id = Y(index);
             if ~isempty(find(Model.clusterMember(i,:)))
+                
+                %%% Max SRN %%%
+                id = maxSRN(i,1);
+                % becomes RN
+                nodeArch.node(id).type = 'R';
+                % relayNode struct
+                relayNode.no(i) = id;
+                relayNode.CID(i) = nodeArch.node(id).CID;
+                relayNode.loc(i, 1) = nodeArch.node(id).x;
+                relayNode.loc(i, 2) = nodeArch.node(id).y;
+                relayNode.distance(i) = sqrt((relayNode.loc(i, 1) - netArch.Sink.x)^2 + (relayNode.loc(i, 2) - netArch.Sink.y)^2);   
+                relayNode.countRNs = noOfk;
+
                 %%% Max SCH %%%
                 id = maxSCH(i,1);
                 % becomes CH
@@ -144,23 +166,12 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
         %         % temp
         %         centr_node(i) = nodeArch.node(id);
         %         centr_node_index(i) = id;
-
-                %%% Max SRN %%%
-                id = maxSRN(i,1);
-                % becomes RN
-                nodeArch.node(id).type = 'R';
-                % relayNode struct
-                relayNode.no(i) = id;
-                relayNode.CID(i) = nodeArch.node(id).CID;
-                relayNode.loc(i, 1) = nodeArch.node(id).x;
-                relayNode.loc(i, 2) = nodeArch.node(id).y;
-                relayNode.distance(i) = sqrt((relayNode.loc(i, 1) - netArch.Sink.x)^2 + (relayNode.loc(i, 2) - netArch.Sink.y)^2);   
-                relayNode.countRNs = noOfk;
             end
         end
     end
 
-    % Layer 0 -> 'R'
+    
+    % Layer 0 and Energy > avgEnergy  ----> 'R'
     c = 0;
     energy = 0;
     for i = locAlive
@@ -174,18 +185,20 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
         if (nodeArch.node(i).Layer == 0) 
             if (nodeArch.node(i).energy >= energy)
                 nodeArch.node(i).type = 'R';
+                relayNode.countRNs = relayNode.countRNs + 1;
+                rc = relayNode.countRNs;
+                relayNode.no(rc) = i;
+                relayNode.CID(rc) = -1;
+                relayNode.loc(rc, 1) = nodeArch.node(i).x;
+                relayNode.loc(rc, 2) = nodeArch.node(i).y;
+                relayNode.distance(rc) = sqrt((relayNode.loc(rc, 1) - netArch.Sink.x)^2 + (relayNode.loc(rc, 2) - netArch.Sink.y)^2);
+                
             else
-                nodeArch.node(i).parent.x = netArch.Sink.x;
-                nodeArch.node(i).parent.y = netArch.Sink.y;
                 nodeArch.node(i).parent.id = 0;
             end
         end
     end 
-%     for i = locAlive
-%         if (nodeArch.node(i).Layer == 0) 
-%             nodeArch.node(i).type = 'R';
-%         end
-%     end 
+
     
     
     %%
@@ -198,7 +211,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
             nodeArch.node(i).parent.id = 0;
         % Layer != 0 
         else
-            % RN -> RN / sink
+            % RN -> RN or sink
             if strcmp(nodeArch.node(i).type,'R') 
                 relayLayer = nodeArch.node(i).Layer;
                 while (1)
@@ -211,20 +224,24 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
                     else
                         locM = [];
                         indexM = [];
-                        M = find(nodeArch.Layer == relayLayer);
+                        L = find(nodeArch.Layer <= relayLayer);
+                        D = find(~nodeArch.dead);
+                        M = intersect(L,D);
+                        M = intersect(M,relayNode.no);
                         
-                        for j =M
-                           if  (strcmp(nodeArch.node(j).type,'R'))
-                               tmp = [nodeArch.node(j).x; nodeArch.node(j).y];
-                               locM = [locM,tmp];
-                               indexM = [indexM,j];
+                        if isempty(M)
+                            continue
+                        end
+                        
+                        for j = M
+                           for k =1:size(relayNode.no,2)
+                               if relayNode.no(k) == j
+                                   indexM = [indexM, relayNode.no(k)];
+                                   locM = [locM, [relayNode.loc(k,1);relayNode.loc(k,2)]];
+                               end
                            end
                         end
-                        
-                        if isempty(locM)
-                           continue 
-                        end
-                        
+
                         locNode = [nodeArch.node(i).x; nodeArch.node(i).y];
                         [minDist, index] = min(sqrt(sum(( repmat(locNode, 1, length(indexM)) - locM) .^ 2)));
                         id = indexM(index);
@@ -236,8 +253,11 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
                             nodeArch.node(i).parent.x = nodeArch.node(id).x;
                             nodeArch.node(i).parent.y = nodeArch.node(id).y; 
                             nodeArch.node(i).parent.id = id;
-%                             nodeArch.node(id).child = nodeArch.node(id).child +  nodeArch.node(i).child;
                             break
+                        else
+                            nodeArch.node(i).parent.x = netArch.Sink.x;
+                            nodeArch.node(i).parent.y = netArch.Sink.y;
+                            nodeArch.node(i).parent.id = 0;
                         end
                     end            
                 end % while
@@ -245,16 +265,58 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
             elseif ( strcmp(nodeArch.node(i).type,'C') )
                 CID = nodeArch.node(i).CID;
                 relayID = relayNode.no(CID);
-                nodeArch.node(i).parent.x = nodeArch.node(relayID).x;
-                nodeArch.node(i).parent.y = nodeArch.node(relayID).y;
-                nodeArch.node(i).parent.id = relayID;
-%                 nodeArch.node(relayID).child = nodeArch.node(relayID).child  + 1;
+                if relayID == i % when CH=RN itself
+                    
+                        locM = [];
+                        indexM = [];
+                        relayLayer = nodeArch.node(i).Layer;
+                        L = find(nodeArch.Layer <= relayLayer-1);
+                        D = find(~nodeArch.dead);
+                        M = intersect(L,D);
+                        M = intersect(M,relayNode.no);
+                        
+                        if isempty(M)
+                            nodeArch.node(i).parent.x = netArch.Sink.x;
+                            nodeArch.node(i).parent.y = netArch.Sink.y;
+                            nodeArch.node(i).parent.id = 0;
+                            continue
+                        end
+                        
+                        for j = M
+                           for k =1:size(relayNode.no,2)
+                               if relayNode.no(k) == j
+                                   indexM = [indexM, relayNode.no(k)];
+                                   locM = [locM, [relayNode.loc(k,1);relayNode.loc(k,2)]];
+                               end
+                           end
+                        end
+
+                        locNode = [nodeArch.node(i).x; nodeArch.node(i).y];
+                        [minDist, index] = min(sqrt(sum(( repmat(locNode, 1, length(indexM)) - locM) .^ 2)));
+                        id = indexM(index);
+                        
+                        toRN = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, nodeArch.node(id).x, nodeArch.node(id).y);
+                        toBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
+                        
+                        if toRN < toBS
+                            nodeArch.node(i).parent.x = nodeArch.node(id).x;
+                            nodeArch.node(i).parent.y = nodeArch.node(id).y; 
+                            nodeArch.node(i).parent.id = id;
+                        else
+                            nodeArch.node(i).parent.x = netArch.Sink.x;
+                            nodeArch.node(i).parent.y = netArch.Sink.y;
+                            nodeArch.node(i).parent.id = 0;
+                        end
+                else
+                    nodeArch.node(i).parent.x = nodeArch.node(relayID).x;
+                    nodeArch.node(i).parent.y = nodeArch.node(relayID).y;
+                    nodeArch.node(i).parent.id = relayID;
+                end
             % CM -> CH
             else
                 nodeArch.node(i).parent.x = clusterNode.loc(nodeArch.node(i).CID, 1);
                 nodeArch.node(i).parent.y = clusterNode.loc(nodeArch.node(i).CID, 2);
                 nodeArch.node(i).parent.id = clusterNode.no(nodeArch.node(i).CID);
-%                 nodeArch.node(clusterNode.no(nodeArch.node(i).CID)).child = nodeArch.node(clusterNode.no(nodeArch.node(i).CID)).child  + 1;
             end
         end %if
     end %for

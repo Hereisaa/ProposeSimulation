@@ -96,6 +96,7 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
 %     countCHs
 %     numCluster = numCluster + countCHs;
     numCluster = countCHs;
+    
 %     fprintf('[LEACH] number of CH (countCHs) = %d\n',countCHs);
 %     fprintf('[LEACH] number of total CH (numCluster) = %d\n',numCluster);
 end
