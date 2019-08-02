@@ -18,7 +18,7 @@ aggrEnergy  = 5*     0.000000001;
 packetLength    = 4000;
 ctrPacketLength = 64;
 r       = 99999;
-simulationTime = 5;
+simulationTime = 1;
 
 
 for m = 1:simulationTime
