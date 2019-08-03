@@ -143,8 +143,6 @@ for k=1:1
     
     X = 0:100:xr;
     Z = 1:100:xr+1;
-%     X = 0:1:xr;
-%     Z = 1:1:xr+1;
     p = plot(X,Y2(Z),'-s',...
              X,Y4(Z),'-d',...
              X,Y1(Z),'-o',...
@@ -369,30 +367,30 @@ for k=1:1
     P4(1:X4) = packetToBS4(1:X4);
 
     a = 15;
-    b = N/a;
+    b = N/;
     XY1=[];
-    for i =1:b
+    for i =1:10
         Temp = find(Y1 <= N-a*i);
         XY1 = [XY1,Temp(1)];
     end
     XY1 = [1,XY1];
     
     XY2=[];
-    for i =1:b
+    for i =1:10
         Temp = find(Y2 <= N-a*i);
         XY2 = [XY2,Temp(1)];
     end
     XY2 = [1,XY2];
     
     XY3=[];
-    for i =1:b
+    for i =1:10
         Temp = find(Y3 <= N-a*i);
         XY3 = [XY3,Temp(1)];
     end
     XY3 = [1,XY3];
     
     XY4=[];
-    for i =1:b
+    for i =1:10
         Temp = find(Y4 <= N-a*i);
         XY4 = [XY4,Temp(1)];
     end

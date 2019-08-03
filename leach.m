@@ -91,6 +91,9 @@ function [nodeArch, clusterNode, numCluster] = leach(clusterModel, clusterFunPar
                 nodeArch.node(i).parent.x = netArch.Sink.x;
                 nodeArch.node(i).parent.y = netArch.Sink.y;
             end
+        else
+            nodeArch.node(i).parent.x = netArch.Sink.x;
+            nodeArch.node(i).parent.y = netArch.Sink.y;
         end
     end
 %     countCHs

@@ -3,10 +3,10 @@ clc, clear all, close all
 %% PARAMETER
 numNodes   = 300;  % number of nodes 100
 Length     = 300;  % network length 300
-Width      = 300;  % network width 300
+Width      = 100;  % network width 300
 d_th = 87;         % Network Dimension threshold
-sinkX    = 150;
-sinkY    = 350;
+sinkX    = 50;
+sinkY    = 175;
 initEnergy  = 0.5;
 transEnergy = 50*    0.000000001;
 recEnergy   = 50*    0.000000001;

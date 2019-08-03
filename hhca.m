@@ -188,13 +188,13 @@ function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterMo
                 disBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
                 [minDis, loc] = min(sqrt(sum((repmat(locNode, noOfk, 1) - gridNode.loc)' .^ 2)));
                 minDisGH =  gridNode.no(loc);
-%                 if minDis < disBS
+                if minDis < disBS
                     nodeArch.node(i).parent = nodeArch.node(minDisGH);
                     nodeArch.node(minDisGH).child = nodeArch.node(minDisGH).child + 1;
-%                 else
-%                     nodeArch.node(i).parent.x = netArch.Sink.x;
-%                     nodeArch.node(i).parent.y = netArch.Sink.y;
-%                 end
+                else
+                    nodeArch.node(i).parent.x = netArch.Sink.x;
+                    nodeArch.node(i).parent.y = netArch.Sink.y;
+                end
             else
                 nodeArch.node(i).parent.x = netArch.Sink.x;
                 nodeArch.node(i).parent.y = netArch.Sink.y;

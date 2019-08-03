@@ -230,17 +230,29 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
                         M = intersect(M,relayNode.no);
                         
                         if isempty(M)
-                            continue
+                            nodeArch.node(i).parent.x = netArch.Sink.x;
+                            nodeArch.node(i).parent.y = netArch.Sink.y;
+                            nodeArch.node(i).parent.id = 0;
+                            break
                         end
                         
                         for j = M
                            for k =1:size(relayNode.no,2)
-                               if relayNode.no(k) == j
+                               if relayNode.no(k) == j && relayNode.no(k)~=i
                                    indexM = [indexM, relayNode.no(k)];
                                    locM = [locM, [relayNode.loc(k,1);relayNode.loc(k,2)]];
                                end
                            end
                         end
+                        
+                        if isempty(indexM)
+                            nodeArch.node(i).parent.x = netArch.Sink.x;
+                            nodeArch.node(i).parent.y = netArch.Sink.y;
+                            nodeArch.node(i).parent.id = 0;
+                        end
+                        
+                        
+                        
 
                         locNode = [nodeArch.node(i).x; nodeArch.node(i).y];
                         [minDist, index] = min(sqrt(sum(( repmat(locNode, 1, length(indexM)) - locM) .^ 2)));

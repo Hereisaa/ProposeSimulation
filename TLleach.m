@@ -80,7 +80,7 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
     
     % level 2 CH selection
 %     if countCHs > 1
-    if countCHs * p > 0.5
+    if countCHs > 1
         numCHv2 = ceil(countCHs * p);
     else
         numCHv2 = 0;
@@ -133,7 +133,7 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
     for i = locAlive
             dtoBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
             if ( countCHs ~= 0 )
-                    if ( nodeArch.node(i).type == 'C' )
+                    if ( strcmp(nodeArch.node(i).type, 'C'))
                        
                         if numCHv2 ~= 0
                             locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
@@ -145,22 +145,33 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
                             else
                                 nodeArch.node(i).parent.x = netArch.Sink.x;
                                 nodeArch.node(i).parent.y = netArch.Sink.y;
+%                                 minDisCv2 =  Cv2Node.no(loc);
+%                                 nodeArch.node(i).parent = nodeArch.node(minDisCv2);
+%                                 nodeArch.node(minDisCv2).child = nodeArch.node(minDisCv2).child + 1;
                             end
                         else
                             nodeArch.node(i).parent.x = netArch.Sink.x;
                             nodeArch.node(i).parent.y = netArch.Sink.y;
                         end
-                    elseif ( nodeArch.node(i).type == 'N' )
+                    elseif ( strcmp(nodeArch.node(i).type, 'Cv2'))
+                        nodeArch.node(i).parent.x = netArch.Sink.x;
+                        nodeArch.node(i).parent.y = netArch.Sink.y;
+                    elseif (strcmp(nodeArch.node(i).type, 'N'))
+                        cloc = [];
+                        cno = [];
+                        for j = clusterNode.no
+                            if strcmp(nodeArch.node(j).type, 'C')
+                                cloc = [cloc; nodeArch.node(j).x , nodeArch.node(j).y];
+                                cno = [cno,j];
+                            end
+                        end
                         locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
-                        [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHs, 1) - clusterNode.loc)' .^ 2)));
-%                         if minDis < dtoBS
-                            minDisCH =  clusterNode.no(loc);
-                            nodeArch.node(i).parent = nodeArch.node(minDisCH);
-                            nodeArch.node(minDisCH).child = nodeArch.node(minDisCH).child + 1;
-%                         else
-%                             nodeArch.node(i).parent.x = netArch.Sink.x;
-%                             nodeArch.node(i).parent.y = netArch.Sink.y;
-%                         end
+                        [minDis, ind] = min(sqrt(sum((repmat(locNode, countCHs-numCHv2, 1) - cloc)' .^ 2)));
+                        minDisCH =  cno(ind);
+%                         [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHs, 1) - clusterNode.loc)' .^ 2)));
+%                         minDisCH =  clusterNode.no(loc);
+                        nodeArch.node(i).parent = nodeArch.node(minDisCH);
+                        nodeArch.node(minDisCH).child = nodeArch.node(minDisCH).child + 1;
                     end
             else
                 nodeArch.node(i).parent.x = netArch.Sink.x;

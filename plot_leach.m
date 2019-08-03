@@ -21,10 +21,12 @@ y = R*sin(t);
 %% Line
 locAlive = find(~clusterModel.nodeArch.dead);
 for i = locAlive
-    if(~strcmp(clusterModel.nodeArch.node(i).type, 'C'))
-        j = clusterModel.nodeArch.node(i).parent;
-        plot([clusterModel.nodeArch.node(i).x j.x],[clusterModel.nodeArch.node(i).y j.y],'Color', color2);
-    end
+%     if(~strcmp(clusterModel.nodeArch.node(i).type, 'C'))
+%         j = clusterModel.nodeArch.node(i).parent;
+%         plot([clusterModel.nodeArch.node(i).x j.x],[clusterModel.nodeArch.node(i).y j.y],'Color', color2);
+%     end
+       j = clusterModel.nodeArch.node(i).parent;
+       plot([clusterModel.nodeArch.node(i).x j.x],[clusterModel.nodeArch.node(i).y j.y],'Color', color2);
 end
 
 %% Sensors
