@@ -9,7 +9,7 @@ function [ Model, Temp_xy, Temp_index, notLayerZero ] = NetworkDimension( Model,
     locAlive = find(~nodeArch.dead);
     for i = locAlive
         dist = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
-        if( dist > d_th )%d_th
+        if( dist > 0 )%d_th
             layer = floor(dist / d_th);
             nodeArch.node(i).Layer = layer;
             nodeArch.Layer(i) = layer;
@@ -17,9 +17,6 @@ function [ Model, Temp_xy, Temp_index, notLayerZero ] = NetworkDimension( Model,
             Temp_xy(1, notLayerZero + 1) = nodeArch.node(i).x;
             Temp_xy(2, notLayerZero + 1) = nodeArch.node(i).y;
             Temp_index(1, notLayerZero + 1) = i;
-    %         Temp(inLayer0).x = proposed_nodeArch.node(i).x;
-    %         Temp(inLayer0).y = proposed_nodeArch.node(i).y;
-    %         Temp_index(1, inLayer0) = i;
             notLayerZero = notLayerZero + 1;
         else
             nodeArch.node(i).Layer = 0;

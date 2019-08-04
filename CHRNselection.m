@@ -170,34 +170,34 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
         end
     end
 
-    
-    % Layer 0 and Energy > avgEnergy  ----> 'R'
-    c = 0;
-    energy = 0;
-    for i = locAlive
-        if (nodeArch.node(i).Layer == 0)
-            energy = energy + nodeArch.node(i).energy;
-            c = c + 1;
-        end
-    end    
-    energy = energy / c;
-    for i = locAlive
-        if (nodeArch.node(i).Layer == 0) 
-            if (nodeArch.node(i).energy >= energy)
-                nodeArch.node(i).type = 'R';
-                relayNode.countRNs = relayNode.countRNs + 1;
-                rc = relayNode.countRNs;
-                relayNode.no(rc) = i;
-                relayNode.CID(rc) = -1;
-                relayNode.loc(rc, 1) = nodeArch.node(i).x;
-                relayNode.loc(rc, 2) = nodeArch.node(i).y;
-                relayNode.distance(rc) = sqrt((relayNode.loc(rc, 1) - netArch.Sink.x)^2 + (relayNode.loc(rc, 2) - netArch.Sink.y)^2);
-                
-            else
-                nodeArch.node(i).parent.id = 0;
-            end
-        end
-    end 
+% % %     % For BS_near
+% % %     % Layer 0 and Energy > avgEnergy  ----> 'R'
+% % %     c = 0;
+% % %     energy = 0;
+% % %     for i = locAlive
+% % %         if (nodeArch.node(i).Layer == 0)
+% % %             energy = energy + nodeArch.node(i).energy;
+% % %             c = c + 1;
+% % %         end
+% % %     end    
+% % %     energy = energy / c;
+% % %     for i = locAlive
+% % %         if (nodeArch.node(i).Layer == 0) 
+% % %             if (nodeArch.node(i).energy >= energy)
+% % %                 nodeArch.node(i).type = 'R';
+% % %                 relayNode.countRNs = relayNode.countRNs + 1;
+% % %                 rc = relayNode.countRNs;
+% % %                 relayNode.no(rc) = i;
+% % %                 relayNode.CID(rc) = -1;
+% % %                 relayNode.loc(rc, 1) = nodeArch.node(i).x;
+% % %                 relayNode.loc(rc, 2) = nodeArch.node(i).y;
+% % %                 relayNode.distance(rc) = sqrt((relayNode.loc(rc, 1) - netArch.Sink.x)^2 + (relayNode.loc(rc, 2) - netArch.Sink.y)^2);
+% % %                 
+% % %             else
+% % %                 nodeArch.node(i).parent.id = 0;
+% % %             end
+% % %         end
+% % %     end 
 
     
     
@@ -205,7 +205,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     %%% assign each node's parent
     for i = locAlive
         % Layer = 0 -> sink
-        if (nodeArch.node(i).Layer == 0)
+        if (nodeArch.node(i).Layer == -1)
             nodeArch.node(i).parent.x = netArch.Sink.x;
             nodeArch.node(i).parent.y = netArch.Sink.y;
             nodeArch.node(i).parent.id = 0;
@@ -323,6 +323,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
                     nodeArch.node(i).parent.x = nodeArch.node(relayID).x;
                     nodeArch.node(i).parent.y = nodeArch.node(relayID).y;
                     nodeArch.node(i).parent.id = relayID;
+                    nodeArch.node(relayID).CH = i;
                 end
             % CM -> CH
             else

@@ -67,18 +67,22 @@ for k=1:1
     Y2(1:X2) = leachEnergy(1:X2);
     Y3(1:X3) = hhcaEnergy(1:X3);
     Y4(1:X4) = tlleachEnergy(1:X4);
-%     X = 1:100:xr+1;
-    X = 0:100:xr;
-    Z = 1:100:xr+1;
-    p = plot(X,Y2(Z),'-s',...
-             X,Y4(Z),'-d',...
-             X,Y1(Z),'-o',...
-             X,Y3(Z),'-*');
-             
-    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color9; p(1).MarkerFaceColor=color10;
-    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color9; p(2).MarkerFaceColor=color8;
-    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color9; p(3).MarkerFaceColor=color7;
-    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
+    
+    range = 1;
+    X = 0:range:xr;
+    Z = 1:range:xr+1;
+%     p = plot(X,Y2(Z),'-s',...
+%              X,Y4(Z),'-d',...
+%              X,Y1(Z),'-o',...
+%              X,Y3(Z),'-*');
+    p = plot(X,Y2(Z),'-',...
+             X,Y4(Z),'-',...
+             X,Y1(Z),'-',...
+             X,Y3(Z),'-');         
+    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color1; p(1).MarkerFaceColor=color10;
+    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color2; p(2).MarkerFaceColor=color8;
+    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color3; p(3).MarkerFaceColor=color7;
+    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color4; p(4).MarkerFaceColor=color8;
     
     axis([0,xr,0,N*E]);
     set(gca,'XTick',[0:200:xr]);
@@ -93,8 +97,8 @@ for k=1:1
 %         'FontName','Cambria');
     grid on
     box on
-    
-    s=strcat(folder,'Residual_energy_of_WSN');
+    name = strcat(parameter,'_ResidualEnergy');
+    s=strcat(folder,name,'.fig'); 
     savefig(s);
     s=strcat(s,'.png');
     saveas(gcf,s);
@@ -118,7 +122,8 @@ for k =1:1
     set(gca,'YGrid','on','GridLineStyle','-', 'xticklabel', {'PROPOSED','HHCA','TL-LEACH','LEACH'});
     ylim([0 ceil(pHND/100)*100+100]);
     
-    s=strcat(folder,'FND_HND');
+    name = strcat(parameter,'_FND_HND');
+    s=strcat(folder,name,'.fig');   
     savefig(s);
     s=strcat(s,'.png');
     saveas(gcf,s);
@@ -141,18 +146,23 @@ for k=1:1
     Y3(1:X3) = hhcaAlive(1:X3);
     Y4(1:X4) = tlleachAlive(1:X4);
     
-    X = 0:100:xr;
-    Z = 1:100:xr+1;
+    range = 1;
+    X = 0:range:xr;
+    Z = 1:range:xr+1;
 %     X = 0:1:xr;
 %     Z = 1:1:xr+1;
-    p = plot(X,Y2(Z),'-s',...
-             X,Y4(Z),'-d',...
-             X,Y1(Z),'-o',...
-             X,Y3(Z),'-*');
-    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color9; p(1).MarkerFaceColor=color10;
-    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color9; p(2).MarkerFaceColor=color8;
-    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color9; p(3).MarkerFaceColor=color7;
-    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
+%     p = plot(X,Y2(Z),'-s',...
+%              X,Y4(Z),'-d',...
+%              X,Y1(Z),'-o',...
+%              X,Y3(Z),'-*');
+    p = plot(X,Y2(Z),'-',...
+             X,Y4(Z),'-',...
+             X,Y1(Z),'-',...
+             X,Y3(Z),'-');
+    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color1; p(1).MarkerFaceColor=color10;
+    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color2; p(2).MarkerFaceColor=color8;
+    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color3; p(3).MarkerFaceColor=color7;
+    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color4; p(4).MarkerFaceColor=color8;
     axis([0,ceil(xr/200)*200,0,N]);
     set(gca,'XTick',[0:200:ceil(xr/200)*200]);
     set(gca,'YTick',[0:25:N]);
@@ -167,8 +177,8 @@ for k=1:1
 
     grid on
     box on
-    
-    s=strcat(folder,'Number_of_alive_nodes');
+    name = strcat(parameter,'_AliveNodes');
+    s=strcat(folder,name,'.fig');    
     savefig(s);
     s=strcat(s,'.png');
     saveas(gcf,s);
@@ -198,16 +208,21 @@ for k=1:1
     
     maxTP = max([packetToBS(X1),packetToBS2(X2),packetToBS3(X3),packetToBS4(X4)]);
     
-    X = 0:100:xr;
-    Z = 1:100:xr+1;
-    p = plot(X,Y2(Z),'-s',...
-             X,Y4(Z),'-d',...
-             X,Y1(Z),'-o',...
-             X,Y3(Z),'-*');
-    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color9; p(1).MarkerFaceColor=color10;
-    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color9; p(2).MarkerFaceColor=color8;
-    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color9; p(3).MarkerFaceColor=color7;
-    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
+    range = 1;
+    X = 0:range:xr;
+    Z = 1:range:xr+1;
+%     p = plot(X,Y2(Z),'-s',...
+%              X,Y4(Z),'-d',...
+%              X,Y1(Z),'-o',...
+%              X,Y3(Z),'-*');
+    p = plot(X,Y2(Z),'-',...
+             X,Y4(Z),'-',...
+             X,Y1(Z),'-',...
+             X,Y3(Z),'-');     
+    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color1; p(1).MarkerFaceColor=color10;
+    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color2; p(2).MarkerFaceColor=color8;
+    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color3; p(3).MarkerFaceColor=color7;
+    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color4; p(4).MarkerFaceColor=color8;
     axis([0,xr,0,ceil(maxTP/(10^8))*(10^8)]);
     set(gca,'XTick',[0:200:xr]);
     set(gca,'YTick',[0:(10^8):ceil(maxTP/(10^8))*(10^8)]);
@@ -221,14 +236,15 @@ for k=1:1
 %         'FontName','Cambria');
     grid on
     box on
-    s=strcat(folder,'Throughput');
+    name = strcat(parameter,'_Throughput');
+    s=strcat(folder,name,'.fig');
     savefig(s);
     s=strcat(s,'.png');
     saveas(gcf,s);
 end
 
 
-%%%%%%%%%%%%%%%%%% Energy vs. Packets %%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% Energy(J) vs. Number of Received Data Packets %%%%%%%%%%%%%%%%%%
 for k=1:1
     figure
     hold on;
@@ -279,15 +295,19 @@ for k=1:1
     end
     XY4 = [1,XY4];
 
-    p = plot(Y2(XY2),P2(XY2),'-s',...
-             Y4(XY4),P4(XY4),'-d',...
-             Y1(XY1),P1(XY1),'-o',...
-             Y3(XY3),P3(XY3),'-*');
+%     p = plot(Y2(XY2),P2(XY2),'-s',...
+%              Y4(XY4),P4(XY4),'-d',...
+%              Y1(XY1),P1(XY1),'-o',...
+%              Y3(XY3),P3(XY3),'-*');
+    p = plot(Y2(XY2),P2(XY2),'-',...
+             Y4(XY4),P4(XY4),'-',...
+             Y1(XY1),P1(XY1),'-',...
+             Y3(XY3),P3(XY3),'-');
          
-    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color9; p(1).MarkerFaceColor=color10;
-    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color9; p(2).MarkerFaceColor=color8;
-    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color9; p(3).MarkerFaceColor=color7;
-    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
+    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color1; p(1).MarkerFaceColor=color10;
+    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color2; p(2).MarkerFaceColor=color8;
+    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color3; p(3).MarkerFaceColor=color7;
+    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color4; p(4).MarkerFaceColor=color8;
 %     axis([0,N*E,0,300]);
 %     set(gca,'XTick',[0:N*E/10:N*E]);
 %     set(gca,'YTick',[0:30:300]);
@@ -301,7 +321,8 @@ for k=1:1
 %         'FontName','Cambria');
     grid on
     box on
-    s=strcat(folder,'EnergyVSPackets');
+    name = strcat(parameter,'_EnergyVsPackets');
+    s=strcat(folder,name,'.fig');
     savefig(s);
     s=strcat(s,'.png');
     saveas(gcf,s);
@@ -344,7 +365,7 @@ end
 %     saveas(gcf,s);
 % end
 
-%%%%%%%%%%%%%%%%%% Number of alive nodes (J) vs. Number of Received Data Packets %%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% Number of alive nodes vs. Number of Received Data Packets %%%%%%%%%%%%%%%%%%
 for k=1:1
     figure
     hold on;
@@ -398,15 +419,19 @@ for k=1:1
     end
     XY4 = [1,XY4];
 
-    p = plot(P2(XY2),Y2(XY2),'-s',...
-             P4(XY4),Y4(XY4),'-d',...
-             P1(XY1),Y1(XY1),'-o',...
-             P3(XY3),Y3(XY3),'-*');
+%     p = plot(P2(XY2),Y2(XY2),'-s',...
+%              P4(XY4),Y4(XY4),'-d',...
+%              P1(XY1),Y1(XY1),'-o',...
+%              P3(XY3),Y3(XY3),'-*');
+    p = plot(P2(XY2),Y2(XY2),'-',...
+             P4(XY4),Y4(XY4),'-',...
+             P1(XY1),Y1(XY1),'-',...
+             P3(XY3),Y3(XY3),'-');
          
-    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color9; p(1).MarkerFaceColor=color10;
-    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color9; p(2).MarkerFaceColor=color8;
-    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color9; p(3).MarkerFaceColor=color7;
-    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
+    p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=color1; p(1).MarkerFaceColor=color10;
+    p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=color2; p(2).MarkerFaceColor=color8;
+    p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color3; p(3).MarkerFaceColor=color7;
+    p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color4; p(4).MarkerFaceColor=color8;
 %     axis([0,10*10^8,0,N]);
 %     set(gca,'XTick',[0:10^8:10*10^8]);
 %     set(gca,'YTick',[0:30:300]);
@@ -420,7 +445,8 @@ for k=1:1
 %         'FontName','Cambria');
     grid on
     box on
-    s=strcat(folder,'PacketsVSAlive');
+    name = strcat(parameter,'_PacketsVSAlive');
+    s=strcat(folder,name,'.fig');
     savefig(s);
     s=strcat(s,'.png');
     saveas(gcf,s);

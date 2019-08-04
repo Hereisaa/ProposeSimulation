@@ -101,7 +101,7 @@ plot(x*3 + netArch.Sink.x, y*3 + netArch.Sink.y,'Color', color3,'LineStyle',':')
 % Layer 4 
 plot(x*4 + netArch.Sink.x, y*4 + netArch.Sink.y,'Color', color3,'LineStyle',':');
 
-% axis([0,netArch.Yard.Length,0,netArch.Sink.y]);
+axis([0,netArch.Yard.Length,0,netArch.Sink.y]);
 set(gca,'XTick',[0:50:netArch.Yard.Length]);
 set(gca,'YTick',[0:50:netArch.Sink.y]);
 title('Proposed','FontWeight','bold',...
