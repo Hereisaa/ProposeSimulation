@@ -152,8 +152,8 @@ for k=1:1
     Y4(1:X4) = tlleachAlive(1:X4);
     
 
-    X = 0:50:xr;
-    Z = 1:50:xr+1;
+    X = 0:xr/10:xr;
+    Z = 1:xr/10:xr+1;
 %     X = 0:1:xr;
 %     Z = 1:1:xr+1;
     p = plot(X,Y2(Z),'-s',...
@@ -169,8 +169,8 @@ for k=1:1
     p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=color9; p(3).MarkerFaceColor=color7;
     p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
     axis([0,ceil(xr/200)*200,0,N]);
-    set(gca,'XTick',[0:50:ceil(xr/200)*200]);
-    set(gca,'YTick',[0:50:N]);
+    set(gca,'XTick',[0:100:ceil(xr/200)*200]);
+    set(gca,'YTick',[0:N/12.5:N]);
     % Create x-label y-label
     xlabel('Round','FontWeight','bold','FontSize',15);
     ylabel('Number of alive nodes','FontWeight','bold','FontSize',15);
@@ -216,8 +216,6 @@ for k=1:1
     range = floor(xr/1000)*1000/10;
     X = 0:xr/10:xr;
     Z = 1:xr/10:xr+1;
-    X = 0:100:xr;
-    Z = 1:100:xr+1;
     p = plot(X,Y2(Z),'-s',...
              X,Y4(Z),'-d',...
              X,Y1(Z),'-o',...
@@ -231,8 +229,8 @@ for k=1:1
     p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=p3_Color; p(3).MarkerFaceColor=p3_MarkerFaceColor;
     p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=p4_Color; p(4).MarkerFaceColor=p4_MarkerFaceColor;
 %     axis([0,xr,0,(floor(maxTP/(10^9))+0.5)*(10^9)]);
-    axis([0,xr,0,(Y1(X1)/(10^8)+1)*10^8]);
-    set(gca,'XTick',[0:100:xr]);
+%     axis([0,xr,0,2*(10^8)]);
+    set(gca,'XTick',[0:xr/10:xr]);
 %     set(gca,'YTick',[0:0.5*(10^9):(floor(maxTP/(10^9))+0.5)*(10^9)]);
     % Create x-label y-label
     xlabel('Round','FontWeight','bold','FontSize',15);
@@ -398,9 +396,8 @@ for k=1:1
     P2(1:X2) = packetToBS2(1:X2);
     P3(1:X3) = packetToBS3(1:X3);
     P4(1:X4) = packetToBS4(1:X4);
-    
-    
-    a = 50;
+
+    a = 10;
     b = N/a;
     XY1=[];
     for i =1:b

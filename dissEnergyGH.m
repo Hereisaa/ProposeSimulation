@@ -39,7 +39,7 @@ function Model = dissEnergyGH(Model, roundArch, netArch)
             else
                 energy = energy - (packetLength * ERX * Model.nodeArch.node(i).child);
             end
-
+            
             % energy for transferring
             if(Dist >= d0)
                  Model.nodeArch.node(i).energy = energy - ...

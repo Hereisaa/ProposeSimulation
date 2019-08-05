@@ -51,10 +51,10 @@ function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterMo
     % define cluster structure
     clusterNode     = struct();
     
-    
-    
-    %%% Fcm
     fcm_flag = false;
+    if length(locAlive) >= k
+    %%% Fcm
+    
     locAlive = find(~nodeArch.dead);
     P = zeros(2,length(locAlive));
     for i = 1:length(locAlive)
@@ -130,7 +130,7 @@ function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterMo
             
         end
     end% if
-    
+    end
     
     %%% leach
     countCHs = 0;
@@ -169,14 +169,14 @@ function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterMo
                 
                 locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
                 [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHs, 1) - clusterNode.loc)' .^ 2)));
-                if minDis < disBS
+%                 if minDis < disBS
                     minDisCH =  clusterNode.no(loc);
                     nodeArch.node(i).parent = nodeArch.node(minDisCH);
                     nodeArch.node(minDisCH).child = nodeArch.node(minDisCH).child + 1;
-                else
-                    nodeArch.node(i).parent.x = netArch.Sink.x;
-                    nodeArch.node(i).parent.y = netArch.Sink.y;
-                end
+%                 else
+%                     nodeArch.node(i).parent.x = netArch.Sink.x;
+%                     nodeArch.node(i).parent.y = netArch.Sink.y;
+%                 end
             else
                 nodeArch.node(i).parent.x = netArch.Sink.x;
                 nodeArch.node(i).parent.y = netArch.Sink.y;
@@ -188,13 +188,13 @@ function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterMo
                 disBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
                 [minDis, loc] = min(sqrt(sum((repmat(locNode, noOfk, 1) - gridNode.loc)' .^ 2)));
                 minDisGH =  gridNode.no(loc);
-                if minDis < disBS
+%                 if minDis < disBS
                     nodeArch.node(i).parent = nodeArch.node(minDisGH);
                     nodeArch.node(minDisGH).child = nodeArch.node(minDisGH).child + 1;
-                else
-                    nodeArch.node(i).parent.x = netArch.Sink.x;
-                    nodeArch.node(i).parent.y = netArch.Sink.y;
-                end
+%                 else
+%                     nodeArch.node(i).parent.x = netArch.Sink.x;
+%                     nodeArch.node(i).parent.y = netArch.Sink.y;
+%                 end
             else
                 nodeArch.node(i).parent.x = netArch.Sink.x;
                 nodeArch.node(i).parent.y = netArch.Sink.y;

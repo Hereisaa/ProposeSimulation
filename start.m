@@ -1,13 +1,13 @@
 %% MAIN
 clc, clear all, close all
 %% PARAMETER
-numNodes   = 300;  % number of nodes 100
+numNodes   = 500;  % number of nodes 100
 Length     = 300;  % network length 300
 Width      = 300;  % network width 300
 d_th = 87;         % Network Dimension threshold
 sinkX    = 150;
 sinkY    = 350;
-initEnergy  = 1;
+initEnergy  = 0.5;
 transEnergy = 50*    0.000000001;
 recEnergy   = 50*    0.000000001;
 fsEnergy    = 10*    0.000000000001;
@@ -16,7 +16,7 @@ aggrEnergy  = 5*     0.000000001;
 packetLength    = 4000;
 ctrPacketLength = 100;
 r       = 99999;
-simulationTime = 20;
+simulationTime = 1;
 parameter = strcat(num2str(numNodes) , 'N' , num2str(Length) , 'M' , num2str(initEnergy) , 'J');
 
 
@@ -93,13 +93,13 @@ for r = 1:roundArch.numRound
     %%% CH & RN Selection Phase
     [ p_clusterModel ] = CHRNselection( p_clusterModel, locAlive, p_clusterModel.numCluster, p_clusterModel.centr, netArch );
     
-    
-    if (p_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag2
-        HND = r;
-%         fprintf('[Proposed] ***HND*** round = %d.\n', r);
-        HND_flag2 = 0;
-        plot_kmeans
-    end  
+%     
+%     if (p_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag2
+%         HND = r;
+% %         fprintf('[Proposed] ***HND*** round = %d.\n', r);
+%         HND_flag2 = 0;
+%         plot_kmeans
+%     end  
 
     
     %%% Control Packet diss
@@ -162,23 +162,23 @@ for r = 1:roundArch.numRound
     %%% plot STATISTICS
     par_proposed = plotResults(p_clusterModel, r, par_proposed, roundArch);
     
-    if r==1
-        plot_kmeans
-    end
+%     if r==1
+%         plot_kmeans
+%     end
     
     %%% FND and HND and LND 
     if p_clusterModel.nodeArch.numDead > 0 && FND_flag
         fprintf('[Proposed] ***FND*** round = %d.\n', r);
         FND = r;
         FND_flag = 0;
-        plot_kmeans
+%         plot_kmeans
     end
     if (p_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag
         HND = r;
         fprintf('[Proposed] ***HND*** round = %d.\n', r);
         HND_flag = 0;
         HND_flag2 = 1;
-        plot_kmeans
+%         plot_kmeans
     end  
     if (p_clusterModel.nodeArch.numDead >= init_nodeArch.numNode)
         LND = r;
@@ -404,13 +404,13 @@ for r = 1:roundArch.numRound
         FND = r;
         fprintf('[LEACH] ***FND*** round = %d.\n', r);
         FND_flag = 0;
-        plot_leach
+%         plot_leach
     end
     if (clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag % HND
         HND = r;
         fprintf('[LEACH] ***HND*** round = %d.\n', r);
         HND_flag = 0;
-        plot_leach
+%         plot_leach
     end
     if (clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND_flag % LND
         LND = r;
@@ -474,18 +474,18 @@ for r = 1:roundArch.numRound
         FND = r;
         fprintf('[TL-LEACH] ***FND*** round = %d.\n', r);
         FND_flag = 0;
-        plot_TLleach
+%         plot_TLleach
     end
     if (tl_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag % HND
         HND = r;
         fprintf('[TL-LEACH] ***HND*** round = %d.\n', r);
         HND_flag = 0;
-        plot_TLleach
+%         plot_TLleach
     end
     if (tl_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.9)) && TT_flag % HND
 %         fprintf('[TL-LEACH] ***90%D*** round = %d.\n', r);
         TT_flag = 0;
-        plot_TLleach
+%         plot_TLleach
     end
     if (tl_clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND_flag % LND
         LND = r;
@@ -511,7 +511,7 @@ h_clusterModel.nodeArch.init_numNodes = numNodes;
 numAliveNode = numNodes;
 p   = 0.05; % ratio of number of CH (default)
 k = 2;% no. of GH
-FND_flag = 1; HND_flag = 1; LND_flag = 1;
+FND_flag = 1; HND_flag = 1; LND_flag = 1; TT_flag =1;
 FND = 0; HND = 0; LND = 0;
 
 par_hhca = struct;
@@ -556,6 +556,11 @@ for r = 1:roundArch.numRound
         HND = r;
         fprintf('[HHCA] ***HND*** round = %d.\n', r);
         HND_flag = 0;
+%         plot_hhca
+    end
+    if (h_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.8)) && TT_flag % TT
+        fprintf('[HHCA] ***HND * 0.8*** round = %d.\n', r);
+        TT_flag = 0;
 %         plot_hhca
     end
     if (h_clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND_flag % LND

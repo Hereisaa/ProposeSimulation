@@ -78,7 +78,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
        E_min(i,1)    = minEnergy;
     end
     
-    %%% cal SCH SRN ( without layer 0 )
+    %%% cal SCH SRN
     for i =1:nodeArch.init_numNodes
         if ~isempty(nodeArch.node(i).CID)
             SCH(i) = 0;
