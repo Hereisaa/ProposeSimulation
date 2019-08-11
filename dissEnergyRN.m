@@ -1,9 +1,5 @@
 function Model = dissEnergyRN(Model, roundArch, netArch)
-% Calculation of Energy dissipated for CHs
-%   Input:
-%       Model            architecture of nodes
-%       roundArch        round Architecture
-%       netArch          network Architecture
+% Calculation of Energy dissipated for RN [Proposed]
 
     nodeArch = Model.nodeArch;
     cluster  = Model.relayNode;
@@ -22,6 +18,7 @@ function Model = dissEnergyRN(Model, roundArch, netArch)
     ERX = netArch.Energy.receive;
     Emp = netArch.Energy.multiPath;
     Efs = netArch.Energy.freeSpace;
+    EDA = netArch.Energy.aggr;
     packetLength = roundArch.packetLength;
     
     locAlive = find(~Model.nodeArch.dead);
@@ -31,12 +28,13 @@ function Model = dissEnergyRN(Model, roundArch, netArch)
                         Model.nodeArch.node(i).parent.x, Model.nodeArch.node(i).parent.y);
             energy = Model.nodeArch.node(i).energy;
 
-            % energy for aggregation & Rx 
-%             energy = energy - (packetLength * ERX * Model.nodeArch.node(i).child + ...
-%                      packetLength * EDA * (Model.nodeArch.node(i).child + 1));
-            energy = energy - (packetLength * ERX * Model.nodeArch.node(i).child);      
+            % diss for DA & Rx 
+            energy = energy - (packetLength * ERX * Model.nodeArch.node(i).child + ...
+                     packetLength * EDA * (Model.nodeArch.node(i).child + 1));
 
-            % energy for transferring      * Model.nodeArch.node(i).child
+%             energy = energy - (packetLength * ERX * Model.nodeArch.node(i).child);      
+
+            % diss for Tx
             if(Dist >= d0)
                  Model.nodeArch.node(i).energy = energy - ...
                      (ETX * packetLength + Emp * packetLength  * (Dist ^ 4));

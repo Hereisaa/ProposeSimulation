@@ -5,6 +5,7 @@ function Model = dissEnergyCtl_2(Model, roundArch, netArch, func)
 %       roundArch        round Architecture
 %       netArch          network Architecture
     
+    return
 
     d0 = sqrt(netArch.Energy.freeSpace / ...
               netArch.Energy.multiPath);
@@ -33,7 +34,7 @@ function Model = dissEnergyCtl_2(Model, roundArch, netArch, func)
                         else
                              energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (DistBS ^ 2)); 
                         end
-                        Model.nodeArch.energy = energy - (ctrPacketLength * ERX); % Rx from BS
+                        Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from BS
                     else
                         if Dist >= d0
                              energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (Dist ^ 4)); % Tx to CH
@@ -42,22 +43,38 @@ function Model = dissEnergyCtl_2(Model, roundArch, netArch, func)
                         end
                         Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from CH
                     end
-                    
+               case{'proposed2'}
+                    if Model.recluster==true
+                        if DistBS >= d0
+                         energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (DistBS ^ 4)); % Tx to BS
+                        else
+                             energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (DistBS ^ 2)); 
+                        end
+                        Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from BS
+                    else
+                        if Dist >= d0
+                             energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (Dist ^ 4)); % Tx to CH
+                        else
+                             energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (Dist ^ 2)); 
+                        end
+                        Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from CH
+                    end
                 case{'leach'}
                     energy = energy - (ctrPacketLength * ERX) * Model.numCluster; % Rx from CH
-                    if Dist < d0
-                         energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (Dist ^ 2)); % Tx to CH
-                    else
+                    if Dist >= d0
                          energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (Dist ^ 4)); % Tx to CH
+                    else
+                         energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (Dist ^ 2)); % Tx to CH
                     end
                     Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from CH
                     
                 case{'TLleach'}
                     energy = energy - (ctrPacketLength * ERX) * Model.numCluster; % Rx from CH
+                    energy = energy - (ctrPacketLength * ERX) *  Model.clusterNode.countCHv2; % Rx from Cv2
                     if Dist >= d0
-                         energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (DistBS ^ 2)); % Tx to CH
+                         energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (Dist ^ 4)); % Tx to CH
                     else
-                         energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (DistBS ^ 4)); % Tx to CH
+                         energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (Dist ^ 2)); % Tx to CH
                     end
                     Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from CH
                     
@@ -97,7 +114,22 @@ function Model = dissEnergyCtl_2(Model, roundArch, netArch, func)
                             Model.nodeArch.node(i).energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (DistBoard ^ 2)); 
                         end
                     end
-                    
+                case{'proposed2'}
+                    if Model.recluster==true    
+                        if DistBS >= d0
+                             energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (DistBS ^ 4)); % Tx to BS
+                        else
+                             energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (DistBS ^ 2)); 
+                        end
+                        Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from BS                        
+                    else
+                        energy = energy - (ctrPacketLength * ERX) * Model.nodeArch.node(i).child; % Rx from CM
+                        if DistBoard >= d0
+                            Model.nodeArch.node(i).energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (DistBoard ^ 4)); % Broadcast in cluster
+                        else
+                            Model.nodeArch.node(i).energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (DistBoard ^ 2)); 
+                        end
+                    end 
                 case{'leach'}
                     if DistBoard >= d0
                         energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (DistBoard ^ 4)); 
@@ -117,8 +149,19 @@ function Model = dissEnergyCtl_2(Model, roundArch, netArch, func)
                     else
                         energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (DistBoard ^ 2)); % Broadcast in network
                     end
+                    energy = energy - (ctrPacketLength * ERX) *  (Model.numCluster -1) ; % Rx from CH
                     energy = energy - (ctrPacketLength * ERX) * Model.nodeArch.node(i).child; % Rx from CM join
-                    Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX) * Model.numCluster; % Rx from CH
+                    if DistBoard >= d0
+                        energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (DistBoard ^ 4)); 
+                    else
+                        energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (DistBoard ^ 2)); % Broadcast in network
+                    end
+                    if Dist >= d0
+                        energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (Dist ^ 4)); % Tx to Cv2
+                    else
+                        energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (Dist ^ 2)); 
+                    end
+                    Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from Cv2
 
                 case{'hhca'}
                     if DistBS >= d0
@@ -141,7 +184,7 @@ function Model = dissEnergyCtl_2(Model, roundArch, netArch, func)
             else
                 energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (DistBoard ^ 2)); 
             end
-            energy = energy - (ctrPacketLength * ERX) * Model.numCluster; % Rx from CH
+            energy = energy - (ctrPacketLength * ERX) * (Model.numCluster -1 ); % Rx from CH
             energy = energy - (ctrPacketLength * ERX) * Model.nodeArch.node(i).child; % Rx from CH join
             if DistBoard >= d0
                 Model.nodeArch.node(i).energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (DistBoard ^ 4)); 
@@ -155,13 +198,8 @@ function Model = dissEnergyCtl_2(Model, roundArch, netArch, func)
             else
                 energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (DistBS ^ 2)); % Tx to BS
             end
-            energy = energy - (ctrPacketLength * ERX); % Rx from BS
-                    if DistBoard >= d0
-                         energy = energy - (ETX * ctrPacketLength + Emp * ctrPacketLength * (DistBoard ^ 4)); 
-                    else
-                         energy = energy - (ETX * ctrPacketLength + Efs * ctrPacketLength * (DistBoard ^ 2)); % Broadcast in cluster
-                    end
-            Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX) * Model.nodeArch.node(i).child; % Rx from CH
+            Model.nodeArch.node(i).energy = energy - (ctrPacketLength * ERX); % Rx from BS
+
             
         elseif (strcmp(Model.nodeArch.node(i).type, 'R')  &&  Model.nodeArch.node(i).energy > 0)  % proposed 
             if Model.recluster==true

@@ -10,9 +10,9 @@ function [ Model, Temp_xy, Temp_index, notLayerZero ] = NetworkDimension( Model,
     for i = locAlive
         dist = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
         if( dist > 0 )%d_th
-            layer = floor(dist / d_th);
-            nodeArch.node(i).Layer = layer;
-            nodeArch.Layer(i) = layer;
+%             layer = floor(dist / d_th);
+%             nodeArch.node(i).Layer = layer;
+%             nodeArch.Layer(i) = layer;
 
             Temp_xy(1, notLayerZero + 1) = nodeArch.node(i).x;
             Temp_xy(2, notLayerZero + 1) = nodeArch.node(i).y;

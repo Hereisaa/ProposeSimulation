@@ -1,9 +1,5 @@
 function Model = dissEnergyCM(Model, roundArch, netArch)
-% Calculation of Energy dissipated for CHs
-%   Input:
-%       Model            architecture of nodes
-%       roundArch        round Architecture
-%       netArch          network Architecture
+% Calculation of Energy dissipated for Sensor nodes
     
     nodeArch = Model.nodeArch;
     cluster  = Model.clusterNode;
@@ -23,19 +19,9 @@ function Model = dissEnergyCM(Model, roundArch, netArch)
     locAlive = find(~Model.nodeArch.dead); % find the nodes that are alive
     for i = locAlive % search in alive nodes
         if (strcmp(Model.nodeArch.node(i).type, 'N') &&  Model.nodeArch.node(i).energy > 0)
-%             energy = Model.nodeArch.node(i).energy;
-%             countCHs = Model.numCluster; % Number of CHs
-%             Dist = calDistance(Model.nodeArch.node(i).x, Model.nodeArch.node(i).y, Model.nodeArch.node(i).parent.x, Model.nodeArch.node(i).parent.y);   
-%             Dist
-%             if (Dist >= d0)
-%                     Model.nodeArch.node(i).energy = energy - (packetLength * ETX + Emp * packetLength * (Dist ^ 4));
-%             else
-%                     Model.nodeArch.node(i).energy = energy - (packetLength * ETX + Efs * packetLength * (Dist ^ 2));
-%             end    
-            
             energy = Model.nodeArch.node(i).energy;
             countCHs = Model.numCluster; % Number of CHs
-            if countCHs == 0
+            if countCHs == 0 % no.CH = 0 --> Tx to BS directly
                 Model.nodeArch.node(i).parent = netArch.Sink;
                 Dist = calDistance(Model.nodeArch.node(i).x, Model.nodeArch.node(i).y,...
                         netArch.Sink.x, netArch.Sink.y);
@@ -59,7 +45,7 @@ function Model = dissEnergyCM(Model, roundArch, netArch)
                         (packetLength * ETX + Efs * packetLength * (Dist ^ 2));
                 end
             end
-        end % if
-    end % for
+        end
+    end
     Model.nodeArch = Model.nodeArch;
 end

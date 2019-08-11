@@ -1,10 +1,5 @@
 function Model = dissEnergyCv2(Model, roundArch, netArch)
-% Calculation of Energy dissipated for CHs
-%   Input:
-%       Model            architecture of nodes
-%       roundArch        round Architecture
-%       netArch          network Architecture
-
+% Calculation of Energy dissipated for Upper layer CH [TL-LEACH]
 
     nodeArch = Model.nodeArch;
     cluster  = Model.clusterNode;
@@ -26,18 +21,19 @@ function Model = dissEnergyCv2(Model, roundArch, netArch)
     
     locAlive = find(~Model.nodeArch.dead); % find the nodes that are alive
     for i = locAlive % search in alive nodes
-        %find Associated CH for each normal node
         if (strcmp(Model.nodeArch.node(i).type, 'Cv2')  &&  Model.nodeArch.node(i).energy > 0)
             Dist = calDistance(Model.nodeArch.node(i).x, Model.nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
             energy = Model.nodeArch.node(i).energy;
 
-            % energy for aggregation & Rx 
+            % diss for DA & Rx 
             if Model.nodeArch.node(i).child > 0
                 energy = energy - (packetLength * ERX * Model.nodeArch.node(i).child + ...
                          packetLength * EDA * (Model.nodeArch.node(i).child + 1));
+%             else
+%                 energy = energy - (packetLength * ERX * Model.nodeArch.node(i).child);
             end
 
-            % energy for transferring
+            % diss for Tx
             if(Dist >= d0)
                  Model.nodeArch.node(i).energy = energy - ...
                      (ETX * packetLength + Emp * packetLength * (Dist ^ 4));

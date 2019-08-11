@@ -1,13 +1,14 @@
 %% MAIN
 clc, clear all, close all
 %% PARAMETER
-numNodes   = 500;  % number of nodes 100
+numNodes   = 300;  % number of nodes 100
 Length     = 300;  % network length 300
 Width      = 300;  % network width 300
 d_th = 87;         % Network Dimension threshold
 sinkX    = 150;
 sinkY    = 350;
 initEnergy  = 0.5;
+E_th = 0.01;
 transEnergy = 50*    0.000000001;
 recEnergy   = 50*    0.000000001;
 fsEnergy    = 10*    0.000000000001;
@@ -32,6 +33,7 @@ p_clusterModel.netArch   = netArch;
 p_clusterModel.clusterFun = 'proposed';
 p_clusterModel.nodeArch.init_numNodes = numNodes;
 p_clusterModel.recluster=true;
+p_clusterModel.nodeArch.avgEnergy = initEnergy;
 recluster    = true;
 reselect     = true;
 T1 = 87;
@@ -59,7 +61,7 @@ for r = 1:roundArch.numRound
         p_clusterModel.clusterNode.distance = [];   
         p_clusterModel.clusterNode.countCHs = 0;
 
-        locAlive = find(~p_clusterModel.nodeArch.dead); % alive node's index
+        locAlive = find(~p_clusterModel.nodeArch.dead);
         % reset
         for i = locAlive
             p_clusterModel.nodeArch.node(i).type    = 'N';                
@@ -67,15 +69,14 @@ for r = 1:roundArch.numRound
             p_clusterModel.nodeArch.node(i).CID     = [];
             p_clusterModel.nodeArch.node(i).child   = 0;
         end
+        
         %%% Network Dimension Phase
         [ p_clusterModel, Temp_xy, Temp_index, notLayerZero ] = NetworkDimension( p_clusterModel, d_th, netArch );
+        
         if ~isempty(Temp_xy)
             %%% Clustering Phase
             [ p_clusterModel, noOfk, cluster, centr ] = Clustering( p_clusterModel, notLayerZero, Temp_xy, Temp_index, T1, T2);
             recluster = false;
-
-%             %%% CH & RN Selection Phase
-%             [ p_clusterModel ] = CHRNselection( p_clusterModel, locAlive, p_clusterModel.numCluster, p_clusterModel.centr, netArch );
         end
     end
     
@@ -91,16 +92,7 @@ for r = 1:roundArch.numRound
     end
     
     %%% CH & RN Selection Phase
-    [ p_clusterModel ] = CHRNselection( p_clusterModel, locAlive, p_clusterModel.numCluster, p_clusterModel.centr, netArch );
-    
-%     
-%     if (p_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag2
-%         HND = r;
-% %         fprintf('[Proposed] ***HND*** round = %d.\n', r);
-%         HND_flag2 = 0;
-%         plot_kmeans
-%     end  
-
+    [ p_clusterModel ] = CHRNselection( p_clusterModel, locAlive, p_clusterModel.numCluster, p_clusterModel.centr, netArch, E_th );
     
     %%% Control Packet diss
     p_clusterModel = dissEnergyCtl_2(p_clusterModel, roundArch, netArch, 'proposed');
@@ -116,8 +108,8 @@ for r = 1:roundArch.numRound
             p_clusterModel.nodeArch.node(i).CID = []; 
             p_clusterModel.nodeArch.node(i).child = 0; 
         
-            recluster = true; % have to exec new clustering phase 
-            p_clusterModel.recluster=true;
+%             recluster = true; % have to exec new clustering phase 
+%             p_clusterModel.recluster=true; % This is for dissEnergyCtl_2.m
         end
     end
 
@@ -158,27 +150,30 @@ for r = 1:roundArch.numRound
     p_clusterModel.nodeArch.numAlive = numAlive; % number of Alive nodes for STATISTICS
     p_clusterModel.nodeArch.avgEnergy = avgEnergy; % averagy energy
 
-
     %%% plot STATISTICS
     par_proposed = plotResults(p_clusterModel, r, par_proposed, roundArch);
     
-%     if r==1
-%         plot_kmeans
-%     end
+    if r==1
+        plot_kmeans
+    end
+    
+    if r==2
+        plot_kmeans
+    end
     
     %%% FND and HND and LND 
     if p_clusterModel.nodeArch.numDead > 0 && FND_flag
         fprintf('[Proposed] ***FND*** round = %d.\n', r);
         FND = r;
         FND_flag = 0;
-%         plot_kmeans
+        plot_kmeans
     end
     if (p_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag
         HND = r;
         fprintf('[Proposed] ***HND*** round = %d.\n', r);
         HND_flag = 0;
         HND_flag2 = 1;
-%         plot_kmeans
+        plot_kmeans
     end  
     if (p_clusterModel.nodeArch.numDead >= init_nodeArch.numNode)
         LND = r;
@@ -193,12 +188,15 @@ xpar_proposed(m).FND = FND;
 xpar_proposed(m).HND = HND;
 xpar_proposed(m).LND = LND;
 
+
+
+
 % %% PROPOSED ROUND LOOP 2
-% p_clusterModel.nodeArch   = init_nodeArch; % node's arch for Proposed
-% p_clusterModel.netArch   = netArch;
-% p_clusterModel.clusterFun = 'proposed';
-% p_clusterModel.nodeArch.init_numNodes = numNodes;
-% p_clusterModel.recluster=true;
+% p2_clusterModel.nodeArch   = init_nodeArch; % node's arch for Proposed
+% p2_clusterModel.netArch   = netArch;
+% p2_clusterModel.clusterFun = 'proposed';
+% p2_clusterModel.nodeArch.init_numNodes = numNodes;
+% p2_clusterModel.recluster=true;
 % recluster    = true;
 % reselect     = true;
 % T1 = 100;
@@ -210,7 +208,7 @@ xpar_proposed(m).LND = LND;
 % 
 % par_proposed = struct;
 % for r = 1:roundArch.numRound  
-%     p_clusterModel.r = r;
+%     p2_clusterModel.r = r;
 %     Temp_xy = [];
 %     Temp_index = [];
 %     notLayerZero = 0;
@@ -219,26 +217,26 @@ xpar_proposed(m).LND = LND;
 % 
 %     % first time or recluster
 %     if recluster == true
-%         p_clusterModel.numCluster = 0;
-%         p_clusterModel.clusterNode.no = [];
-%         p_clusterModel.clusterNode.CID = [];
-%         p_clusterModel.clusterNode.loc = [];
-%         p_clusterModel.clusterNode.distance = [];   
-%         p_clusterModel.clusterNode.countCHs = 0;
+%         p2_clusterModel.numCluster = 0;
+%         p2_clusterModel.clusterNode.no = [];
+%         p2_clusterModel.clusterNode.CID = [];
+%         p2_clusterModel.clusterNode.loc = [];
+%         p2_clusterModel.clusterNode.distance = [];   
+%         p2_clusterModel.clusterNode.countCHs = 0;
 % 
-%         locAlive = find(~p_clusterModel.nodeArch.dead); % alive node's index
+%         locAlive = find(~p2_clusterModel.nodeArch.dead); % alive node's index
 %         % reset
 %         for i = locAlive
-%             p_clusterModel.nodeArch.node(i).type    = 'N';                
-%             p_clusterModel.nodeArch.node(i).parent  = [];
-%             p_clusterModel.nodeArch.node(i).CID     = [];
-%             p_clusterModel.nodeArch.node(i).child   = 0;
+%             p2_clusterModel.nodeArch.node(i).type    = 'N';                
+%             p2_clusterModel.nodeArch.node(i).parent  = [];
+%             p2_clusterModel.nodeArch.node(i).CID     = [];
+%             p2_clusterModel.nodeArch.node(i).child   = 0;
 %         end
 %         %%% Network Dimension Phase
-%         [ p_clusterModel, Temp_xy, Temp_index, notLayerZero ] = NetworkDimension( p_clusterModel, d_th, netArch );
+%         [ p2_clusterModel, Temp_xy, Temp_index, notLayerZero ] = NetworkDimension( p2_clusterModel, d_th, netArch );
 %         if ~isempty(Temp_xy)
 %             %%% Clustering Phase
-%             [ p_clusterModel, noOfk, cluster, centr ] = Clustering_2( p_clusterModel, notLayerZero, Temp_xy, Temp_index, T1, T2);
+%             [ p2_clusterModel, noOfk, cluster, centr ] = Clustering_2( p2_clusterModel, notLayerZero, Temp_xy, Temp_index, T1, T2);
 %             recluster = false;
 % 
 % %             %%% CH & RN Selection Phase
@@ -247,53 +245,52 @@ xpar_proposed(m).LND = LND;
 %     end
 %     
 %     
-%     locAlive = find(~p_clusterModel.nodeArch.dead);
+%     locAlive = find(~p2_clusterModel.nodeArch.dead);
 %     for i = locAlive
-%         p_clusterModel.nodeArch.node(i).type    = 'N'; 
-%         p_clusterModel.nodeArch.node(i).parent  = [];
-%         p_clusterModel.nodeArch.node(i).child   = 0;
+%         p2_clusterModel.nodeArch.node(i).type    = 'N'; 
+%         p2_clusterModel.nodeArch.node(i).parent  = [];
+%         p2_clusterModel.nodeArch.node(i).child   = 0;
 %     end
 %     
 %     %%% CH & RN Selection Phase
-%     [ p_clusterModel ] = CHRNselection( p_clusterModel, locAlive, p_clusterModel.numCluster, p_clusterModel.centr, netArch );
+%     [ p2_clusterModel ] = CHRNselection( p2_clusterModel, locAlive, p2_clusterModel.numCluster, p2_clusterModel.centr, netArch );
 % 
 %     
 %     %%%control 
-%     p_clusterModel = dissEnergyCtl(p_clusterModel, roundArch, netArch, 'proposed');
-%     p_clusterModel.recluster=false;
+%     p2_clusterModel = dissEnergyCtl_2(p2_clusterModel, roundArch, netArch, 'proposed2');
+%     p2_clusterModel.recluster=false;
 % 
 %     % check new dead node
-%     locAlive = find(~p_clusterModel.nodeArch.dead);
+%     locAlive = find(~p2_clusterModel.nodeArch.dead);
 %     for i = locAlive
-%         if p_clusterModel.nodeArch.node(i).energy <= 0
-%             p_clusterModel.nodeArch.node(i).type = 'D';
-%             p_clusterModel.nodeArch.dead(i) = 1;
-%             p_clusterModel.nodeArch.node(i).parent = []; 
-%             p_clusterModel.nodeArch.node(i).CID = []; 
-%             p_clusterModel.nodeArch.node(i).child = 0; 
+%         if p2_clusterModel.nodeArch.node(i).energy <= 0
+%             p2_clusterModel.nodeArch.node(i).type = 'D';
+%             p2_clusterModel.nodeArch.dead(i) = 1;
+%             p2_clusterModel.nodeArch.node(i).parent = []; 
+%             p2_clusterModel.nodeArch.node(i).CID = []; 
+%             p2_clusterModel.nodeArch.node(i).child = 0; 
 %         
 %             recluster = true; % have to exec new clustering phase 
-%             p_clusterModel.recluster=true;
+%             p2_clusterModel.recluster=true;
 %         end
 %     end
 % 
 %     %%% Transmission Phase
-%     p_clusterModel = dissEnergyCM(p_clusterModel, roundArch, netArch);
-%     p_clusterModel = dissEnergyCH(p_clusterModel, roundArch, netArch);
-%     p_clusterModel = dissEnergyRN(p_clusterModel, roundArch, netArch);
+%     p2_clusterModel = dissEnergyCM(p2_clusterModel, roundArch, netArch);
+%     p2_clusterModel = dissEnergyCH(p2_clusterModel, roundArch, netArch);
 %     
 %     % check new dead node
-%     locAlive = find(~p_clusterModel.nodeArch.dead);
+%     locAlive = find(~p2_clusterModel.nodeArch.dead);
 %     for i = locAlive
-%         if p_clusterModel.nodeArch.node(i).energy <= 0
-%             p_clusterModel.nodeArch.node(i).type = 'D';
-%             p_clusterModel.nodeArch.dead(i) = 1;
-%             p_clusterModel.nodeArch.node(i).parent = []; 
-%             p_clusterModel.nodeArch.node(i).CID = []; 
-%             p_clusterModel.nodeArch.node(i).child = 0; 
+%         if p2_clusterModel.nodeArch.node(i).energy <= 0
+%             p2_clusterModel.nodeArch.node(i).type = 'D';
+%             p2_clusterModel.nodeArch.dead(i) = 1;
+%             p2_clusterModel.nodeArch.node(i).parent = []; 
+%             p2_clusterModel.nodeArch.node(i).CID = []; 
+%             p2_clusterModel.nodeArch.node(i).child = 0; 
 %         
 %             recluster = true; % have to exec new clustering phase 
-%             p_clusterModel.recluster=true;
+%             p2_clusterModel.recluster=true;
 %         end
 %     end
 %     
@@ -303,50 +300,50 @@ xpar_proposed(m).LND = LND;
 %     % avg energy of network
 %     avgEnergy = 0;
 %     for i = locAlive
-%         avgEnergy = avgEnergy + p_clusterModel.nodeArch.node(i).energy;
+%         avgEnergy = avgEnergy + p2_clusterModel.nodeArch.node(i).energy;
 %     end
 %     avgEnergy = avgEnergy / length(locAlive);
 % 
 %     
 %     %%% STATISTICS
-%     p_clusterModel.nodeArch.numDead = sum(p_clusterModel.nodeArch.dead);
-%     p_clusterModel.nodeArch.numNode = numAlive; % number of Alive nodes
-%     p_clusterModel.nodeArch.numAlive = numAlive; % number of Alive nodes
-%     p_clusterModel.nodeArch.avgEnergy = avgEnergy; % averagy
+%     p2_clusterModel.nodeArch.numDead = sum(p2_clusterModel.nodeArch.dead);
+%     p2_clusterModel.nodeArch.numNode = numAlive; % number of Alive nodes
+%     p2_clusterModel.nodeArch.numAlive = numAlive; % number of Alive nodes
+%     p2_clusterModel.nodeArch.avgEnergy = avgEnergy; % averagy
 % 
 % 
 %     %%% plot STATISTICS
-%     par_proposed = plotResults(p_clusterModel, r, par_proposed, roundArch);
+%     par_proposed = plotResults(p2_clusterModel, r, par_proposed, roundArch);
 %     
-%     if r==1
-%         plot_kmeans
-%     end
+% %     if r==1
+% %         plot_proposed2
+% %     end
 %     
 %     %%% FND and HND and LND 
-%     if p_clusterModel.nodeArch.numDead > 0 && FND_flag
-%         fprintf('[Proposed] ***FND*** round = %d.\n', r);
+%     if p2_clusterModel.nodeArch.numDead > 0 && FND_flag
+%         fprintf('[Proposed2] ***FND*** round = %d.\n', r);
 %         FND = r;
 %         FND_flag = 0;
-%         plot_kmeans
+% %         plot_proposed2
 %     end
-%     if (p_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag
+%     if (p2_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag
 %         HND = r;
-%         fprintf('[Proposed] ***HND*** round = %d.\n', r);
+%         fprintf('[Proposed2] ***HND*** round = %d.\n', r);
 %         HND_flag = 0;
-%         plot_kmeans
+% %         plot_proposed2
 %     end  
-%     if (p_clusterModel.nodeArch.numDead >= init_nodeArch.numNode)
+%     if (p2_clusterModel.nodeArch.numDead >= init_nodeArch.numNode)
 %         LND = r;
-%         fprintf('[Proposed] ***LND*** round = %d.\n', r);
+%         fprintf('[Proposed2] ***LND*** round = %d.\n', r);
 %         break
 %     end  
 % end% for
-% p_clusterModel.FND = FND;
-% p_clusterModel.HND = HND;
-% p_clusterModel.LND = LND;
-% xpar_proposed(m).FND = FND;
-% xpar_proposed(m).HND = HND;
-% xpar_proposed(m).LND = LND;
+% p2_clusterModel.FND = FND;
+% p2_clusterModel.HND = HND;
+% p2_clusterModel.LND = LND;
+% xpar_proposed2(m).FND = FND;
+% xpar_proposed2(m).HND = HND;
+% xpar_proposed2(m).LND = LND;
 
 %% LEACH ROUND LOOP
 clearvars clusterModel;
@@ -434,7 +431,7 @@ tl_clusterModel.nodeArch   = init_nodeArch; % node's arch for LEACH
 tl_clusterModel.nodeArch.init_numNodes = numNodes;
 numAliveNode = numNodes;
 p   = 0.05; % ratio of number of CH (default)
-FND_flag = 1; HND_flag = 1; LND_flag = 1; TT_flag = 1;
+FND_flag = 1; HND_flag = 1; LND_flag = 1; TT_flag = 1; TT_flag2=1;
 FND = 0; HND = 0; LND = 0;
 
 par_TLleach = struct;
@@ -482,9 +479,14 @@ for r = 1:roundArch.numRound
         HND_flag = 0;
 %         plot_TLleach
     end
-    if (tl_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.9)) && TT_flag % HND
+    if (tl_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.7)) && TT_flag % HND
 %         fprintf('[TL-LEACH] ***90%D*** round = %d.\n', r);
         TT_flag = 0;
+%         plot_TLleach
+    end
+    if (tl_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.9)) && TT_flag2 % HND
+%         fprintf('[TL-LEACH] ***90%D*** round = %d.\n', r);
+        TT_flag2 = 0;
 %         plot_TLleach
     end
     if (tl_clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND_flag % LND
@@ -511,7 +513,7 @@ h_clusterModel.nodeArch.init_numNodes = numNodes;
 numAliveNode = numNodes;
 p   = 0.05; % ratio of number of CH (default)
 k = 2;% no. of GH
-FND_flag = 1; HND_flag = 1; LND_flag = 1; TT_flag =1;
+FND_flag = 1; HND_flag = 1; LND_flag = 1; TT_flag =1; TT_flag2=1;
 FND = 0; HND = 0; LND = 0;
 
 par_hhca = struct;
@@ -558,9 +560,14 @@ for r = 1:roundArch.numRound
         HND_flag = 0;
 %         plot_hhca
     end
-    if (h_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.8)) && TT_flag % TT
-        fprintf('[HHCA] ***HND * 0.8*** round = %d.\n', r);
+    if (h_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.7)) && TT_flag % TT
+        fprintf('[HHCA] ***HND * 0.6*** round = %d.\n', r);
         TT_flag = 0;
+%         plot_hhca
+    end
+    if (h_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.8)) && TT_flag2 % TT
+        fprintf('[HHCA] ***HND * 0.8*** round = %d.\n', r);
+        TT_flag2 = 0;
 %         plot_hhca
     end
     if (h_clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND_flag % LND
@@ -587,7 +594,9 @@ end
 p_FND = 0; l_FND = 0; tl_FND = 0; h_FND = 0;
 p_HND = 0; l_HND = 0; tl_HND = 0; h_HND = 0;
 p_LND = 0; l_LND = 0; tl_LND = 0; h_LND = 0;
-
+% 
+p2_FND =0; p2_HND=0; p2_LND=0;
+% 
 for i = 1:simulationTime
     p_FND = p_FND + xpar_proposed(i).FND;
     l_FND = l_FND + xpar_leach(i).FND;
@@ -598,20 +607,32 @@ for i = 1:simulationTime
     l_HND = l_HND + xpar_leach(i).HND;
     tl_HND = tl_HND + xpar_TLleach(i).HND;
     h_HND = h_HND + xpar_hhca(i).HND;
-end
-
-p_FND = p_FND / simulationTime;
-l_FND = l_FND / simulationTime;
-tl_FND = tl_FND / simulationTime;
-h_FND = h_FND / simulationTime;
     
-p_HND = p_HND / simulationTime;
-l_HND = l_HND / simulationTime;
-tl_HND = tl_HND / simulationTime;
-h_HND = h_HND / simulationTime;
+    p_LND = p_LND + xpar_proposed(i).LND;
+    l_LND = l_LND + xpar_leach(i).LND;
+    tl_LND = tl_LND + xpar_TLleach(i).LND;
+    h_LND = h_LND + xpar_hhca(i).LND;
+end
+% 
+p_clusterModel.avgFND = p_FND / simulationTime;
+clusterModel.avgFND = l_FND / simulationTime;
+tl_clusterModel.avgFND = tl_FND / simulationTime;
+h_clusterModel.avgFND = h_FND / simulationTime;
+%     
+p_clusterModel.avgHND = p_HND / simulationTime;
+clusterModel.avgHND = l_HND / simulationTime;
+tl_clusterModel.avgHND = tl_HND / simulationTime;
+h_clusterModel.avgHND = h_HND / simulationTime;
 
-plot_test
+p_clusterModel.avgLND = floor(p_LND / simulationTime);
+clusterModel.avgLND = floor(l_LND / simulationTime);
+tl_clusterModel.avgLND = floor(tl_LND / simulationTime);
+h_clusterModel.avgLND = floor(h_LND / simulationTime);
 
+
+plot_test % LEACH TL-LEACH HHCA PROPOSED 
+% % plot_2 % LEACH HHCA PROPOSED
+% 
 % 
 % createfigure(numNodes,initEnergy,...
 %              p_clusterModel.LND,        clusterModel.LND,       h_clusterModel.LND,     tl_clusterModel.LND,... % round
@@ -622,6 +643,63 @@ plot_test
 %              h_clusterModel.FND,        h_clusterModel.HND,...
 %              tl_clusterModel.FND,       tl_clusterModel.HND,...
 %              par_proposed.packetToBS,   par_leach.packetToBS,   par_hhca.packetToBS,    par_TLleach.packetToBS);
+% 
+% for i=1
+% 
+% p_FND = p_FND / simulationTime;
+% l_FND = l_FND / simulationTime;
+% tl_FND = tl_FND / simulationTime;
+% h_FND = h_FND / simulationTime;
+%     
+% p_HND = p_HND / simulationTime;
+% l_HND = l_HND / simulationTime;
+% tl_HND = tl_HND / simulationTime;
+% h_HND = h_HND / simulationTime;
+% 
+% p_LND = p_LND / simulationTime;
+% l_LND = l_LND / simulationTime;
+% tl_LND = tl_LND / simulationTime;
+% h_LND = h_LND / simulationTime;
+% end
+% for i=1
+% p_FND = 0; l_FND = 0; tl_FND = 0; h_FND = 0;
+% p_HND = 0; l_HND = 0; tl_HND = 0; h_HND = 0;
+% p_LND = 0; l_LND = 0; tl_LND = 0; h_LND = 0;
+% % 
+% p2_FND =0; p2_HND=0; p2_LND=0;
+% % 
+% for i = 1:simulationTime
+%     p_FND = p_FND + xpar_proposed(i).FND;
+%     p2_FND = p2_FND + xpar_proposed2(i).FND;
+% %     l_FND = l_FND + xpar_leach(i).FND;
+% %     tl_FND = tl_FND + xpar_TLleach(i).FND;
+% %     h_FND = h_FND + xpar_hhca(i).FND;
+% %     
+%     p_HND = p_HND + xpar_proposed(i).HND;
+%     p2_HND = p2_HND + xpar_proposed2(i).HND;
+%     
+%     p_LND = p_LND + xpar_proposed(i).LND;
+%     p2_LND = p2_LND + xpar_proposed2(i).LND;
+% %     l_HND = l_HND + xpar_leach(i).HND;
+% %     tl_HND = tl_HND + xpar_TLleach(i).HND;
+% %     h_HND = h_HND + xpar_hhca(i).HND;
+% end
+% % 
+% p_FND = p_FND / simulationTime;
+% p2_FND = p2_FND / simulationTime;
+% % l_FND = l_FND / simulationTime;
+% % tl_FND = tl_FND / simulationTime;
+% % h_FND = h_FND / simulationTime;
+% %     
+% p_HND = p_HND / simulationTime;
+% p2_HND = p2_HND / simulationTime;
+% % l_HND = l_HND / simulationTime;
+% % tl_HND = tl_HND / simulationTime;
+% % h_HND = h_HND / simulationTime;
+% 
+% p_LND = p_LND / simulationTime;
+% p2_LND = p2_LND / simulationTime;
+% end
          
          
 

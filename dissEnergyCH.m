@@ -1,11 +1,5 @@
 function Model = dissEnergyCH(Model, roundArch, netArch)
 % Calculation of Energy dissipated for CHs
-%   Input:
-%       Model            architecture of nodes
-%       roundArch        round Architecture
-%       netArch          network Architecture
-
-
     nodeArch = Model.nodeArch;
     cluster  = Model.clusterNode;
     
@@ -15,7 +9,7 @@ function Model = dissEnergyCH(Model, roundArch, netArch)
         return
     end
 
-    n = Model.clusterNode.countCHs; % Number of CHs
+    n = Model.clusterNode.countCHs;
     ETX = netArch.Energy.transfer;
     ERX = netArch.Energy.receive;
     EDA = netArch.Energy.aggr;
@@ -26,27 +20,22 @@ function Model = dissEnergyCH(Model, roundArch, netArch)
 
     locAlive = find(~Model.nodeArch.dead); % find the nodes that are alive
     for i = locAlive % search in alive nodes
-        %find Associated CH for each normal node
         if (strcmp(Model.nodeArch.node(i).type, 'C')  &&  Model.nodeArch.node(i).energy > 0)
-            Dist = calDistance(Model.nodeArch.node(i).x, Model.nodeArch.node(i).y,...
-                        Model.nodeArch.node(i).parent.x, Model.nodeArch.node(i).parent.y);
+            Dist = calDistance(Model.nodeArch.node(i).x, Model.nodeArch.node(i).y,Model.nodeArch.node(i).parent.x, Model.nodeArch.node(i).parent.y);
             energy = Model.nodeArch.node(i).energy;
 
-            % energy for aggregation & Rx 
+            % diss for DA & Rx 
             energy = energy - (packetLength * ERX * Model.nodeArch.node(i).child + ...
                      packetLength * EDA * (Model.nodeArch.node(i).child + 1));
 
-            % energy for transferring
+            % diss for Tx
             if(Dist >= d0)
-                 Model.nodeArch.node(i).energy = energy - ...
-                     (ETX * packetLength + Emp * packetLength * (Dist ^ 4));
+                 Model.nodeArch.node(i).energy = energy - (ETX * packetLength + Emp * packetLength * (Dist ^ 4));
             else
-                 Model.nodeArch.node(i).energy = energy - ...
-                     (ETX * packetLength + Efs * packetLength * (Dist ^ 2));
+                 Model.nodeArch.node(i).energy = energy - (ETX * packetLength + Efs * packetLength * (Dist ^ 2));
             end
         end
     end
-    
     
     Model.nodeArch = Model.nodeArch;
 end

@@ -108,22 +108,7 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
     end
 
     
-%     clear clusterNode
-%     clusterNode     = struct();
-%     counts = 0;
-%     for i = locAlive
-%         if nodeArch.node(i).type == 'C';
-%             counts=counts+1;
-%             clusterNode.no(counts)     = i; % the id of node
-%             xLoc = nodeArch.node(i).x; % x location of CH
-%             yLoc = nodeArch.node(i).y; % y location of CH
-%             clusterNode.loc(counts, 1) = xLoc;
-%             clusterNode.loc(counts, 2) = yLoc;
-%             % Calculate distance of CH from BS
-%             clusterNode.distance(counts) = sqrt((xLoc - netArch.Sink.x)^2 + ...
-%                                                   (yLoc - netArch.Sink.y)^2); 
-%         end
-%     end
+
     clusterNode.countCHs = countCHs;
     clusterNode.countCHv2 = numCHv2;
     
@@ -143,11 +128,11 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
                                 nodeArch.node(i).parent = nodeArch.node(minDisCv2);
                                 nodeArch.node(minDisCv2).child = nodeArch.node(minDisCv2).child + 1;
                             else
-                                nodeArch.node(i).parent.x = netArch.Sink.x;
-                                nodeArch.node(i).parent.y = netArch.Sink.y;
-%                                 minDisCv2 =  Cv2Node.no(loc);
-%                                 nodeArch.node(i).parent = nodeArch.node(minDisCv2);
-%                                 nodeArch.node(minDisCv2).child = nodeArch.node(minDisCv2).child + 1;
+%                                 nodeArch.node(i).parent.x = netArch.Sink.x;
+%                                 nodeArch.node(i).parent.y = netArch.Sink.y;
+                                minDisCv2 =  Cv2Node.no(loc);
+                                nodeArch.node(i).parent = nodeArch.node(minDisCv2);
+                                nodeArch.node(minDisCv2).child = nodeArch.node(minDisCv2).child + 1;
                             end
                         else
                             nodeArch.node(i).parent.x = netArch.Sink.x;

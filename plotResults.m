@@ -10,13 +10,13 @@ function par = plotResults(Model, r, par, roundArch)
             end
             
             %%%%% Number of dead node
-            par.numDead(r) = nodeArch.numDead;
+%             par.numDead(r) = nodeArch.numDead;
             
             %%%%% Number of alive node [v]
             par.numAlive(r) = nodeArch.numAlive;
             
             %%%%% Number of alive node 
-            par.numAlive(r) = nodeArch.init_numNodes - nodeArch.numDead;
+%             par.numAlive(r) = nodeArch.init_numNodes - nodeArch.numDead;
             
             %%%%% Residual energy [v]
             par.energy(r) = 0;
@@ -37,7 +37,7 @@ function par = plotResults(Model, r, par, roundArch)
 
 
         case {'leach'}
-            %%%%% Number of packets sent from CH RN to BS
+            %%%%% Number of packets sent to BS
             if r == 1
                 par.packetToBS(r) = Model.nodeArch.numAlive * roundArch.packetLength;
             else
@@ -52,7 +52,7 @@ function par = plotResults(Model, r, par, roundArch)
 %             end
 
             %%%%% Number of dead node
-            par.numDead(r) = nodeArch.numDead;
+%             par.numDead(r) = nodeArch.numDead;
             
             %%%%% Number of alive node
             par.numAlive(r) = nodeArch.numAlive;
@@ -68,7 +68,7 @@ function par = plotResults(Model, r, par, roundArch)
             
             
         case {'TLleach'}
-            %%%%% Number of packets sent from CH RN to BS
+            %%%%% Number of packets sent to BS
             if r == 1
                 par.packetToBS(r) = Model.nodeArch.numAlive * roundArch.packetLength;
             else
@@ -83,7 +83,7 @@ function par = plotResults(Model, r, par, roundArch)
 %             end
 
             %%%%% Number of dead node
-            par.numDead(r) = nodeArch.numDead;
+%             par.numDead(r) = nodeArch.numDead;
             
             %%%%% Number of alive node
             par.numAlive(r) = nodeArch.numAlive;
@@ -98,7 +98,7 @@ function par = plotResults(Model, r, par, roundArch)
             end
 
         case {'hhca'}
-            %%%%% Number of packets sent from CH RN to BS
+            %%%%% Number of packets sent to BS
             if r == 1
                 par.packetToBS(r) = Model.nodeArch.numAlive * roundArch.packetLength;
             else
@@ -113,7 +113,7 @@ function par = plotResults(Model, r, par, roundArch)
 %             end
             
             %%%%% Number of dead nodes
-            par.numDead(r) = nodeArch.numDead;
+%             par.numDead(r) = nodeArch.numDead;
             
             %%%%% Number of alive node
             par.numAlive(r) = nodeArch.numAlive;

@@ -1,5 +1,4 @@
 function [ k, canopy_centr, canopy_centr_node ] = usingCanopy( S, T1, T2 )
-%Canopy algorithm
     Omega = S; % Temp_xy is a 2 by n metrix
     size_S = size(S, 2); 
 %     fprintf('[Canopy] size of S = %d.\n',size_S);

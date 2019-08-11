@@ -3,6 +3,7 @@
 figure
 grid on
 hold on
+box on
 
 p_nodeArch = p_clusterModel.nodeArch;
 
@@ -91,7 +92,7 @@ y = R*sin(theta);
 % end
 
 %% BS and Layer
-plot(netArch.Sink.x, netArch.Sink.y,'ko','MarkerSize',8, 'MarkerFaceColor', 'k');
+plot(netArch.Sink.x, netArch.Sink.y,'ko','MarkerSize',8, 'MarkerFaceColor', 'r');
 % Layer 1 near BS 
 plot(x + netArch.Sink.x, y + netArch.Sink.y,'Color', color3,'LineStyle',':');
 % Layer 2 
@@ -104,8 +105,8 @@ plot(x*4 + netArch.Sink.x, y*4 + netArch.Sink.y,'Color', color3,'LineStyle',':')
 axis([0,netArch.Yard.Length,0,netArch.Sink.y]);
 set(gca,'XTick',[0:50:netArch.Yard.Length]);
 set(gca,'YTick',[0:50:netArch.Sink.y]);
-title('Proposed','FontWeight','bold',...
-        'FontSize',12,...
-        'FontName','Cambria');
+% title('Proposed','FontWeight','bold',...
+%         'FontSize',12,...
+%         'FontName','Cambria');
 
 hold off
