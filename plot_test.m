@@ -275,8 +275,9 @@ for k=1:1
     P3(1:X3) = packetToBS3(1:X3);
     P4(1:X4) = packetToBS4(1:X4);
 
+    G = E*N;
     a = 50;
-    b = 5;
+    b = G/a;
     XY1=[];
     for i =1:b
         Temp = find(Y1 >= a*i);

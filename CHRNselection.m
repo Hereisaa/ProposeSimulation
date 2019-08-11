@@ -1,7 +1,6 @@
-function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, netArch, E_th )
+function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, netArch, E_th, delta )
 % ClusterHead and RelayNode selection phase
 %     E_th = Model.nodeArch.avgEnergy;
-    delta = 0;
     d0 = sqrt(netArch.Energy.freeSpace / netArch.Energy.multiPath);
     
     nodeArch = Model.nodeArch;
@@ -31,6 +30,8 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     E_min     = zeros(noOfk, 1);
     for i =1:noOfk
        member           = find(Model.clusterMember(i,:)); 
+       locAlive         = find(~Model.nodeArch.dead);
+       member           = intersect(member,locAlive);
        noOfMember       = length(member);
        totalEnergy      = 0;
        totalDisToCentr  = 0;
@@ -83,7 +84,8 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     end
     
     %%% cal SCH SRN
-    for i =1:nodeArch.init_numNodes
+    locAlive = find(~Model.nodeArch.dead);
+    for i =locAlive
         if ~isempty(nodeArch.node(i).CID)
             SCH(i) = 0;
             SRN(i) = 0;
@@ -148,7 +150,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
                 nodeArch.node(id).type = 'R';
                 % relayNode struct
                 relayNode.no(i) = id;
-                relayNode.CID(i) = nodeArch.node(id).CID;
+%                 relayNode.CID(i) = nodeArch.node(id).CID;
                 relayNode.loc(i, 1) = nodeArch.node(id).x;
                 relayNode.loc(i, 2) = nodeArch.node(id).y;
                 relayNode.distance(i) = sqrt((relayNode.loc(i, 1) - netArch.Sink.x)^2 + (relayNode.loc(i, 2) - netArch.Sink.y)^2);   
@@ -161,7 +163,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
                 % clusterNode struct
                 clusterNode.no(i) = id;
 
-                clusterNode.CID(i) = nodeArch.node(id).CID;
+%                 clusterNode.CID(i) = nodeArch.node(id).CID;
                 clusterNode.loc(i, 1) = nodeArch.node(id).x;
                 clusterNode.loc(i, 2) = nodeArch.node(id).y;
                 clusterNode.distance(i) = sqrt((clusterNode.loc(i, 1) - netArch.Sink.x)^2 + (clusterNode.loc(i, 2) - netArch.Sink.y)^2);   
@@ -174,117 +176,56 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
         end
     end
 
-    
+    if noOfk ~= 0
+        Model.clusterNode = clusterNode;
+        Model.relayNode = relayNode;
+    end
     
     %%
     %%% Data Transmission
     for i = locAlive
             % RN -> RN or sink
             if strcmp(nodeArch.node(i).type,'R') 
-                Rid = [];
-                RelayCost = [];
-                for j = relayNode.no
-                    if nodeArch.node(j).energy >= E_th
-                        C_ij = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, nodeArch.node(j).x, nodeArch.node(j).y);
-                        C_jBS = calDistance(nodeArch.node(j).x, nodeArch.node(j).y, netArch.Sink.x, netArch.Sink.y);
-                        C_iBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
-                        if C_ij >= d0
-                            C_ij = (C_ij + delta)^4;
-                        else
-                            C_ij = (C_ij + delta)^2;
-                        end
-                        if C_jBS >= d0
-                            C_jBS = (C_jBS + delta)^4;
-                        else
-                            C_jBS = (C_jBS + delta)^2;
-                        end
-                        if C_iBS >= d0
-                            C_iBS = (C_iBS + delta)^4;
-                        else
-                            C_iBS = (C_iBS + delta)^2;
-                        end
-                        
-                        if C_ij + C_jBS < C_iBS
-                            Rid = [Rid, j];
-                            RelayCost = [RelayCost, (C_ij + C_jBS)];
-                        end
-                    end
-                end
-                
-                if ~isempty(Rid)
-                    minCost = inf;
-                    minCostid = [];
-                    for j = 1:length(Rid)
-                        if RelayCost(j) < minCost
-                           minCost =  RelayCost(j);
-                           minCostid = Rid(j);
-                        end
-                    end   
-                    
-                    nodeArch.node(i).parent.x = nodeArch.node(minCostid).x;
-                    nodeArch.node(i).parent.y = nodeArch.node(minCostid).y;
-                    nodeArch.node(i).parent.id = minCostid;
-                    
-                else                    
+                C_iBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
+                if C_iBS < d0
                     nodeArch.node(i).parent.x = netArch.Sink.x;
                     nodeArch.node(i).parent.y = netArch.Sink.y;
                     nodeArch.node(i).parent.id = 0;
-                end
+                else
+                    RN_star = Find_minCost_NextHop( Model, i, d0, E_th, delta );
+                    if RN_star == 0 % BS
+                        nodeArch.node(i).parent.x = netArch.Sink.x;
+                        nodeArch.node(i).parent.y = netArch.Sink.y;
+                        nodeArch.node(i).parent.id = 0;
+                    else % RN
+                        nodeArch.node(i).parent.x = nodeArch.node(RN_star).x;
+                        nodeArch.node(i).parent.y = nodeArch.node(RN_star).y;
+                        nodeArch.node(i).parent.id = RN_star;
+                    end
+                end 
             % CH -> RN
             elseif ( strcmp(nodeArch.node(i).type,'C') )
                 CID = nodeArch.node(i).CID;
                 relayID = relayNode.no(CID);
-                if relayID == i % when CH = RN (itself)
-                    Rid = [];
-                    RelayCost = [];
-                    for j = relayNode.no
-                        if nodeArch.node(j).energy >= E_th
-                            C_ij = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, nodeArch.node(j).x, nodeArch.node(j).y);
-                            C_jBS = calDistance(nodeArch.node(j).x, nodeArch.node(j).y, netArch.Sink.x, netArch.Sink.y);
-                            C_iBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
-                            if C_ij >= d0
-                                C_ij = (C_ij + delta)^4;
-                            else
-                                C_ij = (C_ij + delta)^2;
-                            end
-                            if C_jBS >= d0
-                                C_jBS = (C_jBS + delta)^4;
-                            else
-                                C_jBS = (C_jBS + delta)^2;
-                            end
-                            if C_iBS >= d0
-                                C_iBS = (C_iBS + delta)^4;
-                            else
-                                C_iBS = (C_iBS + delta)^2;
-                            end
-
-                            if C_ij + C_jBS < C_iBS
-                                Rid = [Rid, j];
-                                RelayCost = [RelayCost, (C_ij + C_jBS)];
-                            end
-                        end
-                    end
-
-                    if ~isempty(Rid)
-                        minCost = inf;
-                        minCostid = [];
-                        for j = 1:length(Rid)
-                            if RelayCost(j) < minCost
-                               minCost =  RelayCost(j);
-                               minCostid = Rid(j);
-                            end
-                        end   
-
-                        nodeArch.node(i).parent.x = nodeArch.node(minCostid).x;
-                        nodeArch.node(i).parent.y = nodeArch.node(minCostid).y;
-                        nodeArch.node(i).parent.id = minCostid;
-
-                    else                    
+                if relayID == i % when CH = RN (itself), act as RN
+                    C_iBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
+                    if C_iBS < d0
                         nodeArch.node(i).parent.x = netArch.Sink.x;
                         nodeArch.node(i).parent.y = netArch.Sink.y;
                         nodeArch.node(i).parent.id = 0;
-                    end
-                else
+                    else
+                        RN_star = Find_minCost_NextHop( Model, i, d0, E_th, delta );
+                        if RN_star == 0 % BS
+                            nodeArch.node(i).parent.x = netArch.Sink.x;
+                            nodeArch.node(i).parent.y = netArch.Sink.y;
+                            nodeArch.node(i).parent.id = 0;
+                        else % RN
+                            nodeArch.node(i).parent.x = nodeArch.node(RN_star).x;
+                            nodeArch.node(i).parent.y = nodeArch.node(RN_star).y;
+                            nodeArch.node(i).parent.id = RN_star;
+                        end
+                    end 
+                else % Tx to RN
                     nodeArch.node(i).parent.x = nodeArch.node(relayID).x;
                     nodeArch.node(i).parent.y = nodeArch.node(relayID).y;
                     nodeArch.node(i).parent.id = relayID;
@@ -327,10 +268,10 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     end
     
     
-    if noOfk ~= 0
-        Model.clusterNode = clusterNode;
-        Model.relayNode = relayNode;
-    end
+%     if noOfk ~= 0
+%         Model.clusterNode = clusterNode;
+%         Model.relayNode = relayNode;
+%     end
     
     Model.nodeArch = nodeArch;
 end

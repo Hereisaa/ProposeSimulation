@@ -7,8 +7,9 @@ Width      = 300;  % network width 300
 d_th = 87;         % Network Dimension threshold
 sinkX    = 150;
 sinkY    = 350;
-initEnergy  = 0.5;
-E_th = 0.01;
+initEnergy  = 1.0;
+E_th = 0.001; % energy threshold
+delta = 0; % GPS error
 transEnergy = 50*    0.000000001;
 recEnergy   = 50*    0.000000001;
 fsEnergy    = 10*    0.000000000001;
@@ -22,6 +23,7 @@ parameter = strcat(num2str(numNodes) , 'N' , num2str(Length) , 'M' , num2str(ini
 
 
 for m = 1:simulationTime
+    m
 netArch       = newNetwork(Length, Width, sinkX, sinkY, initEnergy, transEnergy, recEnergy, fsEnergy, mpEnergy, aggrEnergy);
 roundArch     = newRound(99999, packetLength, ctrPacketLength);
 init_nodeArch = newNodes(netArch, numNodes);
@@ -92,7 +94,7 @@ for r = 1:roundArch.numRound
     end
     
     %%% CH & RN Selection Phase
-    [ p_clusterModel ] = CHRNselection( p_clusterModel, locAlive, p_clusterModel.numCluster, p_clusterModel.centr, netArch, E_th );
+    [ p_clusterModel ] = CHRNselection( p_clusterModel, locAlive, p_clusterModel.numCluster, p_clusterModel.centr, netArch, E_th, delta );
     
     %%% Control Packet diss
     p_clusterModel = dissEnergyCtl_2(p_clusterModel, roundArch, netArch, 'proposed');
@@ -128,8 +130,8 @@ for r = 1:roundArch.numRound
             p_clusterModel.nodeArch.node(i).CID = []; 
             p_clusterModel.nodeArch.node(i).child = 0; 
         
-            recluster = true; % have to exec new clustering phase 
-            p_clusterModel.recluster=true;
+%             recluster = true; % have to exec new clustering phase 
+%             p_clusterModel.recluster=true;
         end
     end
     
@@ -153,27 +155,26 @@ for r = 1:roundArch.numRound
     %%% plot STATISTICS
     par_proposed = plotResults(p_clusterModel, r, par_proposed, roundArch);
     
-    if r==1
-        plot_kmeans
-    end
-    
-    if r==2
-        plot_kmeans
-    end
+%     if r==1
+%         plot_kmeans
+%     end
+%     
+%     if r==2
+%         plot_kmeans
+%     end
     
     %%% FND and HND and LND 
     if p_clusterModel.nodeArch.numDead > 0 && FND_flag
         fprintf('[Proposed] ***FND*** round = %d.\n', r);
         FND = r;
         FND_flag = 0;
-        plot_kmeans
+%         plot_kmeans
     end
     if (p_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag
         HND = r;
         fprintf('[Proposed] ***HND*** round = %d.\n', r);
         HND_flag = 0;
-        HND_flag2 = 1;
-        plot_kmeans
+%         plot_kmeans
     end  
     if (p_clusterModel.nodeArch.numDead >= init_nodeArch.numNode)
         LND = r;
@@ -352,13 +353,11 @@ clusterModel.nodeArch.init_numNodes = numNodes;
 % numAliveNode = numNodes;
 clusterModel.nodeArch.numAlive = numNodes;
 p   = 0.05; % ratio of number of CH (default)
-FND_flag = 1; HND_flag = 1; LND_flag = 1;
+FND_flag = 1; HND_flag = 1; LND_flag = 1; TT_flag = 1;
 FND = 0; HND = 0; LND = 0;
 
 par_leach = struct;
 for r = 1:roundArch.numRound
-    
-    
     %%% Clustering Phase
     clusterModel = newCluster(netArch, clusterModel.nodeArch, 'leach', r, p, 0);
 %     fprintf('[LEACH] number of CH  = %d\n',clusterModel.numCluster);
@@ -407,6 +406,11 @@ for r = 1:roundArch.numRound
         HND = r;
         fprintf('[LEACH] ***HND*** round = %d.\n', r);
         HND_flag = 0;
+%         plot_leach
+    end
+    if (clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.9)) && TT_flag % HND
+        fprintf('[LEACH] ***90%*** round = %d.\n', r);
+        TT_flag = 0;
 %         plot_leach
     end
     if (clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND_flag % LND
@@ -471,7 +475,7 @@ for r = 1:roundArch.numRound
         FND = r;
         fprintf('[TL-LEACH] ***FND*** round = %d.\n', r);
         FND_flag = 0;
-%         plot_TLleach
+        plot_TLleach
     end
     if (tl_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag % HND
         HND = r;
@@ -479,11 +483,11 @@ for r = 1:roundArch.numRound
         HND_flag = 0;
 %         plot_TLleach
     end
-    if (tl_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.7)) && TT_flag % HND
-%         fprintf('[TL-LEACH] ***90%D*** round = %d.\n', r);
-        TT_flag = 0;
-%         plot_TLleach
-    end
+%     if (tl_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.7)) && TT_flag % HND
+% %         fprintf('[TL-LEACH] ***90%D*** round = %d.\n', r);
+%         TT_flag = 0;
+% %         plot_TLleach
+%     end
     if (tl_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.9)) && TT_flag2 % HND
 %         fprintf('[TL-LEACH] ***90%D*** round = %d.\n', r);
         TT_flag2 = 0;
@@ -552,7 +556,7 @@ for r = 1:roundArch.numRound
         FND = r;
         fprintf('[HHCA] ***FND*** round = %d.\n', r);
         FND_flag = 0;
-%         plot_hhca
+        plot_hhca
     end
     if (h_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag % HND
         HND = r;
