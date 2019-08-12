@@ -97,8 +97,8 @@ for k=1:1
     set(gca,'XTick',[0:200:xr]);
     set(gca,'YTick',[0:50:N*E]);
     % Create x-label y-label
-    xlabel('Round','FontWeight','bold','FontSize',15);
-    ylabel('Residual energy of WSNs','FontWeight','bold','FontSize',15);
+    xlabel('Round','FontSize',15);
+    ylabel('Residual energy of WSNs','FontSize',15);
     legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','NorthEast');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
@@ -126,7 +126,7 @@ for k =1:1
     end
     set(b(:,1),'FaceColor',color6);
     set(b(:,2),'FaceColor',color5);
-    ylabel('Round','FontWeight','bold','FontSize',15);
+    ylabel('Round','FontSize',15);
     legend({'FND','HND'},'FontSize',12,'Location','NorthEast');
     set(gca,'YGrid','on','GridLineStyle','-', 'xticklabel', {'PROPOSED','HHCA','TL-LEACH','LEACH'});
     ylim([0 ceil(pHND/100)*100+100]);
@@ -176,8 +176,8 @@ for k=1:1
     set(gca,'XTick',[0:200:ceil(xr/200)*200]);
     set(gca,'YTick',[0:50:N]);
     % Create x-label y-label
-    xlabel('Round','FontWeight','bold','FontSize',15);
-    ylabel('Number of Alive Nodes','FontWeight','bold','FontSize',15);
+    xlabel('Round','FontSize',15);
+    ylabel('Number of Alive Nodes','FontSize',15);
     legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','SouthWest');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
@@ -239,8 +239,8 @@ for k=1:1
     set(gca,'XTick',[0:200:xr]);
 %     set(gca,'YTick',[0:0.5*(10^9):(floor(maxTP/(10^9))+0.5)*(10^9)]);
     % Create x-label y-label
-    xlabel('Round','FontWeight','bold','FontSize',15);
-    ylabel('Throughput','FontWeight','bold','FontSize',15);
+    xlabel('Round','FontSize',15);
+    ylabel('Throughput','FontSize',15);
     legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','SouthEast');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
@@ -327,8 +327,8 @@ for k=1:1
     set(gca,'XTick',[0:25:N*E]);
 %     set(gca,'YTick',[0:P1(X1)/10:P1(X1)]);
     % Create x-label y-label
-    xlabel('Energy consumption (J)','FontWeight','bold','FontSize',15);
-    ylabel('Number of Received Data Packets','FontWeight','bold','FontSize',15);
+    xlabel('Energy consumption (J)','FontSize',15);
+    ylabel('Number of Received Data Packets','FontSize',15);
     legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','NorthWest');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
@@ -472,8 +472,8 @@ for k=1:1
 %     set(gca,'XTick',[0:10^8:10*10^8]);
 %     set(gca,'YTick',[0:30:300]);
     % Create x-label y-label
-    xlabel('Number of Received Data Packets','FontWeight','bold','FontSize',15);
-    ylabel('Number of Alive Nodes','FontWeight','bold','FontSize',15);
+    xlabel('Number of Received Data Packets','FontSize',15);
+    ylabel('Number of Alive Nodes','FontSize',15);
     legend([p(4),p(3),p(2),p(1)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','SouthWest');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...

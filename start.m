@@ -1,13 +1,13 @@
 %% MAIN
 clc, clear all, close all
 %% PARAMETER
-numNodes   = 300;  % number of nodes 100
+numNodes   = 500;  % number of nodes 100
 Length     = 300;  % network length 300
 Width      = 300;  % network width 300
 d_th = 87;         % Network Dimension threshold
 sinkX    = 150;
 sinkY    = 350;
-initEnergy  = 1.0;
+initEnergy  = 0.5;
 E_th = 0.001; % energy threshold
 delta = 0; % GPS error
 transEnergy = 50*    0.000000001;
