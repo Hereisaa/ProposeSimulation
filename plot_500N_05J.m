@@ -174,7 +174,7 @@ for k=1:1
     p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
     axis([0,ceil(xr/200)*200,0,N]);
     set(gca,'XTick',[0:200:ceil(xr/200)*200]);
-    set(gca,'YTick',[0:100:N]);
+    set(gca,'YTick',[0:50:N]);
     % Create x-label y-label
     xlabel('Round','FontWeight','bold','FontSize',15);
     ylabel('Number of Alive Nodes','FontWeight','bold','FontSize',15);
@@ -235,8 +235,8 @@ for k=1:1
     p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=p3_Color; p(3).MarkerFaceColor=p3_MarkerFaceColor;
     p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=p4_Color; p(4).MarkerFaceColor=p4_MarkerFaceColor;
 %     axis([0,xr,0,(floor(maxTP/(10^9))+0.5)*(10^9)]);
-    axis([0,1400,0,3.5*10^9]);
-    set(gca,'XTick',[0:200:1400]);
+    axis([0,xr,0,2.5*10^9]);
+    set(gca,'XTick',[0:200:xr]);
 %     set(gca,'YTick',[0:0.5*(10^9):(floor(maxTP/(10^9))+0.5)*(10^9)]);
     % Create x-label y-label
     xlabel('Round','FontWeight','bold','FontSize',15);
@@ -280,7 +280,7 @@ for k=1:1
     P4(1:X4) = packetToBS4(1:X4)./4000;
 
     G = E*N;
-    a = 50;
+    a = 25;
     b = G/a;
     XY1=[];
     for i =1:b
@@ -323,8 +323,8 @@ for k=1:1
     p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=p2_Color; p(2).MarkerFaceColor=p2_MarkerFaceColor;
     p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=p3_Color; p(3).MarkerFaceColor=p3_MarkerFaceColor;
     p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=p4_Color; p(4).MarkerFaceColor=p4_MarkerFaceColor;
-    axis([0,N*E,0,8*10^5]);
-    set(gca,'XTick',[0:50:N*E]);
+    axis([0,N*E,0,6*10^5]);
+    set(gca,'XTick',[0:25:N*E]);
 %     set(gca,'YTick',[0:P1(X1)/10:P1(X1)]);
     % Create x-label y-label
     xlabel('Energy consumption (J)','FontWeight','bold','FontSize',15);
@@ -404,14 +404,14 @@ for k=1:1
     P3(1:X3) = packetToBS3(1:X3)./4000;
     P4(1:X4) = packetToBS4(1:X4)./4000;
     
-    a = 100;
+    a = 50;
     b = N/a;
     XY1=[];
     Temp = find(Y1 <= N-1);
     XY1 = [XY1,Temp(1)-1];
-    Temp = find(Y1 <= N-25);
+    Temp = find(Y1 <= N-7.5);
     XY1 = [XY1,Temp(1)];
-    Temp = find(Y1 <= N-50);
+    Temp = find(Y1 <= N-25);
     XY1 = [XY1,Temp(1)];
     for i =1:b
         Temp = find(Y1 <= N-a*i);
@@ -422,9 +422,9 @@ for k=1:1
     XY2=[];
     Temp = find(Y2 <= N-1);
     XY2 = [XY2,Temp(1)-1];
-    Temp = find(Y2 <= N-25);
+    Temp = find(Y2 <= N-7.5);
     XY2 = [XY2,Temp(1)];
-    Temp = find(Y2 <= N-50);
+    Temp = find(Y2 <= N-25);
     XY2 = [XY2,Temp(1)];
     for i =1:b
         Temp = find(Y2 <= N-a*i);
@@ -435,9 +435,9 @@ for k=1:1
     XY3=[];
     Temp = find(Y3 <= N-1);
     XY3 = [XY3,Temp(1)-1];
-    Temp = find(Y3 <= N-25);
+    Temp = find(Y3 <= N-7.5);
     XY3 = [XY3,Temp(1)];
-    Temp = find(Y3 <= N-50);
+    Temp = find(Y3 <= N-25);
     XY3 = [XY3,Temp(1)];
     for i =1:b
         Temp = find(Y3 <= N-a*i);
@@ -448,9 +448,9 @@ for k=1:1
     XY4=[];
     Temp = find(Y4 <= N-1);
     XY4 = [XY4,Temp(1)-1];
-    Temp = find(Y4 <= N-25);
+    Temp = find(Y4 <= N-7.5);
     XY4 = [XY4,Temp(1)];
-    Temp = find(Y4 <= N-50);
+    Temp = find(Y4 <= N-25);
     XY4 = [XY4,Temp(1)];
     for i =1:b
         Temp = find(Y4 <= N-a*i);
