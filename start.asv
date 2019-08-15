@@ -5,7 +5,7 @@ numNodes   = 300;  % number of nodes 100
 Length     = 300;  % network length 300
 Width      = 300;  % network width 300
 d_th = 87;         % Network Dimension threshold
-TH  = 20;          % Clustering threshold
+TH  = 60;          % Clustering threshold
 sinkX    = 150;
 sinkY    = 350;
 initEnergy  = 0.5;
@@ -19,7 +19,7 @@ aggrEnergy  = 5*     0.000000001;
 packetLength    = 4000;
 ctrPacketLength = 100;
 r       = 99999;
-simulationTime = 100;
+simulationTime = 1;
 parameter = strcat(num2str(numNodes) , 'N' , num2str(Length) , 'M' , num2str(initEnergy) , 'J');
 
 
@@ -189,7 +189,6 @@ xpar_proposed(m).FND = FND;
 xpar_proposed(m).HND = HND;
 xpar_proposed(m).LND = LND;
 
-end
 
 for i =1
 
@@ -605,35 +604,35 @@ p2_FND =0; p2_HND=0; p2_LND=0;
 % 
 for i = 1:simulationTime
     p_FND = p_FND + xpar_proposed(i).FND;
-%     l_FND = l_FND + xpar_leach(i).FND;
-%     tl_FND = tl_FND + xpar_TLleach(i).FND;
-%     h_FND = h_FND + xpar_hhca(i).FND;
+    l_FND = l_FND + xpar_leach(i).FND;
+    tl_FND = tl_FND + xpar_TLleach(i).FND;
+    h_FND = h_FND + xpar_hhca(i).FND;
     
     p_HND = p_HND + xpar_proposed(i).HND;
-%     l_HND = l_HND + xpar_leach(i).HND;
-%     tl_HND = tl_HND + xpar_TLleach(i).HND;
-%     h_HND = h_HND + xpar_hhca(i).HND;
+    l_HND = l_HND + xpar_leach(i).HND;
+    tl_HND = tl_HND + xpar_TLleach(i).HND;
+    h_HND = h_HND + xpar_hhca(i).HND;
     
     p_LND = p_LND + xpar_proposed(i).LND;
-%     l_LND = l_LND + xpar_leach(i).LND;
-%     tl_LND = tl_LND + xpar_TLleach(i).LND;
-%     h_LND = h_LND + xpar_hhca(i).LND;
+    l_LND = l_LND + xpar_leach(i).LND;
+    tl_LND = tl_LND + xpar_TLleach(i).LND;
+    h_LND = h_LND + xpar_hhca(i).LND;
 end
 % 
 p_clusterModel.avgFND = p_FND / simulationTime;
-% clusterModel.avgFND = l_FND / simulationTime;
-% tl_clusterModel.avgFND = tl_FND / simulationTime;
-% h_clusterModel.avgFND = h_FND / simulationTime;
+clusterModel.avgFND = l_FND / simulationTime;
+tl_clusterModel.avgFND = tl_FND / simulationTime;
+h_clusterModel.avgFND = h_FND / simulationTime;
 %     
 p_clusterModel.avgHND = p_HND / simulationTime;
-% clusterModel.avgHND = l_HND / simulationTime;
-% tl_clusterModel.avgHND = tl_HND / simulationTime;
-% h_clusterModel.avgHND = h_HND / simulationTime;
+clusterModel.avgHND = l_HND / simulationTime;
+tl_clusterModel.avgHND = tl_HND / simulationTime;
+h_clusterModel.avgHND = h_HND / simulationTime;
 
 p_clusterModel.avgLND = floor(p_LND / simulationTime);
-% clusterModel.avgLND = floor(l_LND / simulationTime);
-% tl_clusterModel.avgLND = floor(tl_LND / simulationTime);
-% h_clusterModel.avgLND = floor(h_LND / simulationTime);
+clusterModel.avgLND = floor(l_LND / simulationTime);
+tl_clusterModel.avgLND = floor(tl_LND / simulationTime);
+h_clusterModel.avgLND = floor(h_LND / simulationTime);
 
 
 plot_test % LEACH TL-LEACH HHCA PROPOSED 

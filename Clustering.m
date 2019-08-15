@@ -1,4 +1,4 @@
-function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Temp_xy, Temp_index, T1, T2)
+function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Temp_xy, Temp_index, TH)
 % _Clustering Phase
 %
     if isempty(Temp_xy)
@@ -7,8 +7,8 @@ function [ Model, noOfk, cluster, centr ] = Clustering( Model, notLayerZero, Tem
     nodeArch = Model.nodeArch;
     
     %%% Determine number of k using [Canopy algo].
-    [ k, canopy_centr, canopy_centr_node ] = usingCanopy( Temp_xy, T1, T2 ); % T1 > T2 
-
+    [ k ] = usingCanopy( Temp_xy, TH ); % T1 > T2 
+    k
 %     fprintf('Canopy %d',k);
     % Temp_xy is a 2 by n metrix with xy
     % Temp_index is a 1 by n metrix with id 

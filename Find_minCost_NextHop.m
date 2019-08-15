@@ -6,14 +6,21 @@ function [ minCostid ] = Find_minCost_NextHop( Model, s, d0, E_th, delta )
     r = 1;
     R = [];
     RelayCost = [];
-    
     toBS = calDistance(nodeArch.node(s).x, nodeArch.node(s).y, netArch.Sink.x, netArch.Sink.y);
+    
+    if isempty(relayNode.no)
+        minCostid = 0; % to BS
+        return
+    end
+    
     
     while (d_th < toBS)
         R = [];
         RelayCost = [];
         Rid = [];
         for j = relayNode.no
+%             s
+%             j
             C_ij = calDistance(nodeArch.node(s).x, nodeArch.node(s).y, nodeArch.node(j).x, nodeArch.node(j).y);
             if C_ij < d_th
                 R = [R, j];
