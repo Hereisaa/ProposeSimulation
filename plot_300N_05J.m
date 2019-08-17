@@ -18,15 +18,15 @@ leachAlive=par_leach.numAlive;
 hhcaAlive=par_hhca.numAlive;      
 tlleachAlive=par_TLleach.numAlive;
 % FND
-pFND=p_clusterModel.FND;        
-FND=clusterModel.FND;
-hFND=h_clusterModel.FND;
-tlFND=tl_clusterModel.FND;
+pFND=p_clusterModel.avgFND;        
+FND=clusterModel.avgFND;
+hFND=h_clusterModel.avgFND;
+tlFND=tl_clusterModel.avgFND;
 % HND
-pHND=p_clusterModel.HND;
-HND=clusterModel.HND;
-hHND=h_clusterModel.HND;  
-tlHND=tl_clusterModel.HND;
+pHND=p_clusterModel.avgHND;
+HND=clusterModel.avgHND;
+hHND=h_clusterModel.avgHND;  
+tlHND=tl_clusterModel.avgHND;
 % Througput
 packetToBS=par_proposed.packetToBS;    
 packetToBS2=par_leach.packetToBS;   
