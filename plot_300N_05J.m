@@ -127,7 +127,7 @@ for k =1:1
     set(b(:,1),'FaceColor',color6);
     set(b(:,2),'FaceColor',color5);
     ylabel('Round','FontSize',15);
-    set(gca,'YGrid','on','GridLineStyle','-', 'xticklabel', {'PROPOSED','HHCA','TL-LEACH','LEACH'});
+    set(gca,'YGrid','on','GridLineStyle','-', 'xticklabel', {'Proposed','HHCA','TL-LEACH','LEACH'});
     legend({'FND','HND'},'FontSize',12,'Location','NorthEast');
     ylim([0 ceil(pHND/100)*100+100]);
     

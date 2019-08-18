@@ -28,12 +28,12 @@ for k =1:1
     figure
     
     x = 1:4; 	
-%     y = [p_FND_05J p_FND_1J p_FND_15J ;h_FND_05J h_FND_1J h_FND_15J ;tl_FND_05J tl_FND_1J tl_FND_15J ;l_FND_05J l_FND_1J l_FND_15J ;];
-    y = [p_HND_05J p_HND_1J p_HND_15J ;h_HND_05J h_HND_1J h_HND_15J ;tl_HND_05J tl_HND_1J tl_HND_15J ;l_HND_05J l_HND_1J l_HND_15J ;];
+    y = [p_FND_05J p_FND_1J p_FND_15J ;h_FND_05J h_FND_1J h_FND_15J ;tl_FND_05J tl_FND_1J tl_FND_15J ;l_FND_05J l_FND_1J l_FND_15J ;];
+%     y = [p_HND_05J p_HND_1J p_HND_15J ;h_HND_05J h_HND_1J h_HND_15J ;tl_HND_05J tl_HND_1J tl_HND_15J ;l_HND_05J l_HND_1J l_HND_15J ;];
     b = bar(x, y, 1,'FaceAlpha',.8);  	
 
 %     ylim([0,1400]);
-    ylim([0,3500]);
+    ylim([0,2500]);
     
     hT = [];
     for i = 1:length(x)
@@ -47,11 +47,11 @@ for k =1:1
     set(b(:,3),'FaceColor',color2);
     ylabel('Round','FontSize',15);
     legend({'0.5J','1J','1.5J'},'FontSize',12,'Location','NorthEast');
-    set(gca,'YGrid','on','GridLineStyle','-', 'xticklabel', {'PROPOSED','HHCA','TL-LEACH','LEACH'});
+    set(gca,'YGrid','on','GridLineStyle','-', 'xticklabel', {'Proposed','HHCA','TL-LEACH','LEACH'});
     
     
     
-    s=strcat(folder,'HND_energy');
+    s=strcat(folder,'FND_energy');
     savefig(s);
     s=strcat(s,'.png');
     saveas(gcf,s);
