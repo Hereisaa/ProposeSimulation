@@ -1,4 +1,4 @@
-function [ Model, Temp_xy, Temp_index, notLayerZero ] = NetworkDimension( Model, d_th, netArch )
+function [ Model, Temp_xy, Temp_index, notLayerZero ] = NetworkDimension( Model, netArch )
 %Network Dimension Phase
     nodeArch = Model.nodeArch;
     notLayerZero = 0; % no of nodes that are not in Layer 0.

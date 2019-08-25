@@ -1,4 +1,4 @@
-function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, netArch, E_th, delta )
+function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, netArch, E_th, delta, dth )
 % ClusterHead and RelayNode selection phase
 %     E_th = Model.nodeArch.avgEnergy;
     d0 = sqrt(netArch.Energy.freeSpace / netArch.Energy.multiPath);
@@ -187,12 +187,12 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
             % RN -> RN or sink
             if strcmp(nodeArch.node(i).type,'R') 
                 C_iBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
-                if C_iBS < d0
+                if C_iBS < dth
                     nodeArch.node(i).parent.x = netArch.Sink.x;
                     nodeArch.node(i).parent.y = netArch.Sink.y;
                     nodeArch.node(i).parent.id = 0;
                 else
-                    RN_star = Find_minCost_NextHop( Model, i, d0, E_th, delta );
+                    RN_star = Find_minCost_NextHop( Model, i, dth, E_th, delta );
                     if RN_star == 0 % BS
                         nodeArch.node(i).parent.x = netArch.Sink.x;
                         nodeArch.node(i).parent.y = netArch.Sink.y;
@@ -209,12 +209,12 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
                 relayID = relayNode.no(CID);
                 if relayID == i % when CH = RN (itself), act as RN
                     C_iBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
-                    if C_iBS < d0
+                    if C_iBS < dth
                         nodeArch.node(i).parent.x = netArch.Sink.x;
                         nodeArch.node(i).parent.y = netArch.Sink.y;
                         nodeArch.node(i).parent.id = 0;
                     else
-                        RN_star = Find_minCost_NextHop( Model, i, d0, E_th, delta );
+                        RN_star = Find_minCost_NextHop( Model, i, dth, E_th, delta );
                         if RN_star == 0 % BS
                             nodeArch.node(i).parent.x = netArch.Sink.x;
                             nodeArch.node(i).parent.y = netArch.Sink.y;
