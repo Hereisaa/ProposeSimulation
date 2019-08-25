@@ -1,12 +1,14 @@
-function [ minCostid ] = Find_minCost_NextHop( Model, s, d0, E_th, delta )
+function [ minCostid ] = Find_minCost_NextHop( Model, s, dth, E_th, delta )
     nodeArch = Model.nodeArch;
     netArch = Model.netArch;
     relayNode = Model.relayNode;
-    d_th = d0;
+    d_th = dth;
     r = 1;
     R = [];
     RelayCost = [];
     toBS = calDistance(nodeArch.node(s).x, nodeArch.node(s).y, netArch.Sink.x, netArch.Sink.y);
+    
+    d0 = sqrt(netArch.Energy.freeSpace / netArch.Energy.multiPath);
     
     if isempty(relayNode.no)
         minCostid = 0; % to BS
@@ -71,61 +73,11 @@ function [ minCostid ] = Find_minCost_NextHop( Model, s, d0, E_th, delta )
             return
         else
             r = r + 1;
-%             r
-            d_th = d0 * r;
+            d_th = dth * r;
         end
     end
     minCostid = 0;
     return
 end
-    
-    
-%     for j = relayNode.no
-%         if nodeArch.node(j).energy >= E_th
-%             C_ij = calDistance(nodeArch.node(s).x, nodeArch.node(s).y, nodeArch.node(j).x, nodeArch.node(j).y);
-%             C_jBS = calDistance(nodeArch.node(j).x, nodeArch.node(j).y, netArch.Sink.x, netArch.Sink.y);
-%             C_iBS = calDistance(nodeArch.node(s).x, nodeArch.node(s).y, netArch.Sink.x, netArch.Sink.y);
-%             if C_ij >= d0
-%                 C_ij = (C_ij + delta)^4;
-%             else
-%                 C_ij = (C_ij + delta)^2;
-%             end
-%             if C_jBS >= d0
-%                 C_jBS = (C_jBS + delta)^4;
-%             else
-%                 C_jBS = (C_jBS + delta)^2;
-%             end
-%             if C_iBS >= d0
-%                 C_iBS = (C_iBS + delta)^4;
-%             else
-%                 C_iBS = (C_iBS + delta)^2;
-%             end
-% 
-%             if C_ij + C_jBS < C_iBS
-%                 Rid = [Rid, j];
-%                 RelayCost = [RelayCost, (C_ij + C_jBS)];
-%             end
-%         end
-%     end
-% 
-%     if ~isempty(Rid)
-%         minCost = inf;
-%         minCostid = [];
-%         for j = 1:length(Rid)
-%             if RelayCost(j) < minCost
-%                 minCost =  RelayCost(j);
-%                 minCostid = Rid(j);
-%             end
-%         end
-% 
-%         nodeArch.node(i).parent.x = nodeArch.node(minCostid).x;
-%         nodeArch.node(i).parent.y = nodeArch.node(minCostid).y;
-%         nodeArch.node(i).parent.id = minCostid;
-% 
-%     else
-%         nodeArch.node(i).parent.x = netArch.Sink.x;
-%         nodeArch.node(i).parent.y = netArch.Sink.y;
-%         nodeArch.node(i).parent.id = 0;
-%     end
 
 

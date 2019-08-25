@@ -4,7 +4,7 @@ clc, clear all, close all
 numNodes   = 300;  % number of nodes 100
 Length     = 300;  % network length 300
 Width      = 300;  % network width 300
-dth = 90;          % 
+dth = 50;          % 
 TH  = 70;          % Clustering threshold
 sinkX    = 150;
 sinkY    = 350;
