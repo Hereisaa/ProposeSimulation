@@ -8,7 +8,7 @@ function [ SCH, SRN ] = calSelection( E_res, E_avg, E_max, E_min, d_Centr, d_toC
 %   d_toBS : avg distance of nodes to BS (in this cluster)
     switch func 
         case 'proposed'
-            a = 0.5;  b = 0.5;
+            a = 0.6;  b = 0.4;
         case 'proposed2'
             a = 0.1;  b = 1.0;
     end

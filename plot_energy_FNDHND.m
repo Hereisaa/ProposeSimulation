@@ -33,7 +33,7 @@ for k =1:1
     b = bar(x, y, 1,'FaceAlpha',.8);  	
 
 %     ylim([0,1400]);
-    ylim([0,2500]);
+    ylim([0,3500]);
     
     hT = [];
     for i = 1:length(x)

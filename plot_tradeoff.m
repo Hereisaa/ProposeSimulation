@@ -28,32 +28,45 @@ for k =1:1
     figure
     
     x = 1:11; 	
-    y =[89 1049 ;
-        102 1046 ;
-        140 1045 ;
-        238 1037 ;
-        397 1021 ;
-        641 988 ;
-        329 1093 ;
-        198 1121 ;
-        116 1119 ;
-        68 1137;
-        57 1144;];
-    b = bar(x, y, 1,'FaceAlpha',.8);  	
+    y =[70   ;
+        88   ;
+        126  ;
+        218  ;
+        422  ;
+        725  ;
+        897  ;
+        889  ;
+        884  ;
+        873  ;
+        870  ;];
+%     y =[70 1024 ;
+%         88 1027 ;
+%         126 1023 ;
+%         218 1012 ;
+%         422 997 ;
+%         725 980 ;
+%         897 982 ;
+%         889 981 ;
+%         884 980 ;
+%         873 974;
+%         870 972;];
+    b = bar(x, y, 0.5,'FaceAlpha',.8);  	
     
     hT = [];
     for i = 1:length(x)
-        text(x(i)-0.15,y(i,1)+5,num2str(y(i,1)),'HorizontalAlignment','center', 'VerticalAlignment','bottom','FontSize',8);
-        text(x(i)+0.15,y(i,2)+5,num2str(y(i,2)),'HorizontalAlignment','center', 'VerticalAlignment','bottom','FontSize',8);
+%         text(x(i)-0.15,y(i,1)+5,num2str(y(i,1)),'HorizontalAlignment','center', 'VerticalAlignment','bottom','FontSize',8);
+%         text(x(i)+0.15,y(i,2)+5,num2str(y(i,2)),'HorizontalAlignment','center', 'VerticalAlignment','bottom','FontSize',8);
+        text(x(i),y(i)+5,num2str(y(i)),'HorizontalAlignment','center', 'VerticalAlignment','bottom','FontSize',10);
     end
 
     
     set(b(:,1),'FaceColor',color6);
-    set(b(:,2),'FaceColor',color5);
+%     set(b(:,2),'FaceColor',color5);
     ylabel('Round','FontSize',15);
     xlabel('(\alpha,\beta)','FontSize',15);
-    axis([0.5 11.5 0 1400]);  
-    legend({'FND','HND'},'FontSize',12,'Location','NorthWest');
+    axis([0.5 11.5 0 1000]);  
+%     legend({'FND','HND'},'FontSize',12,'Location','NorthWest');
+    legend({'FND'},'FontSize',12,'Location','NorthWest');
     set(gca,'YGrid','on','GridLineStyle','-', 'xticklabel', {'(0,1)','(0.1,0.9)','(0.2,0.8)','(0.3,0.7)','(0.4,0.6)',...
         '(0.5,0.5)','(0.6,0.4)','(0.7,0.3)','(0.8,0.2)','(0.9,0.1)','(1,0)'});
 

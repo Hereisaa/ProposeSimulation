@@ -4,7 +4,7 @@ clc, clear all, close all
 numNodes   = 300;  % number of nodes 100
 Length     = 300;  % network length 300
 Width      = 300;  % network width 300
-% TH = [10,20,30,40,50,60,70,80,90]; % a
+% TH = [90,80,70,60,50,40,30,20,10]; % a
 % dth = [10,20,30,40,50,60,70,80,90]; % b
 TH = [90,80,70,60,50,40,30,20,10]; % a
 dth = [10,20,30,40,50,60,70,80,90]; % b
@@ -21,12 +21,12 @@ aggrEnergy  = 5*     0.000000001;
 packetLength    = 4000;
 ctrPacketLength = 100;
 r       = 99999;
-simulationTime = 50;
+simulationTime = 30;
 parameter = strcat(num2str(numNodes) , 'N' , num2str(Length) , 'M' , num2str(initEnergy) , 'J');
 tradeOff_FND = zeros(9,9);
 tradeOff_HND = zeros(9,9);
 
-for a = 1:9
+for a = 9:9
 for b = 1:9
 
     fprintf('TH = %d, dth = %d.\n', TH(a), dth(b));
@@ -210,8 +210,8 @@ p_clusterModel.avgFND = p_FND;
 p_clusterModel.avgHND = p_HND;
 p_clusterModel.avgLND = p_LND;
 
-tradeOff_FND(10-a,b) = p_FND;
-tradeOff_HND(10-a,b) = p_HND;
+%tradeOff_FND(10-a,b) = p_FND;
+%tradeOff_HND(10-a,b) = p_HND;
 end
 end
 
