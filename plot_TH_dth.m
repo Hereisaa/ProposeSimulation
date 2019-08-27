@@ -39,8 +39,8 @@ for k =1:1
     set(gca,'fontsize',12,'FontName','Arial');
     set( h1 , 'linewidth' , 1 );   
     zlabel('FND','FontSize', 24);
-    xlabel('$d_{th}$','Interpreter','latex','FontSize', 24);	
-    ylabel('$T\!H$','Interpreter','latex','FontSize', 24);	
+    xlabel('$d_{th}$(m)','Interpreter','latex','FontSize', 24);	
+    ylabel('$T\!H$(m)','Interpreter','latex','FontSize', 24);	
     
     % title({'Max-RSRP','Satisfaction ratio of overload BSs(512kbps)'},'FontWeight','bold','FontSize',20);
     rotate3d on
