@@ -206,14 +206,14 @@ for k=1:1
     Y2 = zeros(1,xr+1);
     Y3 = zeros(1,xr+1);
     Y4 = zeros(1,xr+1);
-    Y1(1:xr+1) = packetToBS(X1);
-    Y2(1:xr+1) = packetToBS2(X2);
-    Y3(1:xr+1) = packetToBS3(X3);
-    Y4(1:xr+1) = packetToBS4(X4);
-    Y1(1:X1) = packetToBS(1:X1); %proposed
-    Y2(1:X2) = packetToBS2(1:X2); %leach
-    Y3(1:X3) = packetToBS3(1:X3); %hhca
-    Y4(1:X4) = packetToBS4(1:X4); %tlleach
+    Y1(1:xr+1) = packetToBS(X1)/roundArch.packetLength;
+    Y2(1:xr+1) = packetToBS2(X2)/roundArch.packetLength;
+    Y3(1:xr+1) = packetToBS3(X3)/roundArch.packetLength;
+    Y4(1:xr+1) = packetToBS4(X4)/roundArch.packetLength;
+    Y1(1:X1) = packetToBS(1:X1)/roundArch.packetLength; %proposed
+    Y2(1:X2) = packetToBS2(1:X2)/roundArch.packetLength; %leach
+    Y3(1:X3) = packetToBS3(1:X3)/roundArch.packetLength; %hhca
+    Y4(1:X4) = packetToBS4(1:X4)/roundArch.packetLength; %tlleach
     
     maxTP = max([packetToBS(X1),packetToBS2(X2),packetToBS3(X3),packetToBS4(X4)]);
     
@@ -235,7 +235,7 @@ for k=1:1
     p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=p3_Color; p(3).MarkerFaceColor=p3_MarkerFaceColor;
     p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=p4_Color; p(4).MarkerFaceColor=p4_MarkerFaceColor;
 %     axis([0,xr,0,(floor(maxTP/(10^9))+0.5)*(10^9)]);
-    axis([0,xr,0,1.4*10^9]);
+    axis([0,xr,0,1.4*10^9/roundArch.packetLength]);
     set(gca,'XTick',[0:200:xr]);
 %     set(gca,'YTick',[0:0.5*(10^9):(floor(maxTP/(10^9))+0.5)*(10^9)]);
     % Create x-label y-label

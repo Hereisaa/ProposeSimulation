@@ -2,7 +2,7 @@ function par = plotResults(Model, r, par, roundArch)
     nodeArch = Model.nodeArch;
     switch (Model.clusterFun)
          case {'proposed'}
-            %%%%% Number of packets sent from CH RN to BS
+            %%%%% Number of data sent from CH RN to BS   
             if r == 1
                 par.packetToBS(r) = Model.nodeArch.numAlive * roundArch.packetLength;
             else
