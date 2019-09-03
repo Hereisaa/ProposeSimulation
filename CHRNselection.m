@@ -1,6 +1,5 @@
 function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, netArch, E_th, delta, dth )
-% ClusterHead and RelayNode selection phase
-%     E_th = Model.nodeArch.avgEnergy;
+% _ClusterHead and RelayNode selection phase
     d0 = sqrt(netArch.Energy.freeSpace / netArch.Energy.multiPath);
     
     nodeArch = Model.nodeArch;
@@ -182,7 +181,7 @@ function [ Model, centr_node ] = CHRNselection( Model, locAlive, noOfk, centr, n
     end
     
     %%
-    %%% Data Transmission
+    %%% Data Transmission Associate
     for i = locAlive
             % RN -> RN or sink
             if strcmp(nodeArch.node(i).type,'R') 

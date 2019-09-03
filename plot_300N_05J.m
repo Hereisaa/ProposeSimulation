@@ -196,7 +196,7 @@ end
 
 
 
-%%%%%%%%%%%%%%%%%% Throughput vs. round %%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% Throughput(/packets) vs. round %%%%%%%%%%%%%%%%%%
 for k=1:1
     figure
     hold on;
@@ -218,18 +218,12 @@ for k=1:1
     maxTP = max([packetToBS(X1),packetToBS2(X2),packetToBS3(X3),packetToBS4(X4)]);
     
     range = floor(xr/1000)*1000/10;
-%     X = 0:xr/10:xr;
-%     Z = 1:xr/10:xr+1;
     X = 0:100:xr;
     Z = 1:100:xr+1;
     p = plot(X,Y2(Z),'-s',...
              X,Y4(Z),'-d',...
              X,Y1(Z),'-o',...
              X,Y3(Z),'-*');
-%     p = plot(X,Y2(Z),'-',...
-%              X,Y4(Z),'-',...
-%              X,Y1(Z),'-',...
-%              X,Y3(Z),'-');     
     p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=p1_Color; p(1).MarkerFaceColor=p1_MarkerFaceColor;
     p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=p2_Color; p(2).MarkerFaceColor=p2_MarkerFaceColor;
     p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=p3_Color; p(3).MarkerFaceColor=p3_MarkerFaceColor;
@@ -314,11 +308,7 @@ for k=1:1
              Y4(XY4),P4(XY4),'-d',...
              Y1(XY1),P1(XY1),'-o',...
              Y3(XY3),P3(XY3),'-*');
-%     p = plot(Y2(XY2),P2(XY2),'-',...
-%              Y4(XY4),P4(XY4),'-',...
-%              Y1(XY1),P1(XY1),'-',...
-%              Y3(XY3),P3(XY3),'-');
-         
+ 
     p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=p1_Color; p(1).MarkerFaceColor=p1_MarkerFaceColor;
     p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=p2_Color; p(2).MarkerFaceColor=p2_MarkerFaceColor;
     p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=p3_Color; p(3).MarkerFaceColor=p3_MarkerFaceColor;

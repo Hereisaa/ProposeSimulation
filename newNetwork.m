@@ -1,33 +1,28 @@
 function NetArch = newNetwork(Length, Width, sinkX, sinkY, initEnergy...
     , transEnergy, recEnergy, fsEnergy, mpEnergy, aggrEnergy)
 % Create the network architecture with desired parameters
-%   
 %   Input:
 %       Length      Length of the yard
 %       Width       Width of the yard
 %       sinkX       x coordination of base station
 %       sinkY       y coordination of base station
 %       initEnergy  Initial energy of each node
-%       transEnergy Energy for transferring of each bit (ETX)
-%       recEnergy   Energy for receiving of each bit (ETX)
+%       transEnergy Energy for transferring of each bit
+%       recEnergy   Energy for receiving of each bit
 %       fsEnergy    Energy of free space model
 %       mpEnergy    Energy of multi path model
 %       aggrEnergy  Data aggregation energy     
-%   Example:
-%       NetArch = createNetwork();
-%
-% Mohammad Hossein Homaei, Homaei@wsnlab.org & Homaei@wsnlab.ir
-% Ver 1. 10/2014
+
 
     %%%% Create the yard
     Yard.Type = 'Rect'; % Rectangular
     if ~exist('Length','var')
-        Yard.Length = 500; % default of the yard is 100 in x coordination
+        Yard.Length = 300; % default of the yard is 100 in x coordination
     else
         Yard.Length = Length;
     end
     if ~exist('Width','var')
-        Yard.Width = 500; % default of the yard is 100 in y coordination
+        Yard.Width = 300; % default of the yard is 100 in y coordination
     else
         Yard.Width = Width;
     end
@@ -41,7 +36,7 @@ function NetArch = newNetwork(Length, Width, sinkX, sinkY, initEnergy...
         Sink.x = sinkX;
     end
     if ~exist('sinkY','var')
-        Sink.y = Yard.Width / 2;
+        Sink.y = Yard.Width + 50;
     else
         Sink.y = sinkY;
     end

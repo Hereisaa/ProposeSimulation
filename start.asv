@@ -5,7 +5,7 @@ numNodes   = 300;  % number of nodes 100
 Length     = 300;  % network length 300
 Width      = 300;  % network width 300
 dth = 50;          % 
-TH  = 40;          % Clustering threshold
+TH  = 70;          % Clustering threshold
 sinkX    = 150;
 sinkY    = 350;
 initEnergy  = 1;
@@ -343,6 +343,8 @@ for r = 1:roundArch.numRound
     
     %%% Clustering Phase
     h_clusterModel = newCluster(netArch, h_clusterModel.nodeArch, 'hhca', r, p, k);
+
+    h_clusterModel = dissEnergyCtl_2(h_clusterModel, roundArch, netArch, 'hhca');
     
     % check new dead node
     locAlive = find(~h_clusterModel.nodeArch.dead);
@@ -456,5 +458,14 @@ h_LND = floor(h_LND / simulationTime);
 % plot_300N_05J
 % plot_test % LEACH TL-LEACH HHCA PROPOSED
 
+% createfigure(numNodes,initEnergy,...
+%              p_clusterModel.LND,        clusterModel.LND,       h_clusterModel.LND,     tl_clusterModel.LND,... % round
+%              par_proposed.energy,       par_leach.energy,       par_hhca.energy,        par_TLleach.energy,...
+%              par_proposed.numAlive,     par_leach.numAlive,     par_hhca.numAlive,      par_TLleach.numAlive,...
+%              p_clusterModel.FND,        p_clusterModel.HND,...
+%              clusterModel.FND,          clusterModel.HND,...
+%              h_clusterModel.FND,        h_clusterModel.HND,...
+%              tl_clusterModel.FND,       tl_clusterModel.HND,...
+%              par_proposed.packetToBS,   par_leach.packetToBS,   par_hhca.packetToBS,    par_TLleach.packetToBS);
          
 

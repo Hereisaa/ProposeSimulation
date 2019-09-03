@@ -1,11 +1,4 @@
 function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunParam)
-% Create the new node architecture using leach algorithm in beginning of each round. 
-% This function is called by newCluster.m
-%   Input:
-%       clusterModel        Cluster model by newCluster function
-%       clusterFunParam     Parameters for the cluster function
-%   Example:
-%       [nodeArch, clusterNode] = feval('leach', clusterModel, clusterFunParam);
     
     nodeArch = clusterModel.nodeArch;
     netArch  = clusterModel.netArch;
@@ -165,6 +158,6 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
     end
 %     countCHs
     numCluster = countCHs + countCHv2;
-%     fprintf('[LEACH] number of CH (countCHs) = %d\n',countCHs);
-%     fprintf('[LEACH] number of total CH (numCluster) = %d\n',numCluster);
+%     fprintf('[TL-LEACH] number of CH (countCHs) = %d\n',countCHs);
+%     fprintf('[TL-LEACH] number of total CH (numCluster) = %d\n',numCluster);
 end

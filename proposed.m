@@ -1,11 +1,9 @@
-%% MAIN
+%% JUST PROPOSED METHOD
 clc, clear all, close all
 %% PARAMETER
 numNodes   = 300;  % number of nodes 100
 Length     = 300;  % network length 300
 Width      = 300;  % network width 300
-% TH = [90,80,70,60,50,40,30,20,10]; % a
-% dth = [10,20,30,40,50,60,70,80,90]; % b
 TH = [90,80,70,60,50,40,30,20,10]; % a
 dth = [10,20,30,40,50,60,70,80,90]; % b
 sinkX    = 150;
@@ -104,8 +102,6 @@ for r = 1:roundArch.numRound
     %%% CH & RN Selection Phase
     [ p_clusterModel ] = CHRNselection( p_clusterModel, locAlive, p_clusterModel.numCluster, p_clusterModel.centr, netArch, E_th, delta, dth(b) );
     
-    %%% Control Packet diss
-    p_clusterModel = dissEnergyCtl_2(p_clusterModel, roundArch, netArch, 'proposed');
     p_clusterModel.recluster=false;
 
     % check dead node after c.p.diss
