@@ -19,7 +19,7 @@ aggrEnergy  = 5*     0.000000001;
 packetLength    = 4000;
 ctrPacketLength = 100;
 r               = 99999;
-simulationTime  = 50;
+simulationTime  = 5;
 parameter = strcat(num2str(numNodes) , 'N' , num2str(Length) , 'M' , num2str(initEnergy) , 'J');
 
 
@@ -86,9 +86,6 @@ for r = 1:roundArch.numRound
     % Each round check dead node
     locAlive = find(~p_clusterModel.nodeArch.dead);
     for i = locAlive
-        if  p_clusterModel.nodeArch.node(i).type == 'C'
-            
-        end
         p_clusterModel.nodeArch.node(i).type    = 'N'; 
         p_clusterModel.nodeArch.node(i).parent  = [];
         p_clusterModel.nodeArch.node(i).child   = 0;
@@ -233,11 +230,6 @@ for r = 1:roundArch.numRound
         HND = r;
         fprintf('[LEACH] ***HND*** round = %d.\n', r);
         HND_flag = 0;
-%         plot_leach
-    end
-    if (clusterModel.nodeArch.numDead >= (init_nodeArch.numNode*0.9)) && TT_flag % HND
-        fprintf('[LEACH] ***90%*** round = %d.\n', r);
-        TT_flag = 0;
 %         plot_leach
     end
     if (clusterModel.nodeArch.numDead == init_nodeArch.numNode) && LND_flag % LND
@@ -450,7 +442,10 @@ l_LND = floor(l_LND / simulationTime);
 tl_LND= floor(tl_LND / simulationTime);
 h_LND = floor(h_LND / simulationTime);
 
-plot_300N_05J
+savefile = strcat(parameter,'.mat');
+save(savefile);
+
+plot_result
 
 
          

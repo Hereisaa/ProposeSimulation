@@ -83,11 +83,7 @@ for k=1:1
     p = plot(X,Y2(Z),'-s',...
              X,Y4(Z),'-d',...
              X,Y1(Z),'-o',...
-             X,Y3(Z),'-*');
-%     p = plot(X,Y2(Z),'-',...
-%              X,Y4(Z),'-',...
-%              X,Y1(Z),'-',...
-%              X,Y3(Z),'-');         
+             X,Y3(Z),'-*');    
     p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=p1_Color; p(1).MarkerFaceColor=p1_MarkerFaceColor;
     p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=p2_Color; p(2).MarkerFaceColor=p2_MarkerFaceColor;
     p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=p3_Color; p(3).MarkerFaceColor=p3_MarkerFaceColor;
@@ -95,10 +91,10 @@ for k=1:1
     
     axis([0,xr,0,N*E]);
     set(gca,'XTick',[0:200:xr]);
-    set(gca,'YTick',[0:50:N*E]);
+    set(gca,'YTick',[0:25:N*E]);
     % Create x-label y-label
-    xlabel('Round','FontWeight','bold','FontSize',15);
-    ylabel('Residual energy of WSNs','FontWeight','bold','FontSize',15);
+    xlabel('Round','FontSize',15);
+    ylabel('Residual energy (J)','FontSize',15);
     legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','NorthEast');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
@@ -109,7 +105,7 @@ for k=1:1
     name = strcat(parameter,'_ResidualEnergy');
     s=strcat(folder,name,'.fig'); 
     savefig(s);
-    s=strcat(s,'.png');
+    s=strcat(folder,name,'.png');
     saveas(gcf,s);
 end
 
@@ -126,15 +122,15 @@ for k =1:1
     end
     set(b(:,1),'FaceColor',color6);
     set(b(:,2),'FaceColor',color5);
-    ylabel('Round','FontWeight','bold','FontSize',15);
+    ylabel('Round','FontSize',15);
+    set(gca,'YGrid','on','GridLineStyle','-', 'xticklabel', {'Proposed','HHCA','TL-LEACH','LEACH'});
     legend({'FND','HND'},'FontSize',12,'Location','NorthEast');
-    set(gca,'YGrid','on','GridLineStyle','-', 'xticklabel', {'PROPOSED','HHCA','TL-LEACH','LEACH'});
     ylim([0 ceil(pHND/100)*100+100]);
     
     name = strcat(parameter,'_FND_HND');
     s=strcat(folder,name,'.fig');   
     savefig(s);
-    s=strcat(s,'.png');
+    s=strcat(folder,name,'.png');
     saveas(gcf,s);
 end
 
@@ -174,10 +170,10 @@ for k=1:1
     p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=color9; p(4).MarkerFaceColor=color8;
     axis([0,ceil(xr/200)*200,0,N]);
     set(gca,'XTick',[0:200:ceil(xr/200)*200]);
-    set(gca,'YTick',[0:100:N]);
+    set(gca,'YTick',[0:50:N]);
     % Create x-label y-label
-    xlabel('Round','FontWeight','bold','FontSize',15);
-    ylabel('Number of Alive Nodes','FontWeight','bold','FontSize',15);
+    xlabel('Round','FontSize',15);
+    ylabel('Number of Alive Nodes','FontSize',15);
     legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','SouthWest');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
@@ -189,14 +185,14 @@ for k=1:1
     name = strcat(parameter,'_AliveNodes');
     s=strcat(folder,name,'.fig');    
     savefig(s);
-    s=strcat(s,'.png');
+    s=strcat(folder,name,'.png');
     saveas(gcf,s);
 end
 
 
 
 
-%%%%%%%%%%%%%%%%%% Throughput vs. round %%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% Throughput(/packets) vs. round %%%%%%%%%%%%%%%%%%
 for k=1:1
     figure
     hold on;
@@ -206,41 +202,35 @@ for k=1:1
     Y2 = zeros(1,xr+1);
     Y3 = zeros(1,xr+1);
     Y4 = zeros(1,xr+1);
-    Y1(1:xr+1) = packetToBS(X1);
-    Y2(1:xr+1) = packetToBS2(X2);
-    Y3(1:xr+1) = packetToBS3(X3);
-    Y4(1:xr+1) = packetToBS4(X4);
-    Y1(1:X1) = packetToBS(1:X1); %proposed
-    Y2(1:X2) = packetToBS2(1:X2); %leach
-    Y3(1:X3) = packetToBS3(1:X3); %hhca
-    Y4(1:X4) = packetToBS4(1:X4); %tlleach
+    Y1(1:xr+1) = packetToBS(X1)/roundArch.packetLength;
+    Y2(1:xr+1) = packetToBS2(X2)/roundArch.packetLength;
+    Y3(1:xr+1) = packetToBS3(X3)/roundArch.packetLength;
+    Y4(1:xr+1) = packetToBS4(X4)/roundArch.packetLength;
+    Y1(1:X1) = packetToBS(1:X1)/roundArch.packetLength; %proposed
+    Y2(1:X2) = packetToBS2(1:X2)/roundArch.packetLength; %leach
+    Y3(1:X3) = packetToBS3(1:X3)/roundArch.packetLength; %hhca
+    Y4(1:X4) = packetToBS4(1:X4)/roundArch.packetLength; %tlleach
     
     maxTP = max([packetToBS(X1),packetToBS2(X2),packetToBS3(X3),packetToBS4(X4)]);
     
     range = floor(xr/1000)*1000/10;
-%     X = 0:xr/10:xr;
-%     Z = 1:xr/10:xr+1;
     X = 0:100:xr;
     Z = 1:100:xr+1;
     p = plot(X,Y2(Z),'-s',...
              X,Y4(Z),'-d',...
              X,Y1(Z),'-o',...
              X,Y3(Z),'-*');
-%     p = plot(X,Y2(Z),'-',...
-%              X,Y4(Z),'-',...
-%              X,Y1(Z),'-',...
-%              X,Y3(Z),'-');     
     p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=p1_Color; p(1).MarkerFaceColor=p1_MarkerFaceColor;
     p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=p2_Color; p(2).MarkerFaceColor=p2_MarkerFaceColor;
     p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=p3_Color; p(3).MarkerFaceColor=p3_MarkerFaceColor;
     p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=p4_Color; p(4).MarkerFaceColor=p4_MarkerFaceColor;
 %     axis([0,xr,0,(floor(maxTP/(10^9))+0.5)*(10^9)]);
-    axis([0,1400,0,3.5*10^9]);
-    set(gca,'XTick',[0:200:1400]);
+    axis([0,xr,0,1.4*10^9/roundArch.packetLength]);
+    set(gca,'XTick',[0:200:xr]);
 %     set(gca,'YTick',[0:0.5*(10^9):(floor(maxTP/(10^9))+0.5)*(10^9)]);
     % Create x-label y-label
-    xlabel('Round','FontWeight','bold','FontSize',15);
-    ylabel('Throughput','FontWeight','bold','FontSize',15);
+    xlabel('Round','FontSize',15);
+    ylabel('Number of Received Data Packets','FontSize',15);
     legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','SouthEast');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
@@ -251,7 +241,7 @@ for k=1:1
     name = strcat(parameter,'_Throughput');
     s=strcat(folder,name,'.fig');
     savefig(s);
-    s=strcat(s,'.png');
+    s=strcat(folder,name,'.png');
     saveas(gcf,s);
 end
 
@@ -280,7 +270,7 @@ for k=1:1
     P4(1:X4) = packetToBS4(1:X4)./4000;
 
     G = E*N;
-    a = 50;
+    a = 25;
     b = G/a;
     XY1=[];
     for i =1:b
@@ -314,21 +304,17 @@ for k=1:1
              Y4(XY4),P4(XY4),'-d',...
              Y1(XY1),P1(XY1),'-o',...
              Y3(XY3),P3(XY3),'-*');
-%     p = plot(Y2(XY2),P2(XY2),'-',...
-%              Y4(XY4),P4(XY4),'-',...
-%              Y1(XY1),P1(XY1),'-',...
-%              Y3(XY3),P3(XY3),'-');
-         
+ 
     p(1).LineWidth =1; p(1).MarkerSize=9; p(1).Color=p1_Color; p(1).MarkerFaceColor=p1_MarkerFaceColor;
     p(2).LineWidth =1; p(2).MarkerSize=9; p(2).Color=p2_Color; p(2).MarkerFaceColor=p2_MarkerFaceColor;
     p(3).LineWidth =1; p(3).MarkerSize=9; p(3).Color=p3_Color; p(3).MarkerFaceColor=p3_MarkerFaceColor;
     p(4).LineWidth =1; p(4).MarkerSize=9; p(4).Color=p4_Color; p(4).MarkerFaceColor=p4_MarkerFaceColor;
-    axis([0,N*E,0,8*10^5]);
-    set(gca,'XTick',[0:50:N*E]);
+    axis([0,N*E,0,14*10^8/4000]);
+    set(gca,'XTick',[0:25:N*E]);
 %     set(gca,'YTick',[0:P1(X1)/10:P1(X1)]);
     % Create x-label y-label
-    xlabel('Energy consumption (J)','FontWeight','bold','FontSize',15);
-    ylabel('Number of Received Data Packets','FontWeight','bold','FontSize',15);
+    xlabel('Energy consumption (J)','FontSize',15);
+    ylabel('Number of Received Data Packets','FontSize',15);
     legend([p(1),p(2),p(4),p(3)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','NorthWest');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
@@ -339,7 +325,7 @@ for k=1:1
     name = strcat(parameter,'_EnergyVsPackets');
     s=strcat(folder,name,'.fig');
     savefig(s);
-    s=strcat(s,'.png');
+    s=strcat(folder,name,'.png');
     saveas(gcf,s);
 end
     
@@ -370,13 +356,13 @@ end
 %     set(b(:,3),'FaceColor',color2);
 %     ylabel('Round','FontWeight','bold','FontSize',15);
 %     legend({'0.5J','1J','1.5J'},'FontSize',12,'Location','NorthEast');
-%     set(gca,'YGrid','on','GridLineStyle','-', 'xticklabel', {'PROPOSED','HHCA','TL-LEACH','LEACH'});
+%     set(gca,'YGrid','on','GridLineStyle','-', 'xticklabel', {'Proposed','HHCA','TL-LEACH','LEACH'});
 %     
 %     
 %     
 %     s=strcat(folder,'FND_energy');
 %     savefig(s);
-%     s=strcat(s,'.png');
+%     s=strcat(folder,name,'.png');
 %     saveas(gcf,s);
 % end
 
@@ -404,14 +390,14 @@ for k=1:1
     P3(1:X3) = packetToBS3(1:X3)./4000;
     P4(1:X4) = packetToBS4(1:X4)./4000;
     
-    a = 100;
+    a = 50;
     b = N/a;
     XY1=[];
     Temp = find(Y1 <= N-1);
     XY1 = [XY1,Temp(1)-1];
-    Temp = find(Y1 <= N-25);
+    Temp = find(Y1 <= N-7.5);
     XY1 = [XY1,Temp(1)];
-    Temp = find(Y1 <= N-50);
+    Temp = find(Y1 <= N-25);
     XY1 = [XY1,Temp(1)];
     for i =1:b
         Temp = find(Y1 <= N-a*i);
@@ -422,9 +408,9 @@ for k=1:1
     XY2=[];
     Temp = find(Y2 <= N-1);
     XY2 = [XY2,Temp(1)-1];
-    Temp = find(Y2 <= N-25);
+    Temp = find(Y2 <= N-7.5);
     XY2 = [XY2,Temp(1)];
-    Temp = find(Y2 <= N-50);
+    Temp = find(Y2 <= N-25);
     XY2 = [XY2,Temp(1)];
     for i =1:b
         Temp = find(Y2 <= N-a*i);
@@ -435,9 +421,9 @@ for k=1:1
     XY3=[];
     Temp = find(Y3 <= N-1);
     XY3 = [XY3,Temp(1)-1];
-    Temp = find(Y3 <= N-25);
+    Temp = find(Y3 <= N-7.5);
     XY3 = [XY3,Temp(1)];
-    Temp = find(Y3 <= N-50);
+    Temp = find(Y3 <= N-25);
     XY3 = [XY3,Temp(1)];
     for i =1:b
         Temp = find(Y3 <= N-a*i);
@@ -448,9 +434,9 @@ for k=1:1
     XY4=[];
     Temp = find(Y4 <= N-1);
     XY4 = [XY4,Temp(1)-1];
-    Temp = find(Y4 <= N-25);
+    Temp = find(Y4 <= N-7.5);
     XY4 = [XY4,Temp(1)];
-    Temp = find(Y4 <= N-50);
+    Temp = find(Y4 <= N-25);
     XY4 = [XY4,Temp(1)];
     for i =1:b
         Temp = find(Y4 <= N-a*i);
@@ -472,8 +458,8 @@ for k=1:1
 %     set(gca,'XTick',[0:10^8:10*10^8]);
 %     set(gca,'YTick',[0:30:300]);
     % Create x-label y-label
-    xlabel('Number of Received Data Packets','FontWeight','bold','FontSize',15);
-    ylabel('Number of Alive Nodes','FontWeight','bold','FontSize',15);
+    xlabel('Number of Received Data Packets','FontSize',15);
+    ylabel('Number of Alive Nodes','FontSize',15);
     legend([p(4),p(3),p(2),p(1)],{'LEACH','TL-LEACH','HHCA','Proposed'},'FontSize',12,'Location','SouthWest');
     % Create title
 %     title('300M กั 300M , 300 Nodes , 0.5J','FontWeight','bold',...
@@ -484,7 +470,7 @@ for k=1:1
     name = strcat(parameter,'_PacketsVSAlive');
     s=strcat(folder,name,'.fig');
     savefig(s);
-    s=strcat(s,'.png');
+    s=strcat(folder,name,'.png');
     saveas(gcf,s);
     
 end

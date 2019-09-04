@@ -1,16 +1,16 @@
 %% JUST PROPOSED METHOD
 clc, clear all, close all
 %% PARAMETER
-numNodes   = 300;  % number of nodes 100
-Length     = 300;  % network length 300
-Width      = 300;  % network width 300
-TH = [90,80,70,60,50,40,30,20,10]; % a
-dth = [10,20,30,40,50,60,70,80,90]; % b
-sinkX    = 150;
-sinkY    = 350;
+numNodes    = 300;  % number of nodes
+Length      = 300;  % network length
+Width       = 300;  % network width
+sinkX       = 150;
+sinkY       = 350;
 initEnergy  = 0.5;
-E_th = 0.01; % energy threshold
-delta = 10; % GPS error
+TH          = [90,80,70,60,50,40,30,20,10];   % Algo.1 threshold (distance)
+dth         = [10,20,30,40,50,60,70,80,90];   % Algo.4 threshold (distance)
+E_th        = 0.01; % Algo.4 threshold (energy)
+delta       = 10;   % Algo.4 (GPS deviation)
 transEnergy = 50*    0.000000001;
 recEnergy   = 50*    0.000000001;
 fsEnergy    = 10*    0.000000000001;
@@ -18,13 +18,13 @@ mpEnergy    = 0.0013*0.000000000001;
 aggrEnergy  = 5*     0.000000001;
 packetLength    = 4000;
 ctrPacketLength = 100;
-r       = 99999;
-simulationTime = 30;
+r               = 99999;
+simulationTime  = 1;
 parameter = strcat(num2str(numNodes) , 'N' , num2str(Length) , 'M' , num2str(initEnergy) , 'J');
 tradeOff_FND = zeros(9,9);
 tradeOff_HND = zeros(9,9);
 
-for a = 9:9
+for a = 1:9
 for b = 1:9
 
     fprintf('TH = %d, dth = %d.\n', TH(a), dth(b));
@@ -91,9 +91,6 @@ for r = 1:roundArch.numRound
     % Each round check dead node
     locAlive = find(~p_clusterModel.nodeArch.dead);
     for i = locAlive
-        if  p_clusterModel.nodeArch.node(i).type == 'C'
-            
-        end
         p_clusterModel.nodeArch.node(i).type    = 'N'; 
         p_clusterModel.nodeArch.node(i).parent  = [];
         p_clusterModel.nodeArch.node(i).child   = 0;
@@ -115,7 +112,6 @@ for r = 1:roundArch.numRound
             p_clusterModel.nodeArch.node(i).child = 0; 
         
 %             recluster = true; % have to exec new clustering phase 
-%             p_clusterModel.recluster=true; % This is for dissEnergyCtl_2.m
         end
     end
 
@@ -164,13 +160,13 @@ for r = 1:roundArch.numRound
         fprintf('[Proposed] ***FND*** round = %d.\n', r);
         FND = r;
         FND_flag = 0;
-%         plot_kmeans
+%         plot_proposed
     end
     if (p_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag
         HND = r;
         fprintf('[Proposed] ***HND*** round = %d.\n', r);
         HND_flag = 0;
-%         plot_kmeans
+%         plot_proposed
     end  
     if (p_clusterModel.nodeArch.numDead >= init_nodeArch.numNode)
         LND = r;
@@ -206,8 +202,13 @@ p_clusterModel.avgFND = p_FND;
 p_clusterModel.avgHND = p_HND;
 p_clusterModel.avgLND = p_LND;
 
-%tradeOff_FND(10-a,b) = p_FND;
-%tradeOff_HND(10-a,b) = p_HND;
+tradeOff_FND(10-a,b) = p_FND;
+tradeOff_HND(10-a,b) = p_HND;
 end
 end
+
+savefile = strcat(parameter,'_TH_dth.mat');
+save(savefile);
+
+plot_TH_dth
 
