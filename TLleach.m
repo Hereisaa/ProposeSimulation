@@ -1,5 +1,8 @@
 function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunParam)
-    
+% TL-Leach clustering function
+%   Input:
+%       clusterModel        Cluster model by newCluster function
+%       clusterFunParam     i.e. Round
     nodeArch = clusterModel.nodeArch;
     netArch  = clusterModel.netArch;
     numCluster = clusterModel.numCluster;
@@ -71,8 +74,7 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
     
     
     
-    % level 2 CH selection
-%     if countCHs > 1
+    % level 2 CH selection (CHv2)
     if countCHs > 1
         numCHv2 = ceil(countCHs * p);
     else
@@ -121,8 +123,6 @@ function [nodeArch, clusterNode, numCluster] = TLleach(clusterModel, clusterFunP
                                 nodeArch.node(i).parent = nodeArch.node(minDisCv2);
                                 nodeArch.node(minDisCv2).child = nodeArch.node(minDisCv2).child + 1;
                             else
-%                                 nodeArch.node(i).parent.x = netArch.Sink.x;
-%                                 nodeArch.node(i).parent.y = netArch.Sink.y;
                                 minDisCv2 =  Cv2Node.no(loc);
                                 nodeArch.node(i).parent = nodeArch.node(minDisCv2);
                                 nodeArch.node(minDisCv2).child = nodeArch.node(minDisCv2).child + 1;

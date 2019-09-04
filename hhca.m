@@ -1,11 +1,11 @@
 function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterModel, clusterFunParam, k)
-% Create the new node architecture using leach algorithm in beginning of each round. 
+% HHCA clustering function
 % This function is called by newCluster.m
 %   Input:
 %       clusterModel        Cluster model by newCluster function
-%       clusterFunParam     Parameters for the cluster function
+%       clusterFunParam     i.e. Round
 %   Example:
-%       [nodeArch, clusterNode] = feval('leach', clusterModel, clusterFunParam);
+%       [nodeArch, clusterNode] = feval('hhca', clusterModel, clusterFunParam);
     
     nodeArch = clusterModel.nodeArch;
     netArch  = clusterModel.netArch;
@@ -65,8 +65,8 @@ function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterMo
         numOfGrid = noOfk;
         E_avg = zeros(noOfk,1);
         fcm_flag = true;
-%         [ cluster, centr ] = usingFcm( P, noOfk );
-        [centr,U,obj_fcn] = usingFcm(P', noOfk);
+
+        [centr,U,obj_fcn] = usingFcm(P', noOfk); % matlab origin code
 
         locAlive_loc = zeros(length(locAlive), 2);
         for i = 1:length(locAlive)
@@ -102,9 +102,7 @@ function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterMo
                 energy(isnan(energy)==1) = 0;
                 E_avg(k) = energy;
             end
-            
 
-            
             while 1
                 % nearest to centr.
                 centr_xy = [centr(1,i), centr(2,i)];
@@ -166,17 +164,11 @@ function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterMo
         if ( nodeArch.node(i).type == 'N' )
             disBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
             if ( countCHs ~= 0 )
-                
                 locNode = [nodeArch.node(i).x, nodeArch.node(i).y];
                 [minDis, loc] = min(sqrt(sum((repmat(locNode, countCHs, 1) - clusterNode.loc)' .^ 2)));
-%                 if minDis < disBS
-                    minDisCH =  clusterNode.no(loc);
-                    nodeArch.node(i).parent = nodeArch.node(minDisCH);
-                    nodeArch.node(minDisCH).child = nodeArch.node(minDisCH).child + 1;
-%                 else
-%                     nodeArch.node(i).parent.x = netArch.Sink.x;
-%                     nodeArch.node(i).parent.y = netArch.Sink.y;
-%                 end
+                minDisCH =  clusterNode.no(loc);
+                nodeArch.node(i).parent = nodeArch.node(minDisCH);
+                nodeArch.node(minDisCH).child = nodeArch.node(minDisCH).child + 1;
             else
                 nodeArch.node(i).parent.x = netArch.Sink.x;
                 nodeArch.node(i).parent.y = netArch.Sink.y;
@@ -188,13 +180,9 @@ function [nodeArch, clusterNode, gridNode, numCluster, numGrid] = hhca(clusterMo
                 disBS = calDistance(nodeArch.node(i).x, nodeArch.node(i).y, netArch.Sink.x, netArch.Sink.y);
                 [minDis, loc] = min(sqrt(sum((repmat(locNode, noOfk, 1) - gridNode.loc)' .^ 2)));
                 minDisGH =  gridNode.no(loc);
-%                 if minDis < disBS
-                    nodeArch.node(i).parent = nodeArch.node(minDisGH);
-                    nodeArch.node(minDisGH).child = nodeArch.node(minDisGH).child + 1;
-%                 else
-%                     nodeArch.node(i).parent.x = netArch.Sink.x;
-%                     nodeArch.node(i).parent.y = netArch.Sink.y;
-%                 end
+
+                nodeArch.node(i).parent = nodeArch.node(minDisGH);
+                nodeArch.node(minDisGH).child = nodeArch.node(minDisGH).child + 1;
             else
                 nodeArch.node(i).parent.x = netArch.Sink.x;
                 nodeArch.node(i).parent.y = netArch.Sink.y;

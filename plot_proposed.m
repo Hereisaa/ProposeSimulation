@@ -1,4 +1,3 @@
-% PLOT THE LEACH DEPLOYMENT
 %%
 figure
 grid on
@@ -6,7 +5,6 @@ hold on
 box on
 
 p_nodeArch = p_clusterModel.nodeArch;
-
 
 %% Color para
 % Convert color code to 1-by-3 RGB array (0~1 each) [must do this way, if MATLAB version is R2018b or older]
@@ -26,17 +24,7 @@ for i = 1:p_nodeArch.init_numNodes
 end
 
 %% Nodes
-for i = 1:p_nodeArch.init_numNodes
-%     if p_nodeArch.node(i).type == 'C'
-%         plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'r.', 'MarkerSize',18); 
-%     elseif p_nodeArch.node(i).type == 'R'
-%         plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'b.', 'MarkerSize',18); 
-%     elseif p_nodeArch.node(i).type == 'N'
-%         plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'k.', 'MarkerSize',18); 
-%     else
-%         plot(p_nodeArch.nodesLoc(i, 1), p_nodeArch.nodesLoc(i, 2),'Color', color2,'Marker','.', 'MarkerSize',18); 
-%     end
-    
+for i = 1:p_nodeArch.init_numNodes    
     % cluster
 %     switch num2str(p_nodeArch.node(i).CID)
 %         case {'1'}

@@ -1,4 +1,4 @@
-function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam, p_numCluster, k)
+function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam, p, k)
 % Create the network architecture with desired parameters
 % This function is called by start.m in every round
 %   Input:
@@ -15,20 +15,19 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
     clusterModel.nodeArch = nodeArch;
     clusterModel.clusterFun = clusterFun;
     clusterModel.clusterFunParam = clusterFunParam; %round
-    clusterModel.p = p_numCluster;
+    clusterModel.p = p;
     clusterModel.numCluster = 0;
     
     switch clusterFun 
         case{'leach'}
-           
+            %%% Optimal Election Probability of a node to become CH
+            %%% i.e. kOpt
 %             dBS        = sqrt((netArch.Sink.x - netArch.Yard.Length) ^ 2 + ...
 %                            (netArch.Sink.y - netArch.Yard.Width) ^ 2);
 %             numCluster = clusterOptimum(netArch, nodeArch, dBS); 
 %             p = numCluster / clusterModel.nodeArch.numAlive;
-%             %p = Optimal Election Probability of a node to become cluster head
 %             clusterModel.numCluster = numCluster;
-%             clusterModel.p          = p;
-            clusterModel.p = p_numCluster;
+
             % run leach.m
             [nodeArch, clusterNode, numCluster] = feval(clusterFun, clusterModel, clusterFunParam);
 
@@ -37,8 +36,7 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
             clusterModel.numCluster = numCluster; % number of the CHs
             
         case{'TLleach'}
-            clusterModel.p = p_numCluster;
-            
+
             % run leach.m
             [nodeArch, clusterNode, numCluster] = feval(clusterFun, clusterModel, clusterFunParam);
 
@@ -47,7 +45,6 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
             clusterModel.numCluster = numCluster; % number of the CHs
             
         case{'hhca'}     
-            clusterModel.p = p_numCluster;
             
             % run hhca.m
             [nodeArch, clusterNode, gridNode, numCluster, numGrid] = feval(clusterFun, clusterModel, clusterFunParam, k);
@@ -59,12 +56,4 @@ function clusterModel = newCluster(netArch, nodeArch,clusterFun, clusterFunParam
             clusterModel.numCluster = numCluster; % number of the CHs
             clusterModel.numGrid = numGrid; % number of the GHs
     end
-    
-    
-
-    
-    
-%     clusterModel.nodeArch = nodeArch;       % new architecture of nodes
-%     clusterModel.clusterNode = clusterNode; % CHs
-%     clusterModel.numCluster = numCluster; % number of the CHs
 end

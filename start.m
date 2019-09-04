@@ -1,16 +1,16 @@
 %% COMPARE WITH OTHER PAPERS ( LEACH / TL-LEACH / HHCA / PROPOSED)
 clc, clear all, close all
 %% PARAMETER
-numNodes   = 300;  % number of nodes 100
-Length     = 300;  % network length 300
-Width      = 300;  % network width 300
-dth = 50;          % 
-TH  = 40;          % Clustering threshold
-sinkX    = 150;
-sinkY    = 350;
-initEnergy  = 1;
-E_th = 0.01; % energy threshold
-delta = 10; % GPS error
+numNodes    = 300;  % number of nodes
+Length      = 300;  % network length
+Width       = 300;  % network width
+sinkX       = 150;
+sinkY       = 350;
+initEnergy  = 0.5;
+TH          = 70;   % Algo.1 threshold (distance)
+dth         = 40;   % Algo.4 threshold (distance)
+E_th        = 0.01; % Algo.4 threshold (energy)
+delta       = 10;   % Algo.4 (GPS deviation)
 transEnergy = 50*    0.000000001;
 recEnergy   = 50*    0.000000001;
 fsEnergy    = 10*    0.000000000001;
@@ -18,8 +18,8 @@ mpEnergy    = 0.0013*0.000000000001;
 aggrEnergy  = 5*     0.000000001;
 packetLength    = 4000;
 ctrPacketLength = 100;
-r       = 99999;
-simulationTime = 30;
+r               = 99999;
+simulationTime  = 50;
 parameter = strcat(num2str(numNodes) , 'N' , num2str(Length) , 'M' , num2str(initEnergy) , 'J');
 
 
@@ -78,6 +78,7 @@ for r = 1:roundArch.numRound
         if ~isempty(Temp_xy)
             %%% Clustering Phase
             [ p_clusterModel, noOfk, cluster, centr ] = Clustering( p_clusterModel, notLayerZero, Temp_xy, Temp_index, TH);
+            plot_kmeanspp
             recluster = false;
         end
     end
@@ -154,11 +155,7 @@ for r = 1:roundArch.numRound
     par_proposed = plotResults(p_clusterModel, r, par_proposed, roundArch);
     
 %     if r==1
-%         plot_kmeans
-%     end
-%     
-%     if r==2
-%         plot_kmeans
+%         plot_proposed
 %     end
     
     %%% FND and HND and LND 
@@ -166,13 +163,13 @@ for r = 1:roundArch.numRound
         fprintf('[Proposed] ***FND*** round = %d.\n', r);
         FND = r;
         FND_flag = 0;
-%         plot_kmeans
+%         plot_proposed
     end
     if (p_clusterModel.nodeArch.numDead >= (init_nodeArch.numNode / 2)) && HND_flag
         HND = r;
         fprintf('[Proposed] ***HND*** round = %d.\n', r);
         HND_flag = 0;
-%         plot_kmeans
+%         plot_proposed
     end  
     if (p_clusterModel.nodeArch.numDead >= init_nodeArch.numNode)
         LND = r;
@@ -453,8 +450,8 @@ l_LND = floor(l_LND / simulationTime);
 tl_LND= floor(tl_LND / simulationTime);
 h_LND = floor(h_LND / simulationTime);
 
-% plot_300N_05J
-% plot_test % LEACH TL-LEACH HHCA PROPOSED
+plot_300N_05J
+
 
          
 

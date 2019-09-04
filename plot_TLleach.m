@@ -1,4 +1,3 @@
-% PLOT THE LEACH DEPLOYMENT
 %%
 figure, hold on
 grid on
